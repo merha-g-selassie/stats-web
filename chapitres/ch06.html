@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ch. 06 — Visualisation des données quantitatives</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">&#9776;</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content">
+<div class="content-inner">
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 06</div>
+  <h1 class="ch-title">Visualisation des données quantitatives</h1>
+  <p class="ch-desc">Histogrammes, stem-and-leaf plot.</p>
+</div>
+
+<h2>L'idée centrale</h2>
+<p>Les données quantitatives se placent sur un <strong>axe numérique</strong>. Elles peuvent être discrètes ou continues, et on peut représenter la <strong>forme</strong> de leur distribution. Deux outils principaux : l'<strong>histogramme</strong> et le <strong>stem-and-leaf plot</strong>.</p>
+
+<h2>Histogramme vs Bar chart</h2>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>Bar chart</th><th>Histogramme</th></tr></thead>
+<tbody>
+<tr><td>Type de données</td><td>Qualitatives</td><td>Quantitatives</td></tr>
+<tr><td>Barres</td><td>Séparées</td><td>Collées</td></tr>
+<tr><td>Axe X</td><td>Catégories</td><td>Valeurs numériques / classes</td></tr>
+</tbody></table></div>
+<p>Les barres d'un histogramme sont <strong>collées</strong> parce qu'elles représentent des intervalles contigus d'un axe numérique. Même pour des notes entières, on peut imaginer des classes comme 9.5–10.5, 10.5–11.5, etc.</p>
+
+<h2>Histogramme — données discrètes</h2>
+<div class="chart-card">
+  <h4>30 notes d'examen — une barre par valeur entière</h4>
+  <p>La forme en cloche est immédiatement visible. Impossible à voir dans un tableau de chiffres bruts.</p>
+  <div class="chart-wrap" style="height:180px"><canvas id="h-disc" role="img" aria-label="Histogramme 30 notes"></canvas></div>
+</div>
+
+<h2>Histogramme — données continues (effet de la largeur de classe)</h2>
+<div class="chart-card">
+  <h4>Revenus mensuels (CHF) — ajuste la largeur des classes</h4>
+  <div style="display:flex;align-items:center;gap:12px;margin:.75rem 0;font-size:.85rem;color:var(--text-sec)">
+    <span>Largeur :</span>
+    <input type="range" min="0" max="2" step="1" value="1" id="bin-sl" style="flex:1">
+    <span id="bin-lbl" style="min-width:130px;font-weight:500;color:var(--text-pri)">1 000 CHF</span>
+  </div>
+  <div class="chart-wrap" style="height:160px"><canvas id="h-cont" role="img" aria-label="Histogramme revenus"></canvas></div>
+</div>
+<div class="box box-orange"><p><strong>Attention :</strong> trop étroit → trop de bruit. Trop large → on perd le détail. Le choix de la largeur est un jugement méthodologique.</p></div>
+
+<h2>Stem-and-leaf plot</h2>
+<p>Alternative à l'histogramme particulièrement pratique pour les <strong>petits datasets</strong>. On conserve les valeurs exactes tout en voyant la distribution.</p>
+<ul style="margin:.5rem 0 .9rem 1.2rem;color:var(--text-sec);font-size:.9rem;line-height:1.8">
+<li><strong>Stem</strong> (tige) = chiffres de gauche (dizaines)</li>
+<li><strong>Leaf</strong> (feuille) = chiffre de droite (unités)</li>
+</ul>
+<div class="grid-2">
+<div class="chart-card">
+<h4>Nos 30 notes</h4>
+<p>Stem = dizaine · Leaf = unité</p>
+<table style="font-family:'JetBrains Mono',monospace;font-size:.85rem;border-collapse:collapse;width:100%">
+<tbody>
+<tr><td style="text-align:right;padding:3px 8px;border-right:2px solid var(--border-strong);font-weight:600;color:var(--text-pri)">0</td><td style="padding:3px 8px;color:var(--text-sec)">8 9 9</td></tr>
+<tr><td style="text-align:right;padding:3px 8px;border-right:2px solid var(--border-strong);font-weight:600;color:var(--text-pri)">1</td><td style="padding:3px 8px;color:var(--text-sec)">0 0 0 1 1 1 1 2 2 2 2 2 3 3 3 3 4 4 4 5 5 5 6 6 7 7 8</td></tr>
+</tbody></table>
+<p style="font-size:.8rem;color:var(--text-muted);margin-top:.5rem">Ex : stem 1 · leaf 2 = note <strong>12</strong></p>
+</div>
+<div class="chart-card">
+<h4>Back-to-back — Groupe A vs B</h4>
+<p>Comparer deux groupes simultanément</p>
+<table style="font-family:'JetBrains Mono',monospace;font-size:.85rem;border-collapse:collapse;width:100%">
+<thead><tr>
+<th style="text-align:right;padding:3px 8px;font-size:.75rem;color:var(--text-muted)">A</th>
+<th style="padding:3px 8px;font-size:.75rem;color:var(--text-muted);text-align:center">Stem</th>
+<th style="padding:3px 8px;font-size:.75rem;color:var(--text-muted)">B</th>
+</tr></thead>
+<tbody>
+<tr><td style="text-align:right;padding:3px 8px;border-right:2px solid var(--border-strong)">9 8</td><td style="text-align:center;padding:3px 8px;border-right:2px solid var(--border-strong);font-weight:600;color:var(--text-pri)">0</td><td style="padding:3px 8px;color:var(--text-sec)">9</td></tr>
+<tr><td style="text-align:right;padding:3px 8px;border-right:2px solid var(--border-strong)">4 3 2 1 0</td><td style="text-align:center;padding:3px 8px;border-right:2px solid var(--border-strong);font-weight:600;color:var(--text-pri)">1</td><td style="padding:3px 8px;color:var(--text-sec)">1 2 3 4 5 6 7</td></tr>
+</tbody></table>
+<p style="font-size:.8rem;color:var(--text-muted);margin-top:.5rem">Clé : 1 | 4 = <strong>14</strong>. Groupe B contient ici davantage de notes élevées.</p>
+</div>
+</div>
+
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>Histogramme</th><th>Stem-and-leaf</th></tr></thead>
+<tbody>
+<tr><td>Taille du dataset</td><td>Toute taille</td><td>Plutôt petit dataset</td></tr>
+<tr><td>Valeurs exactes visibles</td><td>✗</td><td>✓</td></tr>
+<tr><td>Lisibilité visuelle</td><td>✓ Excellente</td><td>Moyenne</td></tr>
+<tr><td>Comparaison 2 groupes</td><td>Difficile</td><td>✓ Back-to-back</td></tr>
+</tbody></table></div>
+<div class="box box-note"><p><strong>Lien avec la suite :</strong> l'histogramme est le premier outil pour vérifier visuellement la normalité (ch. 09). Une forme en cloche symétrique = premier signal.</p></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+const gc=isDark?'rgba(255,255,255,.08)':'rgba(0,0,0,.06)';
+const tk='#7A7875';
+const notes=[8,9,9,10,10,10,11,11,11,11,12,12,12,12,12,13,13,13,13,14,14,14,15,15,15,16,16,17,17,18];
+const nc={};notes.forEach(n=>nc[n]=(nc[n]||0)+1);
+const nl=Object.keys(nc).map(Number).sort((a,b)=>a-b);
+new Chart(document.getElementById('h-disc'),{type:'bar',
+  data:{labels:nl,datasets:[{data:nl.map(n=>nc[n]),
+    backgroundColor:nl.map(n=>n===12||n===13?(isDark?'#79A6FF':'#2857A8'):(isDark?'#557CC8':'#5D7FBE')),
+    borderColor:isDark?'#141413':'#fff',borderWidth:1.5,borderRadius:0,borderSkipped:false,categoryPercentage:1,barPercentage:1}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:t=>'Note : '+t[0].label,label:t=>'f = '+t.raw}}},
+    scales:{x:{grid:{display:false},ticks:{color:tk,font:{size:11}}},y:{grid:{color:gc},ticks:{color:tk,font:{size:11},stepSize:1},beginAtZero:true,max:6}}}
+});
+const rev=[2100,2500,2900,3200,3500,3800,4100,4300,4500,4700,4900,5100,5300,5500,5700,5900,6100,6300,6500,6800,7000,7200,7500,7800,8000,8300,8700,9100,9600,10200];
+let hc;
+const bcfg=[{s:500,l:'500 CHF — trop étroit'},{s:1000,l:'1 000 CHF — équilibré'},{s:3000,l:'3 000 CHF — trop large'}];
+function rh(idx){
+  const c=bcfg[idx],bins=[];
+  for(let b=2000;b<11000;b+=c.s)bins.push({lo:b,hi:b+c.s,n:0});
+  rev.forEach(r=>{const i=Math.floor((r-2000)/c.s);if(i>=0&&i<bins.length)bins[i].n++;});
+  document.getElementById('bin-lbl').textContent=c.l;
+  if(hc)hc.destroy();
+  hc=new Chart(document.getElementById('h-cont'),{type:'bar',
+    data:{labels:bins.map(b=>(b.lo/1000).toFixed(0)+'k'),datasets:[{data:bins.map(b=>b.n),
+      backgroundColor:isDark?'#6E9CF5':'#3E6DBD',borderColor:isDark?'#121211':'#fff',borderWidth:1.5,borderRadius:0,borderSkipped:false,categoryPercentage:1,barPercentage:1}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{color:tk,font:{size:10},autoSkip:false,maxRotation:0}},y:{grid:{color:gc},ticks:{color:tk,font:{size:10}},beginAtZero:true}}}
+  });
+}
+rh(1);
+document.getElementById('bin-sl').addEventListener('input',function(){rh(+this.value);});
+</script>
+
+<div class="page-nav">
+  <a href="ch05.html">← Chapitre 05</a>
+  <a href="ch07.html">Chapitre 07 →</a>
+</div>
+</div></main></div>
+<script src="../assets/nav-content.js"></script>
+</body></html>

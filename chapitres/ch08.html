@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 08 — Mesures de dispersion</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">☰</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content">
+<div class="content-inner">
+
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 08 · Statistiques descriptives</div>
+  <h1 class="ch-title">Mesures de dispersion</h1>
+  <p class="ch-desc">Étendue, variance, écart-type, IQR, CV — mesurer l'éparpillement des données autour de la moyenne.</p>
+</div>
+
+<h2>L'idée centrale</h2>
+<p>Deux datasets peuvent avoir la même moyenne et être complètement différents. La dispersion répond à : <strong>les valeurs sont-elles regroupées ou éparpillées autour de la moyenne ?</strong></p>
+
+<div class="chart-card">
+  <h4>Deux classes, même moyenne (13) — dispersions très différentes</h4>
+  <p>La tendance centrale seule ne suffit pas à décrire un dataset.</p>
+  <div class="chart-wrap" style="height:180px"><canvas id="disp-comp" role="img" aria-label="Deux distributions de même moyenne mais dispersions différentes"></canvas></div>
+  <div class="legend" style="margin-top:.75rem">
+    <span class="leg"><span class="leg-sq" style="background:#2B52A0"></span>Classe A — s = 1.08</span>
+    <span class="leg"><span class="leg-sq" style="background:#C05A20"></span>Classe B — s = 6.32</span>
+  </div>
+</div>
+
+<h2>1. Étendue (Range)</h2>
+<p><strong>Valeur max − valeur min.</strong> La plus simple, la moins fiable. Un seul outlier suffit à l'exploser — elle ne dit rien sur la distribution entre les deux extrêmes.</p>
+<div class="formula">Étendue = max(xᵢ) − min(xᵢ)</div>
+
+<h2>2. Variance et écart-type</h2>
+
+<h3>Pourquoi pas la moyenne des écarts bruts ?</h3>
+<p>La somme des écarts (xᵢ − x̄) vaut <strong>toujours 0</strong> — les positifs et négatifs s'annulent. On élève au carré pour rendre tous les écarts positifs.</p>
+
+<div class="chart-card">
+  <h4>Écarts à la moyenne — dataset 10, 12, 14, 16, 18 (x̄ = 14)</h4>
+  <p>Les barres orange (négatifs) et bleues (positifs) s'annulent parfaitement → somme = 0.</p>
+  <div class="chart-wrap" style="height:160px"><canvas id="ecarts" role="img" aria-label="Écarts à la moyenne montrant annulation"></canvas></div>
+</div>
+
+<h3>Formules</h3>
+<div class="grid-2">
+  <div class="box box-note">
+    <p><strong>Population</strong><br>
+    σ² = Σ(xᵢ − μ)² / <strong>N</strong><br>
+    σ = √σ²<br>
+    <span style="font-size:.8rem;color:var(--text-muted)">Diviseur N — on a toutes les données</span></p>
+  </div>
+  <div class="box box-green">
+    <p><strong>Échantillon</strong><br>
+    s² = Σ(xᵢ − x̄)² / <strong>(n−1)</strong><br>
+    s = √s²<br>
+    <span style="font-size:.8rem;color:var(--text-muted)">Diviseur n−1 — correction de Bessel</span></p>
+  </div>
+</div>
+
+<h3>Calcul étape par étape</h3>
+<p>Dataset : <strong>10, 12, 14, 16, 18</strong> (n = 5) — x̄ = 14</p>
+
+<div class="table-wrap">
+<table class="table-calc">
+  <thead><tr><th>xᵢ</th><th>xᵢ − x̄</th><th>(xᵢ − x̄)²</th></tr></thead>
+  <tbody>
+    <tr><td>10</td><td>−4</td><td>16</td></tr>
+    <tr><td>12</td><td>−2</td><td>4</td></tr>
+    <tr><td>14</td><td>0</td><td>0</td></tr>
+    <tr><td>16</td><td>+2</td><td>4</td></tr>
+    <tr><td>18</td><td>+4</td><td>16</td></tr>
+    <tr class="total"><td>Σ</td><td class="hi-orange">0</td><td class="hi-accent">40</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="formula">s² = 40 / (5−1) = 40 / 4 = <strong>10 notes²</strong> ← unité bizarre<br>s = √10 = <strong>3.16 points</strong> ← même unité que les données ✓</div>
+
+<div class="box box-note">
+  <p><strong>Pourquoi la racine ne retombe pas à 0 ?</strong> Le carré a effacé les signes — √16 = 4, jamais −4. L'écart-type est toujours ≥ 0, et ne vaut 0 que si toutes les valeurs sont identiques.</p>
+</div>
+
+<h3>Formule définitionnelle vs computationnelle</h3>
+<div class="grid-2">
+  <div class="box box-purple">
+    <p><strong>Définitionnelle</strong> — pédagogique<br>
+    <code>s² = Σ(xᵢ − x̄)² / (n−1)</code></p>
+  </div>
+  <div class="box box-note">
+    <p><strong>Computationnelle</strong> — rapide à la main<br>
+    <code>s² = [Σxᵢ² − (Σxᵢ)²/n] / (n−1)</code></p>
+  </div>
+</div>
+<p>Vérification : Σxᵢ = 70 → (70)²/5 = 980 · Σxᵢ² = 1020 → s² = (1020−980)/4 = <strong>10 ✓</strong></p>
+
+<h2>3. IQR — robuste aux outliers</h2>
+<p><strong>IQR = Q3 − Q1.</strong> Mesure la dispersion des 50 % centraux et est <strong>robuste aux valeurs extrêmes</strong>. C'est la largeur de la boîte dans un boxplot.</p>
+
+<div class="chart-card">
+  <h4>IQR sur notre dataset : Q1 = 11, Q3 = 17, IQR = 6</h4>
+  <p>Ici on utilise la convention « médiane de chaque moitié » : pour 10, 12, 14, 16, 18, Q1 = 11 et Q3 = 17. D'autres logiciels peuvent utiliser une convention légèrement différente.</p>
+  <p>Dans ce boxplot simplifié, les moustaches vont jusqu'au min et au max. Dans un boxplot de Tukey, elles s'arrêtent généralement à la dernière valeur située dans les limites de 1.5 × IQR.</p>
+  <div class="chart-wrap" style="height:100px"><canvas id="iqr-chart" role="img" aria-label="Boxplot montrant IQR"></canvas></div>
+</div>
+
+<h2>4. Coefficient de variation (CV)</h2>
+<p>Écart-type exprimé en % de la moyenne. Il permet de <strong>comparer des dispersions relatives</strong>, surtout pour des variables avec un zéro significatif (échelles de ratio). Il devient peu utile si la moyenne est proche de 0.</p>
+<div class="formula">CV = (s / x̄) × 100</div>
+<div class="grid-2">
+  <div class="box box-note"><p>Durées : x̄ = 14 min, s = 3.16 min<br>CV = (3.16/14) × 100 = <strong>22.6 %</strong></p></div>
+  <div class="box box-green"><p>Revenus : x̄ = 6 000 CHF, s = 1 200<br>CV = (1200/6000) × 100 = <strong>20 %</strong></p></div>
+</div>
+<p>Malgré des unités complètement différentes, les deux datasets ont une dispersion relative similaire.</p>
+
+<h2>Quelle mesure choisir ?</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Situation</th><th>Mesure recommandée</th></tr></thead>
+  <tbody>
+    <tr><td>Distribution symétrique, sans outliers</td><td>Écart-type (s)</td></tr>
+    <tr><td>Distribution asymétrique ou outliers</td><td>IQR</td></tr>
+    <tr><td>Comparer des dispersions relatives sur des échelles de ratio</td><td>CV</td></tr>
+    <tr><td>Calcul intermédiaire (régression, tests)</td><td>Variance (s²)</td></tr>
+    <tr><td>Vue rapide, ordre de grandeur</td><td>Étendue</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="page-nav">
+  <a href="ch07.html">← Chapitre 07</a>
+  <a href="ch09.html">Chapitre 09 →</a>
+</div>
+
+</div>
+</main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const isDark = window.matchMedia('(prefers-color-scheme:dark)').matches;
+const gridC  = isDark ? 'rgba(255,255,255,.08)' : 'rgba(0,0,0,.06)';
+const tick   = '#7A7875';
+
+new Chart(document.getElementById('disp-comp'), {
+  type: 'bar',
+  data: {
+    labels: ['5','9','11','12','13','14','15','17','21'],
+    datasets: [
+      { label:'Classe A', data:[0,0,1,3,5,3,1,0,0], backgroundColor:'#2B52A0', borderColor: isDark?'#141413':'#fff', borderWidth:1.5, categoryPercentage:.45, barPercentage:.9, borderRadius:2, borderSkipped:false },
+      { label:'Classe B', data:[1,1,0,0,1,0,0,1,1], backgroundColor:'#C05A20', borderColor: isDark?'#141413':'#fff', borderWidth:1.5, categoryPercentage:.45, barPercentage:.9, borderRadius:2, borderSkipped:false }
+    ]
+  },
+  options: { responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false} },
+    scales:{ x:{ grid:{display:false}, ticks:{color:tick,font:{size:11}} }, y:{ grid:{color:gridC}, ticks:{color:tick,font:{size:11},stepSize:1}, beginAtZero:true, max:6 } }
+  }
+});
+
+new Chart(document.getElementById('ecarts'), {
+  type: 'bar',
+  data: {
+    labels: ['10','12','14','16','18'],
+    datasets: [{ data:[-4,-2,0,2,4],
+      backgroundColor:[-4,-2,0,2,4].map(v=>v<0?'#C05A20':v>0?'#2B52A0':'#7A7875'),
+      borderColor: isDark?'#141413':'#fff', borderWidth:1.5, borderRadius:4, borderSkipped:false, categoryPercentage:.6, barPercentage:.9 }]
+  },
+  options: { responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{callbacks:{label:t=>`Écart : ${t.raw>0?'+':''}${t.raw}`}} },
+    scales:{ x:{grid:{display:false},ticks:{color:tick,font:{size:11}}}, y:{grid:{color:gridC},ticks:{color:tick,font:{size:11}},min:-5,max:5} }
+  }
+});
+
+new Chart(document.getElementById('iqr-chart'), {
+  type: 'bar',
+  data: { labels:[''],
+    datasets:[
+      {label:'Min→Q1', data:[[10,11]], backgroundColor:'rgba(122,120,117,.2)', borderColor:'rgba(122,120,117,.4)', borderWidth:1, borderRadius:0, borderSkipped:false},
+      {label:'Q1→Méd', data:[[11,14]], backgroundColor:'rgba(43,82,160,.3)', borderColor:'#2B52A0', borderWidth:1.5, borderRadius:0, borderSkipped:false},
+      {label:'Méd→Q3', data:[[14,17]], backgroundColor:'rgba(43,82,160,.3)', borderColor:'#2B52A0', borderWidth:1.5, borderRadius:0, borderSkipped:false},
+      {label:'Q3→Max', data:[[17,18]], backgroundColor:'rgba(122,120,117,.2)', borderColor:'rgba(122,120,117,.4)', borderWidth:1, borderRadius:0, borderSkipped:false},
+    ]
+  },
+  options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{ x:{grid:{color:gridC},ticks:{color:tick,font:{size:11}},min:8,max:20}, y:{grid:{display:false},ticks:{display:false}} }
+  }
+});
+</script>
+<script src="../assets/nav-content.js"></script>
+</body>
+</html>

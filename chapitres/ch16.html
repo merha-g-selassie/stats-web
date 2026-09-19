@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 16 — Hypothesis testing avec Pearson's r</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+.compact-list { margin:.75rem 0 1rem 1.2rem; color:var(--text-sec); }
+.compact-list li { margin:.35rem 0; }
+
+.wrap{padding:.5rem 0 1rem;font-family:var(--font-sans);}
+.section{margin:1.2rem 0 .4rem;font-size:10px;font-weight:500;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;}
+.chart-box{background:var(--surface-1);border:.5px solid var(--border);border-radius:12px;padding:16px;margin:8px 0;}
+.chart-title{font-size:12px;font-weight:500;color:var(--text-primary);margin-bottom:4px;}
+.chart-sub{font-size:11px;color:var(--text-secondary);margin-bottom:10px;}
+.note-box{background:var(--surface-1);border-left:3px solid #7F77DD;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--text-secondary);line-height:1.6;margin:10px 0;}
+.note-box b{color:var(--text-primary);}
+.step-row{display:flex;gap:12px;align-items:flex-start;margin:8px 0;font-size:12px;color:var(--text-secondary);line-height:1.6;}
+.step-num{min-width:24px;height:24px;border-radius:50%;background:#7F77DD;color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;margin-top:1px;}
+.stat-row{display:flex;gap:10px;margin:10px 0;}
+.stat-card{flex:1;background:var(--surface-1);border:.5px solid var(--border);border-radius:8px;padding:10px;text-align:center;}
+.stat-card .lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;}
+.stat-card .val{font-size:18px;font-weight:500;}
+.decision-box{border-radius:8px;padding:12px 16px;font-size:13px;font-weight:500;text-align:center;margin:10px 0;}
+
+</style>
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">☰</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content"><div class="content-inner">
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 16 · Corrélation & inférence</div>
+  <h1 class="ch-title">Hypothesis testing avec Pearson's r</h1>
+  <p class="ch-desc">Tester si une corrélation observée dans un échantillon est statistiquement significative.</p>
+</div>
+
+<h2>L'idée centrale</h2>
+<p>Calculer r sur un échantillon ne suffit pas. Un r observé peut varier d'un échantillon à l'autre. Le test d'hypothèse demande : <strong>les données apportent-elles assez d'éléments pour conclure qu'une corrélation linéaire existe aussi dans la population ?</strong></p>
+
+<h2>Les 5 étapes</h2>
+<ol class="steps">
+<li><span class="step-n">1</span><div><strong>Définir H₀ et H₁</strong><br>H₀ : ρ = 0 → pas de <strong>corrélation linéaire</strong> dans la population.<br>H₁ : ρ ≠ 0 → corrélation linéaire non nulle (test bilatéral).<br><span style="color:var(--text-muted)">ρ = vraie corrélation dans la population ; r = corrélation calculée sur l'échantillon.</span></div></li>
+<li><span class="step-n">2</span><div><strong>Fixer alpha</strong><div class="formula">α = 0.05</div>Si H₀ est vraie, α = 0.05 signifie qu'à long terme on accepterait environ 5 % de risque de rejeter H₀ à tort.</div></li>
+<li><span class="step-n">3</span><div><strong>Calculer les degrés de liberté</strong><div class="formula">df = n − 2 = 10 − 2 = <strong>8</strong></div>Ce test est lié à la régression linéaire simple, où l'on estime deux paramètres (intercept et pente) : il reste donc n−2 degrés de liberté.</div></li>
+<li><span class="step-n">4</span><div><strong>Calculer la statistique t et trouver t critique</strong><div class="formula">t = r × √(n−2) / √(1−r²)<br>t = 0.94 × √8 / √(1−0.94²) ≈ <strong>7.79</strong></div>Avec df = 8 et α = 0.05 bilatéral : t critique = <strong>±2.306</strong>.</div></li>
+<li><span class="step-n">5</span><div><strong>Décision</strong><div class="formula">|t calculé| = 7.79 &gt; 2.306 → <strong>on rejette H₀</strong></div>La corrélation est statistiquement significative à α = 0.05.</div></li>
+</ol>
+
+<h2>Pourquoi la distribution t ?</h2>
+<p>Pour tester H₀ : ρ = 0 avec Pearson, la statistique de test suit une <strong>distribution t de Student avec n−2 degrés de liberté</strong>, sous les hypothèses du test. Quand n augmente, la distribution t se rapproche progressivement de la normale.</p>
+<div class="box box-note"><p><strong>Hypothèses à vérifier simplement :</strong> observations indépendantes, relation approximativement linéaire et absence de gros outliers. Le test classique suppose aussi un modèle adapté aux données.</p></div>
+
+<h2>Pourquoi df = n−2 ?</h2>
+<p>Dans la formulation équivalente en régression linéaire simple, on estime deux paramètres : l'<strong>intercept</strong> et la <strong>pente</strong>. On obtient donc df = n−2. Avec peu de degrés de liberté, la distribution t est plus étalée et le seuil critique est plus élevé.</p>
+
+<h2>Visualisations du test</h2>
+<div class="wrap"><div class="section">Les 5 étapes du test</div>
+<div class="chart-box">
+  <div class="chart-title">Test H₀ : ρ = 0 vs H₁ : ρ ≠ 0 — dataset âge/revenu, n = 10</div>
+  <div style="margin:8px 0;">
+    <div class="step-row"><div class="step-num">1</div><div><b style="color:var(--text-primary)">Hypothèses</b><br>H₀ : ρ = 0 (pas de corrélation linéaire)<br>H₁ : ρ ≠ 0 (corrélation linéaire non nulle)</div></div>
+    <div class="step-row"><div class="step-num">2</div><div><b style="color:var(--text-primary)">Alpha</b><br>α = 0.05 — risque d'erreur toléré = 5 %</div></div>
+    <div class="step-row"><div class="step-num">3</div><div><b style="color:var(--text-primary)">Degrés de liberté</b><br>df = n − 2 = 10 − 2 = <b style="color:#7F77DD">8</b></div></div>
+    <div class="step-row"><div class="step-num">4</div><div><b style="color:var(--text-primary)">Statistique t et valeur critique</b><br>t = r × √(n−2) / √(1−r²) = 0.94 × √8 / √(1−0.94²) ≈ <b style="color:#D85A30">7.79</b><br>t critique (df=8, α=0.05, bilatéral) = <b style="color:#2a78d6">±2.306</b></div></div>
+    <div class="step-row"><div class="step-num">5</div><div><b style="color:var(--text-primary)">Décision</b><br>|7.79| &gt; 2.306 → on rejette H₀</div></div>
+  </div>
+  <div class="decision-box" style="background:rgba(29,158,117,.12);color:#0F6E56;">
+    ✓ Les données fournissent des preuves d’une corrélation linéaire non nulle dans la population, sous les hypothèses du test
+  </div>
+</div>
+
+<div class="section">Distribution t — zones de rejet</div>
+<div class="chart-box">
+  <div class="chart-title">t calculé = 7.79 est bien au-delà de la zone de rejet</div>
+  <div class="chart-sub">Les zones rouges = zones de rejet (α/2 = 2.5 % de chaque côté). Notre t = 7.79 est hors du graphique à droite.</div>
+  <svg id="t-dist" viewBox="0 0 640 180" width="100%" role="img">
+    <title>Distribution t avec zones de rejet</title>
+    <desc>Courbe t avec df=8 montrant zones de rejet à ±2.306 et position de t=7.79.</desc>
+  </svg>
+  <div style="display:flex;justify-content:center;gap:20px;margin-top:8px;font-size:11px;color:var(--text-secondary);">
+    <span><span style="display:inline-block;width:12px;height:12px;background:rgba(227,73,72,.35);border-radius:2px;margin-right:4px;vertical-align:middle;"></span>Zone de rejet (α/2 = 2.5 %)</span>
+    <span><span style="display:inline-block;width:12px;height:12px;background:rgba(55,138,221,.25);border-radius:2px;margin-right:4px;vertical-align:middle;"></span>Zone de non-rejet de H₀ (95 %)</span>
+    <span style="color:#D85A30;font-weight:500;">⟶ t = 7.79 (hors échelle)</span>
+  </div>
+</div>
+
+<div class="section">Effet du df sur le t critique</div>
+<div class="chart-box">
+  <div class="chart-title">Plus le df est petit, plus le t critique est élevé</div>
+  <div class="chart-sub">Le test est plus exigeant avec les petits échantillons — il faut une corrélation plus forte pour convaincre.</div>
+  <div style="position:relative;height:160px;"><canvas id="df-chart" role="img" aria-label="Valeurs critiques de t selon les degrés de liberté">t critique diminue quand df augmente.</canvas></div>
+</div>
+<div class="note-box">
+  <b>Règle de décision résumée :</b><br>
+  |t calculé| &gt; t critique → rejet de H₀ → corrélation significative<br>
+  |t calculé| ≤ t critique → non-rejet de H₀ → pas de preuve suffisante de corrélation
+</div></div>
+
+<div class="page-nav">
+  <a href="ch15.html">← Chapitre 15</a>
+  <a href="ch17.html">Chapitre 17 →</a>
+</div>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const isDark=document.documentElement.dataset.mode==='dark'||(!document.documentElement.dataset.mode&&matchMedia('(prefers-color-scheme:dark)').matches);
+const gridC=isDark?'rgba(255,255,255,0.12)':'rgba(25,25,24,0.09)';
+const tick=isDark?'#A7A59D':'#6B6963';
+
+function tPDF(t,df){
+  const g1=gamma((df+1)/2),g2=gamma(df/2);
+  return(g1/(Math.sqrt(df*Math.PI)*g2))*Math.pow(1+t*t/df,-(df+1)/2);
+}
+function gamma(n){
+  if(n===0.5)return Math.sqrt(Math.PI);
+  if(n===1)return 1;
+  if(n===1.5)return 0.5*Math.sqrt(Math.PI);
+  if(n===2)return 1;
+  if(n===2.5)return 1.5*Math.sqrt(Math.PI)*0.5;
+  if(n===3)return 2;
+  if(n===3.5)return 15*Math.sqrt(Math.PI)/8;
+  if(n===4)return 6;
+  if(n===4.5)return 105*Math.sqrt(Math.PI)/16;
+  return Math.exp(lgamma(n));
+}
+function lgamma(z){
+  const c=[76.18009172947146,-86.50532032941677,24.01409824083091,-1.231739572450155,0.1208650973866179e-2,-0.5395239384953e-5];
+  let x=z,y=z,tmp=x+5.5;
+  tmp-=(x+0.5)*Math.log(tmp);
+  let ser=1.000000000190015;
+  for(let j=0;j<6;j++)ser+=c[j]/++y;
+  return -tmp+Math.log(2.5066282746310005*ser/x);
+}
+
+const svg=document.getElementById('t-dist');
+const W=640,H=180,mL=50,mR=50,mT=14,mB=40;
+const pW=W-mL-mR,pH=H-mT-mB;
+const df=8,tCrit=2.306;
+const xMin=-4,xMax=4;
+const toX=t=>mL+(t-xMin)/(xMax-xMin)*pW;
+const yMax=tPDF(0,df)*1.1;
+const toY=y=>mT+pH-(y/yMax)*pH;
+
+function el(tag,a,p){const e=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const[k,v]of Object.entries(a))e.setAttribute(k,v);if(p)p.appendChild(e);return e;}
+function tx(t,a,p){const e=el('text',a,p);e.textContent=t;return e;}
+
+// Reject zones
+[[-xMax,-tCrit],[tCrit,xMax]].forEach(([lo,hi])=>{
+  const pts=[];
+  for(let t=lo;t<=hi;t+=(hi-lo)/60)pts.push(`${toX(t).toFixed(1)},${toY(tPDF(t,df)).toFixed(1)}`);
+  pts.push(`${toX(hi).toFixed(1)},${toY(0).toFixed(1)}`);
+  pts.push(`${toX(lo).toFixed(1)},${toY(0).toFixed(1)}`);
+  el('polygon',{points:pts.join(' '),fill:isDark?'rgba(227,73,72,.35)':'rgba(227,73,72,.3)'},svg);
+});
+
+// Accept zone
+const accPts=[];
+for(let t=-tCrit;t<=tCrit;t+=(2*tCrit)/120)accPts.push(`${toX(t).toFixed(1)},${toY(tPDF(t,df)).toFixed(1)}`);
+accPts.push(`${toX(tCrit).toFixed(1)},${toY(0).toFixed(1)}`);
+accPts.push(`${toX(-tCrit).toFixed(1)},${toY(0).toFixed(1)}`);
+el('polygon',{points:accPts.join(' '),fill:isDark?'rgba(55,138,221,.2)':'rgba(55,138,221,.15)'},svg);
+
+// Curve
+const curvePts=[];
+for(let t=xMin;t<=xMax;t+=(xMax-xMin)/200)curvePts.push(`${toX(t).toFixed(1)},${toY(tPDF(t,df)).toFixed(1)}`);
+el('polyline',{points:curvePts.join(' '),fill:'none',stroke:'#185FA5','stroke-width':'2','stroke-linejoin':'round'},svg);
+
+// Axis
+el('line',{x1:mL,y1:mT+pH,x2:W-mR,y2:mT+pH,stroke:isDark?'rgba(255,255,255,.2)':'rgba(0,0,0,.15)','stroke-width':'1'},svg);
+
+// Critical lines
+[tCrit,-tCrit].forEach(tc=>{
+  el('line',{x1:toX(tc),y1:mT,x2:toX(tc),y2:mT+pH,stroke:'#2a78d6','stroke-width':'1.5','stroke-dasharray':'4,3'},svg);
+  tx(`t=${tc>0?'+':''}${tc}`,{x:toX(tc),y:mT+10,'text-anchor':'middle','font-size':'9.5',fill:'#2a78d6','font-family':'var(--font-sans)'},svg);
+});
+
+// t=7.79 arrow
+el('line',{x1:toX(xMax)-10,y1:mT+pH/2,x2:toX(xMax)+30,y2:mT+pH/2,stroke:'#D85A30','stroke-width':'2'},svg);
+tx('t = 7.79 →',{x:toX(xMax)-15,y:mT+pH/2-8,'text-anchor':'end','font-size':'10','font-weight':'500',fill:'#D85A30','font-family':'var(--font-sans)'},svg);
+
+// Tick labels
+[-3,-2,-1,0,1,2,3].forEach(t=>{
+  tx(String(t),{x:toX(t),y:mT+pH+14,'text-anchor':'middle','font-size':'10',fill:tick,'font-family':'var(--font-sans)'},svg);
+});
+tx('H₀ non rejeté',{x:toX(0),y:mT+pH-20,'text-anchor':'middle','font-size':'9.5',fill:'#185FA5','font-family':'var(--font-sans)'},svg);
+tx('Rejet',{x:toX(-3.2),y:mT+pH-20,'text-anchor':'middle','font-size':'9.5',fill:'#e34948','font-family':'var(--font-sans)'},svg);
+tx('Rejet',{x:toX(3.2),y:mT+pH-20,'text-anchor':'middle','font-size':'9.5',fill:'#e34948','font-family':'var(--font-sans)'},svg);
+
+// df chart
+const dfVals=[1,2,3,4,5,6,7,8,10,15,20,30,60,120];
+const tCrits=[12.706,4.303,3.182,2.776,2.571,2.447,2.365,2.306,2.228,2.131,2.086,2.042,2.000,1.980];
+new Chart(document.getElementById('df-chart'),{type:'line',
+  data:{labels:dfVals.map(String),datasets:[{
+    data:tCrits,borderColor:'#2a78d6',borderWidth:2,pointRadius:4,pointBackgroundColor:dfVals.map((_,i)=>dfVals[i]===8?'#D85A30':'#2a78d6'),pointBorderColor:dfVals.map((_,i)=>dfVals[i]===8?'#D85A30':'#2a78d6'),fill:false,tension:.3
+  }]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:t=>`t critique = ${t.raw}`}}},
+    scales:{
+      x:{grid:{display:false},ticks:{color:tick,font:{size:10}},title:{display:true,text:'Degrés de liberté (df)',color:tick,font:{size:10}}},
+      y:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'t critique (α=0.05, bilatéral)',color:tick,font:{size:10}},min:1.5,max:13}
+    }}
+});
+</script>
+<script src="../assets/nav-content.js"></script>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 12 — Permutations et combinaisons</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+.compact-list { margin:.75rem 0 1rem 1.2rem; color:var(--text-sec); }
+.compact-list li { margin:.35rem 0; }
+
+.wrap{padding:.5rem 0 1rem;font-family:var(--font-sans);}
+.section{margin:1.2rem 0 .4rem;font-size:10px;font-weight:500;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;}
+.chart-box{background:var(--surface-1);border:.5px solid var(--border);border-radius:12px;padding:16px;margin:8px 0;}
+.chart-title{font-size:12px;font-weight:500;color:var(--text-primary);margin-bottom:4px;}
+.chart-sub{font-size:11px;color:var(--text-secondary);margin-bottom:10px;}
+.note-box{background:var(--surface-1);border-left:3px solid #7F77DD;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--text-secondary);line-height:1.6;margin:10px 0;}
+.note-box b{color:var(--text-primary);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.stat-row{display:flex;gap:10px;margin:10px 0;}
+.stat-card{flex:1;background:var(--surface-1);border:.5px solid var(--border);border-radius:8px;padding:10px;text-align:center;}
+.stat-card .lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;}
+.stat-card .val{font-size:22px;font-weight:500;}
+
+</style>
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">☰</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content"><div class="content-inner">
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 12 · Distribution & probabilités</div>
+  <h1 class="ch-title">Permutations et combinaisons</h1>
+  <p class="ch-desc">Compter les arrangements possibles selon que l’ordre compte ou non.</p>
+</div>
+
+<h2>L'idée centrale</h2>
+<p>Permutations et combinaisons répondent à la même question de base : <strong>de combien de façons peut-on choisir k éléments parmi n ?</strong> Ici, on suppose qu'on choisit <strong>sans répétition</strong>. La différence est une seule : est-ce que <strong>l'ordre compte</strong> ?</p>
+
+<h2>Permutations — l'ordre compte</h2>
+<p>Si l'ordre dans lequel on choisit les éléments change le résultat, c'est une permutation.</p>
+<p><strong>Exemple :</strong> 3 personnes (A, B, C) pour 2 places sur un podium. A puis B ≠ B puis A.</p>
+<div class="formula">P(n, k) = n! / (n − k)!</div>
+<p><strong>Factorielle :</strong> n! = n × (n−1) × (n−2) × ... × 1</p>
+<div class="formula">5! = 5 × 4 × 3 × 2 × 1 = <strong>120</strong><br>0! = <strong>1</strong> par convention</div>
+<p><strong>Exemple — 6 animaux, 3 emplacements distincts dans un zoo :</strong></p>
+<div class="formula">P(6, 3) = 6! / (6−3)! = 6! / 3! = 720 / 6 = <strong>120 arrangements</strong></div>
+<p>Dans le 1er emplacement on peut mettre 6 animaux, dans le 2ème il en reste 5, dans le 3ème il en reste 4 → 6 × 5 × 4 = 120.</p>
+
+<h2>Combinaisons — l'ordre ne compte pas</h2>
+<p>Si l'ordre ne change pas le résultat — on choisit juste un groupe — c'est une combinaison.</p>
+<p><strong>Exemple :</strong> choisir 3 étudiants parmi 6 pour former un groupe de travail. {A, B, C} = {C, A, B} → même groupe.</p>
+<div class="formula">C(n, k) = n! / [k! × (n − k)!]</div>
+<p>On divise par k! pour éliminer tous les ordres équivalents.</p>
+<div class="formula">C(6, 3) = 6! / (3! × 3!) = 720 / (6 × 6) = <strong>20 combinaisons</strong></div>
+<p>On passe de 120 à 20 — on divise par 3! = 6 car chaque groupe de 3 peut être arrangé de 6 façons différentes, qui comptent toutes comme la même combinaison.</p>
+
+<h2>Permutations vs combinaisons</h2>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>Permutations</th><th>Combinaisons</th></tr></thead>
+<tbody>
+<tr><td>L'ordre</td><td>Compte</td><td>Ne compte pas</td></tr>
+<tr><td>Formule</td><td>n! / (n−k)!</td><td>n! / [k! × (n−k)!]</td></tr>
+<tr><td>Résultat</td><td>Plus grand pour k ≥ 2</td><td>Plus petit pour k ≥ 2</td></tr>
+<tr><td>Exemple</td><td>Podium, classement, attribution de postes</td><td>Équipes, groupes, tirages sans ordre</td></tr>
+</tbody></table></div>
+<blockquote><p><strong>Règle mnémotechnique :</strong> si tu peux dire « peu importe l'ordre » → combinaison. Si l'ordre change quelque chose → permutation.</p></blockquote>
+
+<h2>Visualisations et calculateur interactif</h2>
+<div class="wrap"><div class="section">Permutations — l'ordre compte</div>
+<div class="chart-box">
+  <div class="chart-title">Podium à 3 places avec A, B, C — chaque arrangement est différent</div>
+  <div class="chart-sub">P(3,3) = 3! = 6 arrangements possibles</div>
+  <svg viewBox="0 0 640 110" width="100%" role="img">
+    <title>Les 6 permutations de A B C</title>
+    <desc>Six podiums montrant tous les arrangements possibles de A, B et C.</desc>
+    <defs><marker id="arrp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+    <!-- 6 podiums -->
+    <!-- Arrangement 1: A B C -->
+    <g transform="translate(10,10)">
+      <rect x="0" y="40" width="28" height="40" rx="3" fill="rgba(55,138,221,.3)" stroke="#2a78d6" stroke-width="1"/>
+      <rect x="30" y="50" width="28" height="30" rx="3" fill="rgba(235,104,52,.2)" stroke="#eb6834" stroke-width="1"/>
+      <rect x="60" y="60" width="28" height="20" rx="3" fill="rgba(29,158,117,.2)" stroke="#1baf7a" stroke-width="1"/>
+      <text class="ts" x="14" y="56" text-anchor="middle" fill="#2a78d6">A</text>
+      <text class="ts" x="44" y="66" text-anchor="middle" fill="#eb6834">B</text>
+      <text class="ts" x="74" y="76" text-anchor="middle" fill="#1baf7a">C</text>
+      <text class="ts" x="44" y="100" text-anchor="middle" fill="var(--text-muted)">A, B, C</text>
+    </g>
+    <g transform="translate(115,10)">
+      <rect x="0" y="40" width="28" height="40" rx="3" fill="rgba(55,138,221,.3)" stroke="#2a78d6" stroke-width="1"/>
+      <rect x="30" y="50" width="28" height="30" rx="3" fill="rgba(29,158,117,.2)" stroke="#1baf7a" stroke-width="1"/>
+      <rect x="60" y="60" width="28" height="20" rx="3" fill="rgba(235,104,52,.2)" stroke="#eb6834" stroke-width="1"/>
+      <text class="ts" x="14" y="56" text-anchor="middle" fill="#2a78d6">A</text>
+      <text class="ts" x="44" y="66" text-anchor="middle" fill="#1baf7a">C</text>
+      <text class="ts" x="74" y="76" text-anchor="middle" fill="#eb6834">B</text>
+      <text class="ts" x="44" y="100" text-anchor="middle" fill="var(--text-muted)">A, C, B</text>
+    </g>
+    <g transform="translate(220,10)">
+      <rect x="0" y="40" width="28" height="40" rx="3" fill="rgba(235,104,52,.3)" stroke="#eb6834" stroke-width="1"/>
+      <rect x="30" y="50" width="28" height="30" rx="3" fill="rgba(55,138,221,.2)" stroke="#2a78d6" stroke-width="1"/>
+      <rect x="60" y="60" width="28" height="20" rx="3" fill="rgba(29,158,117,.2)" stroke="#1baf7a" stroke-width="1"/>
+      <text class="ts" x="14" y="56" text-anchor="middle" fill="#eb6834">B</text>
+      <text class="ts" x="44" y="66" text-anchor="middle" fill="#2a78d6">A</text>
+      <text class="ts" x="74" y="76" text-anchor="middle" fill="#1baf7a">C</text>
+      <text class="ts" x="44" y="100" text-anchor="middle" fill="var(--text-muted)">B, A, C</text>
+    </g>
+    <g transform="translate(325,10)">
+      <rect x="0" y="40" width="28" height="40" rx="3" fill="rgba(235,104,52,.3)" stroke="#eb6834" stroke-width="1"/>
+      <rect x="30" y="50" width="28" height="30" rx="3" fill="rgba(29,158,117,.2)" stroke="#1baf7a" stroke-width="1"/>
+      <rect x="60" y="60" width="28" height="20" rx="3" fill="rgba(55,138,221,.2)" stroke="#2a78d6" stroke-width="1"/>
+      <text class="ts" x="14" y="56" text-anchor="middle" fill="#eb6834">B</text>
+      <text class="ts" x="44" y="66" text-anchor="middle" fill="#1baf7a">C</text>
+      <text class="ts" x="74" y="76" text-anchor="middle" fill="#2a78d6">A</text>
+      <text class="ts" x="44" y="100" text-anchor="middle" fill="var(--text-muted)">B, C, A</text>
+    </g>
+    <g transform="translate(430,10)">
+      <rect x="0" y="40" width="28" height="40" rx="3" fill="rgba(29,158,117,.3)" stroke="#1baf7a" stroke-width="1"/>
+      <rect x="30" y="50" width="28" height="30" rx="3" fill="rgba(55,138,221,.2)" stroke="#2a78d6" stroke-width="1"/>
+      <rect x="60" y="60" width="28" height="20" rx="3" fill="rgba(235,104,52,.2)" stroke="#eb6834" stroke-width="1"/>
+      <text class="ts" x="14" y="56" text-anchor="middle" fill="#1baf7a">C</text>
+      <text class="ts" x="44" y="66" text-anchor="middle" fill="#2a78d6">A</text>
+      <text class="ts" x="74" y="76" text-anchor="middle" fill="#eb6834">B</text>
+      <text class="ts" x="44" y="100" text-anchor="middle" fill="var(--text-muted)">C, A, B</text>
+    </g>
+    <g transform="translate(535,10)">
+      <rect x="0" y="40" width="28" height="40" rx="3" fill="rgba(29,158,117,.3)" stroke="#1baf7a" stroke-width="1"/>
+      <rect x="30" y="50" width="28" height="30" rx="3" fill="rgba(235,104,52,.2)" stroke="#eb6834" stroke-width="1"/>
+      <rect x="60" y="60" width="28" height="20" rx="3" fill="rgba(55,138,221,.2)" stroke="#2a78d6" stroke-width="1"/>
+      <text class="ts" x="14" y="56" text-anchor="middle" fill="#1baf7a">C</text>
+      <text class="ts" x="44" y="66" text-anchor="middle" fill="#eb6834">B</text>
+      <text class="ts" x="74" y="76" text-anchor="middle" fill="#2a78d6">A</text>
+      <text class="ts" x="44" y="100" text-anchor="middle" fill="var(--text-muted)">C, B, A</text>
+    </g>
+  </svg>
+</div>
+
+<div class="section">Combinaisons — l'ordre ne compte pas</div>
+<div class="chart-box">
+  <div class="chart-title">Choisir 2 étudiants parmi 4 (A, B, C, D) pour un groupe</div>
+  <div class="chart-sub">C(4,2) = 6 groupes possibles — {A,B} = {B,A} → même groupe</div>
+  <svg viewBox="0 0 640 90" width="100%" role="img">
+    <title>Les 6 combinaisons de 2 éléments parmi 4</title>
+    <desc>Six groupes possibles en choisissant 2 parmi A B C D.</desc>
+    <defs><marker id="arrc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+    <!-- 6 groups -->
+    <g>
+      <rect x="10" y="20" width="88" height="40" rx="8" fill="rgba(55,138,221,.1)" stroke="#2a78d6" stroke-width="1"/>
+      <text class="ts" x="54" y="38" text-anchor="middle" fill="#2a78d6">A</text>
+      <text class="ts" x="54" y="52" text-anchor="middle" fill="#eb6834">B</text>
+      <text class="ts" x="54" y="76" text-anchor="middle" fill="var(--text-muted)">{A, B}</text>
+    </g>
+    <g>
+      <rect x="112" y="20" width="88" height="40" rx="8" fill="rgba(55,138,221,.1)" stroke="#2a78d6" stroke-width="1"/>
+      <text class="ts" x="156" y="38" text-anchor="middle" fill="#2a78d6">A</text>
+      <text class="ts" x="156" y="52" text-anchor="middle" fill="#1baf7a">C</text>
+      <text class="ts" x="156" y="76" text-anchor="middle" fill="var(--text-muted)">{A, C}</text>
+    </g>
+    <g>
+      <rect x="214" y="20" width="88" height="40" rx="8" fill="rgba(55,138,221,.1)" stroke="#2a78d6" stroke-width="1"/>
+      <text class="ts" x="258" y="38" text-anchor="middle" fill="#2a78d6">A</text>
+      <text class="ts" x="258" y="52" text-anchor="middle" fill="#eda100">D</text>
+      <text class="ts" x="258" y="76" text-anchor="middle" fill="var(--text-muted)">{A, D}</text>
+    </g>
+    <g>
+      <rect x="316" y="20" width="88" height="40" rx="8" fill="rgba(235,104,52,.1)" stroke="#eb6834" stroke-width="1"/>
+      <text class="ts" x="360" y="38" text-anchor="middle" fill="#eb6834">B</text>
+      <text class="ts" x="360" y="52" text-anchor="middle" fill="#1baf7a">C</text>
+      <text class="ts" x="360" y="76" text-anchor="middle" fill="var(--text-muted)">{B, C}</text>
+    </g>
+    <g>
+      <rect x="418" y="20" width="88" height="40" rx="8" fill="rgba(235,104,52,.1)" stroke="#eb6834" stroke-width="1"/>
+      <text class="ts" x="462" y="38" text-anchor="middle" fill="#eb6834">B</text>
+      <text class="ts" x="462" y="52" text-anchor="middle" fill="#eda100">D</text>
+      <text class="ts" x="462" y="76" text-anchor="middle" fill="var(--text-muted)">{B, D}</text>
+    </g>
+    <g>
+      <rect x="520" y="20" width="88" height="40" rx="8" fill="rgba(29,158,117,.1)" stroke="#1baf7a" stroke-width="1"/>
+      <text class="ts" x="564" y="38" text-anchor="middle" fill="#1baf7a">C</text>
+      <text class="ts" x="564" y="52" text-anchor="middle" fill="#eda100">D</text>
+      <text class="ts" x="564" y="76" text-anchor="middle" fill="var(--text-muted)">{C, D}</text>
+    </g>
+  </svg>
+</div>
+
+<div class="section">Calculateur interactif</div>
+<div class="chart-box">
+  <div class="chart-title">Permutations P(n,k) et combinaisons C(n,k)</div>
+  <div style="display:flex;gap:16px;margin:10px 0;align-items:center;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-secondary);">
+      <label>n =</label>
+      <input type="number" id="inp-n" value="6" min="1" max="50" style="width:60px;padding:4px 8px;border-radius:6px;border:.5px solid var(--border-strong);font-size:13px;background:var(--surface-1);color:var(--text-primary);">
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-secondary);">
+      <label>k =</label>
+      <input type="number" id="inp-k" value="3" min="1" max="50" style="width:60px;padding:4px 8px;border-radius:6px;border:.5px solid var(--border-strong);font-size:13px;background:var(--surface-1);color:var(--text-primary);">
+    </div>
+    <button onclick="calc()" style="padding:6px 16px;border-radius:6px;border:.5px solid var(--border-strong);cursor:pointer;font-size:13px;background:var(--surface-1);color:var(--text-primary);">Calculer</button>
+  </div>
+  <div class="stat-row">
+    <div class="stat-card"><div class="lbl">Permutations P(n,k)</div><div class="val" id="perm-res" style="color:#2a78d6">120</div><div style="font-size:10px;color:var(--text-muted);margin-top:4px;">ordre compte</div></div>
+    <div class="stat-card"><div class="lbl">Combinaisons C(n,k)</div><div class="val" id="comb-res" style="color:#1baf7a">20</div><div style="font-size:10px;color:var(--text-muted);margin-top:4px;">ordre ne compte pas</div></div>
+  </div>
+  <div id="calc-detail" style="font-size:12px;color:var(--text-secondary);line-height:1.8;margin-top:8px;"></div>
+</div>
+<div class="note-box"><b>Règle mnémotechnique :</b> si tu peux dire "peu importe l'ordre" → combinaison. Si changer l'ordre donne un résultat différent → permutation. Pour k ≥ 2, les combinaisons donnent un résultat plus petit que les permutations ; pour k = 0 ou 1, les deux résultats sont égaux.</div></div>
+
+<div class="page-nav">
+  <a href="ch11.html">← Chapitre 11</a>
+  <a href="ch13.html">Chapitre 13 →</a>
+</div>
+</div></main></div>
+<script>
+function fact(n){if(n<=1)return 1n;let r=1n;for(let i=2n;i<=BigInt(n);i++)r*=i;return r;}
+function fmt(v){return v.toLocaleString('fr-CH');}
+function calc(){
+  const n=parseInt(document.getElementById('inp-n').value);
+  const k=parseInt(document.getElementById('inp-k').value);
+  if(k>n){document.getElementById('calc-detail').textContent='k doit être ≤ n';return;}
+  const fn=fact(n), fnk=fact(n-k), fk=fact(k);
+  const P=fn/fnk;
+  const C=fn/(fk*fnk);
+  document.getElementById('perm-res').textContent=fmt(P);
+  document.getElementById('comb-res').textContent=fmt(C);
+  document.getElementById('calc-detail').innerHTML=
+    `P(${n},${k}) = ${n}! / (${n}−${k})! = ${fmt(fn)} / ${fmt(fnk)} = <b style="color:#2a78d6">${fmt(P)}</b><br>
+    C(${n},${k}) = ${n}! / (${k}! × ${n-k}!) = ${fmt(fn)} / (${fmt(fk)} × ${fmt(fnk)}) = <b style="color:#1baf7a">${fmt(C)}</b>`;
+}
+calc();
+</script>
+<script src="../assets/nav-content.js"></script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ch. 02 — Variables indépendantes vs dépendantes</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">&#9776;</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content">
+<div class="content-inner">
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 02</div>
+  <h1 class="ch-title">Variables indépendantes vs dépendantes</h1>
+  <p class="ch-desc">Distinguer une variable explicative de la variable que l’on cherche à expliquer.</p>
+</div>
+
+<h2>L'idée centrale</h2>
+<p>Quand une question de recherche donne des rôles différents à deux variables, on distingue souvent une variable <strong>explicative</strong> et une variable <strong>réponse</strong>. Dans une simple corrélation, cette distinction n'est pas toujours nécessaire.</p>
+<div class="grid-2">
+<div class="box box-note"><p><strong>Variable indépendante (VI)</strong><br>Variable que l'on manipule dans une expérience, ou que l'on utilise comme <strong>prédicteur / variable explicative</strong>. <em>Souvent sur l'axe X.</em></p></div>
+<div class="box box-orange"><p><strong>Variable dépendante (VD)</strong><br>Variable que l'on cherche à <strong>expliquer ou prédire</strong>. <em>Souvent sur l'axe Y.</em></p></div>
+</div>
+<blockquote><p>Question typique : <strong>comment Y varie-t-il selon X ?</strong> → X joue alors le rôle de variable explicative et Y celui de variable réponse.</p></blockquote>
+<svg viewBox="0 0 640 140" width="100%" style="margin:1.2rem 0" role="img">
+<title>VI influence VD</title>
+<defs><marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#C8C5BC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect x="20" y="40" width="220" height="60" rx="8" fill="#EBF0FA" stroke="#2B52A0" stroke-width="1"/>
+<text x="130" y="65" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="600" fill="#2B52A0">Variable indépendante</text>
+<text x="130" y="82" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4B72C0">VI &mdash; axe X &mdash; variable explicative</text>
+<text x="130" y="115" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#7A7875">Ex : heures de révision</text>
+<line x1="240" y1="70" x2="380" y2="70" stroke="#C8C5BC" stroke-width="2" marker-end="url(#a2)"/>
+<text x="310" y="58" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#7A7875">relation étudiée</text>
+<rect x="382" y="40" width="220" height="60" rx="8" fill="#FAF0E8" stroke="#C05A20" stroke-width="1"/>
+<text x="492" y="65" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="600" fill="#C05A20">Variable dépendante</text>
+<text x="492" y="82" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#C05A20">VD &mdash; axe Y &mdash; variable réponse</text>
+<text x="492" y="115" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#7A7875">Ex : note à l'examen</text>
+</svg>
+<h2>Exemples</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Variable indépendante (VI)</th><th>Variable dépendante (VD)</th></tr></thead>
+<tbody>
+<tr><td>Heures de révision</td><td>Note à l'examen</td></tr>
+<tr><td>Âge</td><td>Revenu annuel</td></tr>
+<tr><td>Niveau de diplôme</td><td>Taux d'emploi</td></tr>
+<tr><td>Temps passé sur les réseaux</td><td>Niveau d'anxiété déclaré</td></tr>
+<tr><td>Dose d'un médicament</td><td>Tension artérielle</td></tr>
+</tbody></table></div>
+<h2>En pratique</h2>
+<p>Beaucoup d'études sont <strong>observationnelles</strong> : on observe les variables sans les manipuler. Des expériences existent aussi. Dans une étude observationnelle, appeler X « variable indépendante » ne suffit jamais à montrer que X <strong>cause</strong> Y.</p>
+<div class="box box-purple"><p>On suppose que le niveau de diplôme influence le revenu — pas l'inverse. Mais cette direction est une hypothèse : on ne peut pas la prouver uniquement avec une corrélation. La distinction corrélation vs causalité est traitée au chapitre 19.</p></div>
+<h2>Convention graphique</h2>
+<p>Par convention, lorsqu'une variable sert à expliquer ou prédire l'autre, on place <strong>généralement X</strong> (variable explicative) sur l'axe horizontal et <strong>Y</strong> (variable réponse) sur l'axe vertical.</p>
+<div class="box box-note"><p><strong>Attention au mot « indépendante » :</strong> ici, il décrit le rôle de la variable dans l'analyse. Il ne signifie pas forcément que cette variable est statistiquement indépendante des autres.</p></div>
+
+<div class="page-nav">
+  <a href="ch01.html">← Chapitre 01</a>
+  <a href="ch03.html">Chapitre 03 →</a>
+</div>
+</div></main></div>
+
+<script src="../assets/nav-content.js"></script>
+</body></html>

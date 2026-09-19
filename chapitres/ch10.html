@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 10 — Z-scores</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  table.zt { width:100%; border-collapse:collapse; font-size:.8rem; font-family:'JetBrains Mono',monospace; }
+  table.zt th { padding:4px 6px; background:var(--surface-2); color:var(--text-muted); font-size:.72rem; border:.5px solid var(--border); text-align:center; }
+  table.zt td { padding:4px 6px; border:.5px solid var(--border); text-align:center; color:var(--text-sec); }
+  .hl-cell { background:var(--accent-light) !important; color:var(--accent) !important; font-weight:600; }
+  .hl-row td { background:var(--surface-2); }
+  .type-card { border:1px solid var(--border); border-radius:var(--radius-md); padding:.85rem 1rem; font-size:.875rem; }
+  .type-card strong { display:block; margin-bottom:.35rem; }
+</style>
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">☰</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content">
+<div class="content-inner">
+
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 10 · Distribution & probabilités</div>
+  <h1 class="ch-title">Z-scores</h1>
+  <p class="ch-desc">Transformer une valeur en position standardisée — body, tail, et table z.</p>
+</div>
+
+<h2>L'idée centrale</h2>
+<p>Le z-score exprime n'importe quelle valeur en <strong>nombre d'écarts-types par rapport à la moyenne</strong>. Il standardise les données pour les rendre comparables, peu importe l'unité d'origine.</p>
+
+<div class="formula">z = (xᵢ − μ) / σ</div>
+<div class="box box-note"><p>Ici on utilise μ et σ car les 30 notes servent de population de référence. Pour standardiser un échantillon, on utilise souvent x̄ et s.</p></div>
+
+<p>Avec nos notes (μ = 12.77, σ = 2.54) — un étudiant qui a <strong>15</strong> :</p>
+<div class="formula">z = (15 − 12.77) / 2.54 = <strong>+0.88</strong></div>
+<p>Cette note est à 0.88 écarts-types au-dessus de la moyenne. Un z de +2 = très au-dessus, −1.5 = en dessous, 0 = exactement la moyenne.</p>
+
+<div class="box box-note">
+  <p><strong>Intérêt :</strong> peu importe l'unité d'origine (notes, CHF, kg...), un z-score est comparable en <strong>unités d'écart-type</strong>. On peut comparer la position d'un étudiant dans sa classe de stats avec sa position dans sa classe de sociologie — même si les deux examens ont des moyennes et écarts-types différents.</p>
+</div>
+
+<h2>Body et tail</h2>
+<p>Un z-score indique toujours une distance à la moyenne. Pour le convertir en <strong>proportion</strong> avec la table z, on suppose en plus que la variable suit une <strong>distribution normale</strong>.</p>
+<p>On peut alors chercher quelle proportion de la population est en dessous, au-dessus, ou entre deux valeurs.</p>
+<div class="grid-2">
+  <div class="box box-note"><p><strong>Body</strong> (aire cumulée à gauche) = aire de −∞ jusqu'à z = proportion sous ta valeur dans le modèle normal</p></div>
+  <div class="box box-orange"><p><strong>Tail</strong> (queue droite) = 1 − body = proportion au-dessus de ta valeur dans le modèle normal</p></div>
+</div>
+
+<h2>Explorateur interactif</h2>
+<p>Sélectionne une note pour voir son z-score, le body, le tail, et la cellule correspondante dans la table z.</p>
+
+<div class="chart-card">
+  <h4>Sélectionne une note</h4>
+  <div id="note-btns" class="btn-group" style="margin-bottom:1rem"></div>
+  <div class="stat-cards">
+    <div class="stat-card"><div class="lbl">Z-score</div><div class="val" id="z-val" style="color:var(--orange)">—</div></div>
+    <div class="stat-card"><div class="lbl">Body</div><div class="val" id="body-val" style="color:var(--accent)">—</div></div>
+    <div class="stat-card"><div class="lbl">Tail</div><div class="val" id="tail-val" style="color:var(--orange)">—</div></div>
+  </div>
+  <div class="chart-wrap" style="height:150px;margin-top:.75rem"><canvas id="bt-chart" role="img" aria-label="Body et tail pour la note sélectionnée"></canvas></div>
+  <div id="interp" style="font-size:.85rem;color:var(--text-sec);background:var(--surface-2);border-radius:var(--radius-md);padding:.75rem 1rem;margin-top:.75rem;min-height:36px;"></div>
+</div>
+
+<h2>Les trois types de questions</h2>
+<div class="grid-3">
+  <div class="type-card" style="border-color:var(--accent)">
+    <strong style="color:var(--accent)">Type 1 — En dessous</strong>
+    Proportion &lt; 15 ?<br>z = +0.88<br>body = 0.8106<br><strong>→ 81 %</strong>
+  </div>
+  <div class="type-card" style="border-color:var(--orange)">
+    <strong style="color:var(--orange)">Type 2 — Au-dessus</strong>
+    Proportion &gt; 15 ?<br>tail = 1 − 0.8106<br>= 0.1894<br><strong>→ 19 %</strong>
+  </div>
+  <div class="type-card" style="border-color:var(--green)">
+    <strong style="color:var(--green)">Type 3 — Entre deux</strong>
+    Entre 11 et 15 ?<br>0.8106 − 0.2420<br>= 0.5686<br><strong>→ 57 %</strong>
+  </div>
+</div>
+
+<h2>La table z</h2>
+<p>Ligne = partie entière + première décimale (ex. 0.8). Colonne = deuxième décimale (ex. .08). La cellule surlignée correspond à la note sélectionnée ci-dessus.</p>
+<div style="overflow-x:auto;margin:1rem 0">
+  <table class="zt">
+    <thead><tr id="zt-head"></tr></thead>
+    <tbody id="zt-body"></tbody>
+  </table>
+</div>
+<div id="table-note" style="font-size:.8rem;color:var(--text-muted);margin-top:.4rem;">← Sélectionne une note pour surligner la cellule</div>
+
+<div class="page-nav">
+  <a href="ch09.html">← Chapitre 09</a>
+  <a href="ch11.html">Chapitre 11 →</a>
+</div>
+
+</div>
+</main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const mu=12.77, sd=2.54;
+const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+const gridC=isDark?'rgba(255,255,255,.08)':'rgba(0,0,0,.06)';
+const tick='#7A7875';
+const notes=[8,9,10,11,12,13,14,15,16,17,18];
+
+function normCDF(z){
+  const t=1/(1+0.2316419*Math.abs(z));
+  const d=0.3989423*Math.exp(-z*z/2);
+  const p=d*t*(0.3193815+t*(-0.3565638+t*(1.7814779+t*(-1.8212560+t*1.3302744))));
+  return z>=0?1-p:p;
+}
+
+// Build z-table
+const zRows=Array.from({length:46},(_,i)=>parseFloat((-2.0+i*0.1).toFixed(1)));
+const zCols=[0,1,2,3,4,5,6,7,8,9];
+const th=document.getElementById('zt-head');
+th.innerHTML='<th>z</th>'+zCols.map(c=>`<th>.0${c}</th>`).join('');
+const tb=document.getElementById('zt-body');
+zRows.forEach(zr=>{
+  const tr=document.createElement('tr');
+  tr.id=`zrow-${zr.toFixed(1).replace('.','_').replace('-','m')}`;
+  let cells=`<td style="font-weight:600;color:var(--text-pri)">${zr.toFixed(1)}</td>`;
+  zCols.forEach(c=>{
+    const zv=zr+(zr<0?-c*0.01:c*0.01);
+    cells+=`<td id="zcell-${zr.toFixed(1).replace('.','_').replace('-','m')}-${c}">${normCDF(zv).toFixed(4)}</td>`;
+  });
+  tr.innerHTML=cells; tb.appendChild(tr);
+});
+
+// Curve chart
+let btChart;
+function drawCurve(zVal){
+  const labels=[], bodyData=[], tailData=[];
+  for(let z=-3.8;z<=3.8;z+=0.08){
+    labels.push(z.toFixed(2));
+    const y=Math.exp(-z*z/2)/Math.sqrt(2*Math.PI);
+    bodyData.push(zVal!==null && z<=zVal ? y : null);
+    tailData.push(zVal!==null && z>=zVal ? y : null);
+  }
+  if(btChart) btChart.destroy();
+  btChart=new Chart(document.getElementById('bt-chart'),{
+    type:'line',
+    data:{labels,datasets:[
+      {data:bodyData, fill:true, backgroundColor:isDark?'rgba(43,82,160,.35)':'rgba(43,82,160,.2)', borderColor:'transparent', pointRadius:0, tension:.4, spanGaps:false},
+      {data:tailData, fill:true, backgroundColor:isDark?'rgba(192,90,32,.35)':'rgba(192,90,32,.2)', borderColor:'transparent', pointRadius:0, tension:.4, spanGaps:false},
+      {data:labels.map(z=>Math.exp(-z*z/2)/Math.sqrt(2*Math.PI)), fill:false, borderColor:'#2B52A0', borderWidth:2, pointRadius:0, tension:.4},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{enabled:false}},
+      scales:{x:{display:true,ticks:{color:tick,font:{size:9},maxTicksLimit:9},grid:{display:false}},y:{display:false,beginAtZero:true}}}
+  });
+}
+drawCurve(null);
+
+// Note buttons
+const btns=document.getElementById('note-btns');
+notes.forEach(note=>{
+  const b=document.createElement('button');
+  b.textContent=note; b.className='btn';
+  b.onclick=()=>{
+    document.querySelectorAll('#note-btns .btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    update(note);
+  };
+  btns.appendChild(b);
+});
+
+function update(note){
+  const z=(note-mu)/sd, body=normCDF(z), tail=1-body;
+  drawCurve(z);
+  document.getElementById('z-val').textContent=(z>=0?'+':'')+z.toFixed(2);
+  document.getElementById('body-val').textContent=(body*100).toFixed(1)+'%';
+  document.getElementById('tail-val').textContent=(tail*100).toFixed(1)+'%';
+  const dir=z>=0?'au-dessus':'en dessous';
+  document.getElementById('interp').innerHTML=
+    `Note <strong>${note}</strong> → z = <strong style="color:var(--orange)">${z>=0?'+':''}${z.toFixed(2)}</strong> (à ${Math.abs(z).toFixed(2)} σ ${dir} de μ) — <strong style="color:var(--accent)">${(body*100).toFixed(1)}%</strong> en dessous &nbsp;|&nbsp; <strong style="color:var(--orange)">${(tail*100).toFixed(1)}%</strong> au-dessus`;
+
+  // Highlight table
+  document.querySelectorAll('.hl-cell').forEach(c=>c.classList.remove('hl-cell'));
+  document.querySelectorAll('.hl-row').forEach(r=>r.classList.remove('hl-row'));
+  const za=Math.abs(z);
+  const rowKey=(z<0?-1:1)*Math.floor(za*10)/10;
+  const col=Math.min(Math.round((za-Math.floor(za*10)/10)*100),9);
+  const sr=rowKey.toFixed(1).replace('.','_').replace('-','m');
+  const ce=document.getElementById(`zcell-${sr}-${col}`);
+  const re=document.getElementById(`zrow-${sr}`);
+  if(ce)ce.classList.add('hl-cell');
+  if(re)re.classList.add('hl-row');
+  document.getElementById('table-note').textContent=
+    `z = ${z>=0?'+':''}${z.toFixed(2)} → ligne ${rowKey.toFixed(1)} · colonne .0${col} → body = ${body.toFixed(4)}`;
+}
+</script>
+<script src="../assets/nav-content.js"></script>
+</body>
+</html>

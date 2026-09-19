@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 18 — Régression linéaire</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+.compact-list { margin:.75rem 0 1rem 1.2rem; color:var(--text-sec); }
+.compact-list li { margin:.35rem 0; }
+
+.wrap{padding:.5rem 0 1rem;font-family:var(--font-sans);}
+.section{margin:1.2rem 0 .4rem;font-size:10px;font-weight:500;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;}
+.chart-box{background:var(--surface-1);border:.5px solid var(--border);border-radius:12px;padding:16px;margin:8px 0;}
+.chart-title{font-size:12px;font-weight:500;color:var(--text-primary);margin-bottom:4px;}
+.chart-sub{font-size:11px;color:var(--text-secondary);margin-bottom:10px;}
+.note-box{background:var(--surface-1);border-left:3px solid #7F77DD;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--text-secondary);line-height:1.6;margin:10px 0;}
+.note-box b{color:var(--text-primary);}
+.warn-box{background:var(--bg-warning);border-left:3px solid #BA7517;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--text-warning);line-height:1.6;margin:10px 0;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.stat-row{display:flex;gap:10px;margin:10px 0;}
+.stat-card{flex:1;background:var(--surface-1);border:.5px solid var(--border);border-radius:8px;padding:10px;text-align:center;}
+.stat-card .lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;}
+.stat-card .val{font-size:16px;font-weight:500;}
+
+</style>
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">☰</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content"><div class="content-inner">
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 18 · Corrélation & inférence</div>
+  <h1 class="ch-title">Régression linéaire</h1>
+  <p class="ch-desc">Construire une droite de prédiction, interpréter sa pente et analyser ses résidus.</p>
+</div>
+
+<h2>L'idée centrale</h2>
+<p>La corrélation de Pearson résume la force d'une relation linéaire. La régression linéaire va plus loin : elle permet de <strong>prédire</strong> Y à partir de X et de quantifier la variation moyenne de Y <strong>associée</strong> à une unité supplémentaire de X.</p>
+
+<h2>La droite de régression</h2>
+<div class="formula">Ŷ = a + bX</div>
+<ul class="compact-list"><li><strong>b</strong> = pente = combien Y change pour chaque augmentation d'une unité de X.</li><li><strong>a</strong> = ordonnée à l'origine = valeur de Y quand X = 0.</li></ul>
+<p>La droite est calculée par la méthode des <strong>moindres carrés</strong> — elle minimise la somme des carrés des résidus.</p>
+
+<h2>Calcul étape par étape</h2>
+<p><strong>Dataset âge/revenu</strong> — x̄ = 47.5, ȳ = 58 500, r = 0.94.</p>
+<h3>Étape 1 — Calculer b (pente)</h3>
+<div class="formula">b = Σ(xᵢ−x̄)(yᵢ−ȳ) / Σ(xᵢ−x̄)²<br>b = 1 727 500 / 2 062.5 ≈ <strong>837.58 CHF par année d'âge</strong></div>
+<h3>Étape 2 — Calculer a (ordonnée à l'origine)</h3>
+<div class="formula">a = ȳ − b × x̄ = 58 500 − 837.58 × 47.5 ≈ <strong>18 715 CHF</strong></div>
+<h3>Étape 3 — Équation de régression</h3>
+<div class="formula">Ŷ ≈ <strong>18 715 + 837.58 × X</strong></div>
+<p><strong>Interprétation :</strong> dans ce modèle, une année d'âge supplémentaire est associée à environ <strong>838 CHF</strong> de revenu annuel prédit en plus. La valeur à X = 0 est seulement l'ancrage mathématique de la droite ; elle n'a pas de sens pratique ici.</p>
+
+<h2>Prédictions</h2>
+<div class="formula">35 ans : Ŷ ≈ <strong>48 030 CHF</strong><br>55 ans : Ŷ ≈ <strong>64 782 CHF</strong></div>
+
+<h2>Les résidus</h2>
+<p>Un <strong>résidu</strong> = différence entre la valeur observée et la valeur prédite par la droite :</p>
+<div class="formula">résidu = Y − Ŷ</div>
+<p>Les résidus représentent tout ce que la droite n'explique pas — d'autres variables, du hasard, des facteurs non mesurés. La méthode des moindres carrés minimise Σ(résidu²).</p>
+
+<h2>R² — coefficient de détermination</h2>
+<div class="formula">R² = r² = 0.94² = <strong>0.88</strong></div>
+<p>Environ 88 % de la variance du revenu est expliquée par ce <strong>modèle linéaire</strong>. Les 12 % restants sont la variation non expliquée par ce modèle : autres variables, bruit, erreurs de mesure ou forme imparfaite du modèle.</p>
+
+<h2>Limites importantes</h2>
+<div class="box box-orange"><p><strong>Ne pas extrapoler :</strong> la droite est valide uniquement dans la plage des données observées (25–70 ans ici).</p></div>
+<p><strong>Causalité :</strong> la régression modélise une relation — elle ne prouve pas que X cause Y.</p>
+<p><strong>Linéarité :</strong> si la relation réelle est courbée, une droite la décrit mal. Toujours vérifier le scatter plot et les résidus. Dans une analyse plus avancée, on vérifie aussi notamment l'indépendance et la stabilité de la variance des résidus.</p>
+
+<h2>Visualisations et prédiction interactive</h2>
+<div class="wrap"><div class="section">La droite de régression — Ŷ ≈ 18 715 + 837.58 × X</div>
+<div class="chart-box">
+  <div class="chart-title">Les résidus = écarts verticaux entre points et droite</div>
+  <div class="chart-sub">La droite minimise la somme des carrés de ces résidus (méthode des moindres carrés).</div>
+  <div style="position:relative;height:230px;"><canvas id="reg-main" role="img" aria-label="Droite de régression avec résidus">Scatter plot avec droite de régression et résidus colorés.</canvas></div>
+  <div style="display:flex;gap:16px;margin-top:8px;font-size:11px;color:var(--text-secondary);justify-content:center;">
+    <span><span style="display:inline-block;width:12px;height:2px;background:#D85A30;vertical-align:middle;margin-right:4px;"></span>Droite Ŷ = a + bX</span>
+    <span><span style="display:inline-block;width:12px;height:12px;background:rgba(29,158,117,.5);border-radius:1px;vertical-align:middle;margin-right:4px;"></span>Résidu positif (Y > Ŷ)</span>
+    <span><span style="display:inline-block;width:12px;height:12px;background:rgba(227,73,72,.5);border-radius:1px;vertical-align:middle;margin-right:4px;"></span>Résidu négatif (Y < Ŷ)</span>
+  </div>
+</div>
+
+<div class="section">Paramètres de la droite</div>
+<div class="stat-row">
+  <div class="stat-card"><div class="lbl">Pente b</div><div class="val" style="color:#2a78d6">+837.58 CHF</div><div style="font-size:10px;color:var(--text-muted);margin-top:4px;">par année d'âge</div></div>
+  <div class="stat-card"><div class="lbl">Ordonnée a</div><div class="val" style="color:var(--text-muted)">18 715 CHF</div><div style="font-size:10px;color:var(--text-muted);margin-top:4px;">ancrage mathématique</div></div>
+  <div class="stat-card"><div class="lbl">R²</div><div class="val" style="color:#1baf7a">0.88</div><div style="font-size:10px;color:var(--text-muted);margin-top:4px;">88 % variance expliquée</div></div>
+</div>
+
+<div class="section">Outil de prédiction interactif</div>
+<div class="chart-box">
+  <div class="chart-title">Ŷ ≈ 18 715 + 837.58 × âge</div>
+  <div style="display:flex;align-items:center;gap:14px;margin:10px 0;font-size:13px;color:var(--text-secondary);">
+    <label>Âge :</label>
+    <input type="range" min="25" max="70" value="40" id="age-slider" style="flex:1;">
+    <span id="age-val" style="font-weight:500;color:var(--text-primary);min-width:30px;">40</span>
+  </div>
+  <div style="text-align:center;padding:14px;background:rgba(55,138,221,.1);border-radius:8px;margin-top:8px;">
+    <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">Revenu annuel prédit</div>
+    <div style="font-size:28px;font-weight:500;color:#2a78d6;" id="pred-val">—</div>
+    <div style="font-size:10px;color:var(--text-muted);margin-top:4px;">CHF / an</div>
+  </div>
+  <div id="pred-formula" style="font-size:12px;color:var(--text-secondary);text-align:center;margin-top:8px;"></div>
+</div>
+
+<div class="section">Analyse des résidus</div>
+<div class="chart-box">
+  <div class="chart-title">Résidus par âge — doivent être aléatoires autour de 0</div>
+  <div class="chart-sub">Si les résidus montrent une tendance → la relation n'est pas linéaire → le modèle est mal spécifié.</div>
+  <div style="position:relative;height:150px;"><canvas id="resid-chart" role="img" aria-label="Graphique des résidus">Résidus distribués aléatoirement autour de zéro.</canvas></div>
+</div>
+<div class="warn-box">
+  <b>Ne pas extrapoler :</b> la droite est valide uniquement entre 25 et 70 ans (plage des données). Prédire le revenu à 15 ou 90 ans avec cette équation serait une erreur méthodologique.
+</div></div>
+
+<div class="page-nav">
+  <a href="ch17.html">← Chapitre 17</a>
+  <a href="ch19.html">Chapitre 19 →</a>
+</div>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const isDark=document.documentElement.dataset.mode==='dark'||(!document.documentElement.dataset.mode&&matchMedia('(prefers-color-scheme:dark)').matches);
+const gridC=isDark?'rgba(255,255,255,0.12)':'rgba(25,25,24,0.09)';
+const tick=isDark?'#A7A59D':'#6B6963';
+
+const data=[
+  {x:25,y:35000},{x:30,y:42000},{x:35,y:48000},{x:40,y:55000},{x:45,y:62000},
+  {x:50,y:58000},{x:55,y:70000},{x:60,y:75000},{x:65,y:68000},{x:70,y:72000}
+];
+const a=18715.151515151516,b=837.5757575757576;
+const yhat=data.map(p=>a+b*p.x);
+const resids=data.map((p,i)=>p.y-yhat[i]);
+
+// Main regression chart
+const pointColors=resids.map(r=>r>=0?'rgba(29,158,117,.7)':'rgba(227,73,72,.7)');
+const lineData=[{x:22,y:a+b*22},{x:73,y:a+b*73}];
+
+new Chart(document.getElementById('reg-main'),{type:'scatter',
+  data:{datasets:[
+    {label:'Individus',data:data.map(p=>({x:p.x,y:p.y})),backgroundColor:pointColors,borderColor:pointColors.map(c=>c.replace('.7','.9')),borderWidth:1,pointRadius:7,pointHoverRadius:9,type:'scatter'},
+    {label:'Droite',data:lineData,type:'line',borderColor:'#D85A30',borderWidth:2,pointRadius:0,fill:false},
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:t=>`Âge: ${t.parsed.x} · Revenu: CHF ${t.parsed.y.toLocaleString()} · Prédit: CHF ${(a+b*t.parsed.x).toLocaleString()}`}}},
+    scales:{
+      x:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'Âge',color:tick,font:{size:10}},min:20,max:75},
+      y:{grid:{color:gridC},ticks:{color:tick,font:{size:10},callback:v=>(v/1000)+'k'},title:{display:true,text:'Revenu (CHF)',color:tick,font:{size:10}},min:25000,max:85000}
+    }}
+});
+
+// Predictor
+function updatePred(age){
+  const pred=a+b*age;
+  document.getElementById('age-val').textContent=age;
+  document.getElementById('pred-val').textContent=Math.round(pred).toLocaleString('fr-CH');
+  document.getElementById('pred-formula').textContent=`18 715 + 837.58 × ${age} ≈ ${Math.round(pred).toLocaleString('fr-CH')} CHF`;
+}
+document.getElementById('age-slider').addEventListener('input',function(){updatePred(+this.value);});
+updatePred(40);
+
+// Residuals chart
+new Chart(document.getElementById('resid-chart'),{type:'scatter',
+  data:{datasets:[
+    {data:data.map((p,i)=>({x:p.x,y:resids[i]})),backgroundColor:resids.map(r=>r>=0?'rgba(29,158,117,.7)':'rgba(227,73,72,.7)'),borderColor:resids.map(r=>r>=0?'#1baf7a':'#e34948'),borderWidth:1,pointRadius:6},
+    {data:[{x:20,y:0},{x:75,y:0}],type:'line',borderColor:'#D85A30',borderWidth:1.5,pointRadius:0,fill:false,borderDash:[4,3]},
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:t=>`Âge: ${t.parsed.x} · Résidu: ${t.parsed.y.toLocaleString()} CHF`}}},
+    scales:{
+      x:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'Âge',color:tick,font:{size:10}},min:20,max:75},
+      y:{grid:{color:gridC},ticks:{color:tick,font:{size:10},callback:v=>v.toLocaleString()},title:{display:true,text:'Résidu (CHF)',color:tick,font:{size:10}}}
+    }}
+});
+</script>
+<script src="../assets/nav-content.js"></script>
+</body>
+</html>

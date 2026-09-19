@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ch. 04 — Distributions de fréquences</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">&#9776;</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content">
+<div class="content-inner">
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 04</div>
+  <h1 class="ch-title">Distributions de fréquences</h1>
+  <p class="ch-desc">Fréquences absolues, relatives et cumulées.</p>
+</div>
+
+<h2>L'idée centrale</h2>
+<p>Avant de calculer des statistiques, on veut d'abord <strong>voir comment les données se répartissent</strong>. Une distribution de fréquences répond à : combien de fois apparaît chaque valeur ?</p>
+
+<h2>Fréquence simple (absolue)</h2>
+<p>On compte le nombre d'occurrences de chaque valeur. La somme des fréquences doit toujours égaler n.</p>
+<p><strong>Exemple</strong> — notes d'un examen (n = 20) : 12, 14, 11, 15, 13, 12, 14, 16, 13, 12, 15, 11, 14, 13, 12, 16, 15, 13, 14, 12</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Note (x)</th><th>Fréquence (f)</th><th>f/n</th><th>%</th></tr></thead>
+<tbody>
+<tr><td>11</td><td>2</td><td>0.10</td><td>10 %</td></tr>
+<tr><td>12</td><td>5</td><td>0.25</td><td>25 %</td></tr>
+<tr><td>13</td><td>4</td><td>0.20</td><td>20 %</td></tr>
+<tr><td>14</td><td>4</td><td>0.20</td><td>20 %</td></tr>
+<tr><td>15</td><td>3</td><td>0.15</td><td>15 %</td></tr>
+<tr><td>16</td><td>2</td><td>0.10</td><td>10 %</td></tr>
+<tr><td><strong>Total</strong></td><td><strong>20</strong></td><td><strong>1.00</strong></td><td><strong>100 %</strong></td></tr>
+</tbody></table></div>
+
+<h2>Fréquence cumulée</h2>
+<p>On additionne les fréquences au fur et à mesure. Répond à : combien d'individus ont une valeur <strong>inférieure ou égale</strong> à x ? La fréquence cumulée est utile seulement lorsque les valeurs ont un <strong>ordre naturel</strong> (données ordinales ou quantitatives).</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Note</th><th>f</th><th>f cumulée</th><th>% cumulé</th></tr></thead>
+<tbody>
+<tr><td>11</td><td>2</td><td>2</td><td>10 %</td></tr>
+<tr><td>12</td><td>5</td><td>7</td><td>35 %</td></tr>
+<tr><td>13</td><td>4</td><td>11</td><td>55 %</td></tr>
+<tr><td>14</td><td>4</td><td>15</td><td>75 %</td></tr>
+<tr><td>15</td><td>3</td><td>18</td><td>90 %</td></tr>
+<tr><td>16</td><td>2</td><td>20</td><td>100 %</td></tr>
+</tbody></table></div>
+<div class="box box-note"><p><strong>Lecture :</strong> à la ligne 14 → 75 % des étudiants ont eu 14 ou moins. Ici n = 20 : les 10e et 11e observations valent toutes les deux 13, donc <strong>médiane = 13</strong>. La fréquence cumulée permet de repérer rapidement ces positions.</p></div>
+
+<h2>Visualisation</h2>
+<div class="chart-card">
+  <h4>Fréquences absolues vs cumulées</h4>
+  <div class="grid-2">
+    <div><p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.5rem">Fréquences absolues</p>
+    <div class="chart-wrap" style="height:160px"><canvas id="fa" role="img" aria-label="Fréquences absolues"></canvas></div></div>
+    <div><p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.5rem">Fréquences cumulées</p>
+    <div class="chart-wrap" style="height:160px"><canvas id="fc" role="img" aria-label="Fréquences cumulées"></canvas></div></div>
+  </div>
+</div>
+
+<h2>Données groupées en classes</h2>
+<p>Quand les valeurs sont trop nombreuses ou continues, on les regroupe. Les classes doivent être <strong>mutuellement exclusives</strong> (une valeur dans une seule classe) et <strong>exhaustives</strong> (couvrent toutes les valeurs).</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Classe (CHF/mois)</th><th>f</th><th>%</th></tr></thead>
+<tbody>
+<tr><td>2 000 ≤ x &lt; 4 000</td><td>8</td><td>16 %</td></tr>
+<tr><td>4 000 ≤ x &lt; 6 000</td><td>14</td><td>28 %</td></tr>
+<tr><td>6 000 ≤ x &lt; 8 000</td><td>18</td><td>36 %</td></tr>
+<tr><td>8 000 ≤ x &lt; 10 000</td><td>7</td><td>14 %</td></tr>
+<tr><td>x ≥ 10 000</td><td>3</td><td>6 %</td></tr>
+</tbody></table></div>
+<div class="box box-purple"><p>La distribution de fréquences est souvent la <strong>première chose qu'on fait</strong> sur un dataset — avant toute statistique descriptive. Elle révèle la forme générale, les concentrations, et les valeurs extrêmes.</p></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+const gc=isDark?'rgba(255,255,255,.08)':'rgba(0,0,0,.06)';
+const tk='#7A7875';
+new Chart(document.getElementById('fa'),{type:'bar',
+  data:{labels:['11','12','13','14','15','16'],
+    datasets:[{data:[2,5,4,4,3,2],backgroundColor:['#7A7875','#2B52A0','#7A7875','#7A7875','#7A7875','#7A7875'],
+    borderColor:isDark?'#141413':'#fff',borderWidth:1.5,borderRadius:4,borderSkipped:false,categoryPercentage:.7,barPercentage:.9}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:t=>'f = '+t.raw}}},
+    scales:{x:{grid:{display:false},ticks:{color:tk,font:{size:11}}},y:{grid:{color:gc},ticks:{color:tk,font:{size:11},stepSize:1},beginAtZero:true,max:6}}}
+});
+new Chart(document.getElementById('fc'),{type:'line',
+  data:{labels:['11','12','13','14','15','16'],
+    datasets:[{data:[10,35,55,75,90,100],borderColor:'#C05A20',borderWidth:2,pointRadius:5,pointBackgroundColor:'#C05A20',
+    fill:true,backgroundColor:isDark?'rgba(192,90,32,.1)':'rgba(192,90,32,.08)',tension:.3}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:t=>t.raw+'% cumulé'}}},
+    scales:{x:{grid:{display:false},ticks:{color:tk,font:{size:11}}},
+    y:{grid:{color:gc},ticks:{color:tk,font:{size:11},callback:v=>v+'%'},beginAtZero:true,max:110}}}
+});
+</script>
+
+<div class="page-nav">
+  <a href="ch03.html">← Chapitre 03</a>
+  <a href="ch05.html">Chapitre 05 →</a>
+</div>
+</div></main></div>
+<script src="../assets/nav-content.js"></script>
+</body></html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 13 — Loi des grands nombres</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+.compact-list { margin:.75rem 0 1rem 1.2rem; color:var(--text-sec); }
+.compact-list li { margin:.35rem 0; }
+
+.wrap{padding:.5rem 0 1rem;font-family:var(--font-sans);}
+.section{margin:1.2rem 0 .4rem;font-size:10px;font-weight:500;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;}
+.chart-box{background:var(--surface-1);border:.5px solid var(--border);border-radius:12px;padding:16px;margin:8px 0;}
+.chart-title{font-size:12px;font-weight:500;color:var(--text-primary);margin-bottom:4px;}
+.chart-sub{font-size:11px;color:var(--text-secondary);margin-bottom:10px;}
+.note-box{background:var(--surface-1);border-left:3px solid #7F77DD;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--text-secondary);line-height:1.6;margin:10px 0;}
+.note-box b{color:var(--text-primary);}
+.warn-box{background:var(--bg-warning);border-left:3px solid #BA7517;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--text-warning);line-height:1.6;margin:10px 0;}
+.stat-row{display:flex;gap:10px;margin:10px 0;}
+.stat-card{flex:1;background:var(--surface-1);border:.5px solid var(--border);border-radius:8px;padding:10px;text-align:center;}
+.stat-card .lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;}
+.stat-card .val{font-size:20px;font-weight:500;}
+
+</style>
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">☰</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content"><div class="content-inner">
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 13 · Distribution & probabilités</div>
+  <h1 class="ch-title">Loi des grands nombres</h1>
+  <p class="ch-desc">Voir la fréquence observée converger vers la probabilité théorique quand le nombre d’essais augmente.</p>
+</div>
+
+<h2>L'idée centrale</h2>
+<p>La <strong>loi des grands nombres</strong> dit que plus on répète une expérience aléatoire, plus la <strong>fréquence observée</strong> se rapproche de la <strong>probabilité théorique</strong>.</p>
+<blockquote><p>Quand n → ∞, fréquence observée → probabilité théorique</p></blockquote>
+<p><strong>Exemple :</strong> lancer une pièce 10 fois peut donner 7 piles (70 %) — loin des 50 % théoriques. Avec 10 000 lancers, la fréquence a de fortes chances d'être <strong>beaucoup plus proche de 50 %</strong>. La variabilité relative se réduit avec le nombre d'essais.</p>
+
+<h2>Ce que ça implique concrètement</h2>
+<p>Ce n'est <strong>pas</strong> la loi du retard — erreur classique au casino : « ça fait 10 fois que c'est rouge, donc le noir est dû ». Non. Chaque lancer est indépendant. La pièce n'a pas de mémoire. La loi des grands nombres dit que la <strong>fréquence relative</strong> se stabilise autour de la probabilité théorique, pas que le prochain lancer doit compenser les précédents.</p>
+
+<h2>Lien avec les statistiques</h2>
+<p>La loi des grands nombres aide à comprendre pourquoi un <strong>grand échantillon</strong> donne souvent des estimations plus stables de la population. Par exemple, sous les bonnes conditions, la moyenne de l'échantillon x̄ se rapproche de la moyenne de population μ lorsque n augmente.</p>
+
+<h2>Simulation interactive</h2>
+<div class="wrap"><div class="section">Simulation — lancers de pièce</div>
+<div class="chart-box">
+  <div class="chart-title">Fréquence de "pile" selon le nombre de lancers</div>
+  <div class="chart-sub">Plus n augmente, plus on converge vers 50 %. Clique sur "Relancer" pour voir une nouvelle simulation.</div>
+  <div class="stat-row">
+    <div class="stat-card"><div class="lbl">Lancers</div><div class="val" id="n-val" style="color:#2a78d6">—</div></div>
+    <div class="stat-card"><div class="lbl">Piles obtenus</div><div class="val" id="heads-val" style="color:#1baf7a">—</div></div>
+    <div class="stat-card"><div class="lbl">Fréquence finale</div><div class="val" id="freq-val" style="color:#D85A30">—</div></div>
+  </div>
+  <div style="position:relative;height:200px;"><canvas id="lgn-chart" role="img" aria-label="Convergence de la fréquence de pile vers 50%">Fréquence de pile convergent vers 50%.</canvas></div>
+  <div style="display:flex;gap:10px;margin-top:10px;">
+    <button onclick="simulate(100)"  style="flex:1;padding:6px;border-radius:6px;border:.5px solid var(--border);cursor:pointer;font-size:12px;background:var(--surface-1);color:var(--text-primary);">n = 100</button>
+    <button onclick="simulate(500)"  style="flex:1;padding:6px;border-radius:6px;border:.5px solid var(--border);cursor:pointer;font-size:12px;background:var(--surface-1);color:var(--text-primary);">n = 500</button>
+    <button onclick="simulate(2000)" id="btn-2000" style="flex:1;padding:6px;border-radius:6px;border:.5px solid var(--border-strong);cursor:pointer;font-size:12px;background:var(--bg-accent);color:var(--text-accent);">n = 2 000</button>
+    <button onclick="simulate(10000)" style="flex:1;padding:6px;border-radius:6px;border:.5px solid var(--border);cursor:pointer;font-size:12px;background:var(--surface-1);color:var(--text-primary);">n = 10 000</button>
+  </div>
+</div>
+<div class="warn-box">
+  <b>Erreur classique — la loi du retard :</b> "ça fait 10 fois que c'est rouge au casino, donc le noir est dû." Faux. Chaque lancer est indépendant. La pièce n'a pas de mémoire. La loi des grands nombres dit que la fréquence relative se rapproche de la probabilité théorique sur un grand nombre d'essais — elle ne dit pas que le prochain résultat compensera les précédents.
+</div>
+<div class="note-box">
+  <b>Lien avec l'inférence statistique :</b> plus l'échantillon est grand, plus certaines estimations usuelles peuvent devenir stables et proches des paramètres de la population, sous les conditions appropriées. La règle 68/95/99.7, elle, vient de la distribution normale et non de la loi des grands nombres.
+</div></div>
+
+<div class="page-nav">
+  <a href="ch12.html">← Chapitre 12</a>
+  <a href="ch14.html">Chapitre 14 →</a>
+</div>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const isDark=document.documentElement.dataset.mode==='dark'||(!document.documentElement.dataset.mode&&matchMedia('(prefers-color-scheme:dark)').matches);
+const gridC=isDark?'rgba(255,255,255,0.12)':'rgba(25,25,24,0.09)';
+const tick=isDark?'#A7A59D':'#6B6963';
+let lgnChart;
+
+function simulate(n){
+  ['btn-2000'].forEach(id=>{
+    const b=document.getElementById(id);
+    if(b){b.style.background='var(--surface-1)';b.style.color='var(--text-primary)';b.style.borderColor='var(--border)';}
+  });
+  let heads=0;
+  const step=Math.max(1,Math.floor(n/200));
+  const labels=[],data=[];
+  for(let i=1;i<=n;i++){
+    if(Math.random()<0.5)heads++;
+    if(i%step===0||i===n){labels.push(i);data.push(parseFloat((heads/i*100).toFixed(2)));}
+  }
+  document.getElementById('n-val').textContent=n.toLocaleString();
+  document.getElementById('heads-val').textContent=heads.toLocaleString();
+  document.getElementById('freq-val').textContent=(heads/n*100).toFixed(1)+'%';
+  if(lgnChart)lgnChart.destroy();
+  lgnChart=new Chart(document.getElementById('lgn-chart'),{type:'line',
+    data:{labels,datasets:[
+      {label:'Fréquence pile',data,borderColor:'#2a78d6',borderWidth:1.5,pointRadius:0,fill:false,tension:.2},
+      {label:'50 % théorique',data:labels.map(()=>50),borderColor:'#D85A30',borderWidth:1.5,pointRadius:0,fill:false,borderDash:[5,4]},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,labels:{color:tick,font:{size:10},boxWidth:14,boxHeight:2}}},
+      scales:{
+        x:{grid:{display:false},ticks:{color:tick,font:{size:10},maxTicksLimit:8},title:{display:true,text:'Nombre de lancers',color:tick,font:{size:10}}},
+        y:{grid:{color:gridC},ticks:{color:tick,font:{size:10},callback:v=>v+'%'},min:20,max:80}
+      }}
+  });
+}
+simulate(2000);
+</script>
+<script src="../assets/nav-content.js"></script>
+</body>
+</html>

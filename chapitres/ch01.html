@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 01 — Définitions de base</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">☰</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content">
+<div class="content-inner">
+
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 01 · Fondements</div>
+  <h1 class="ch-title">Définitions de base</h1>
+  <p class="ch-desc">Population, échantillon, types de variables — les briques fondamentales de toute analyse statistique.</p>
+</div>
+
+<h2>Population vs Échantillon</h2>
+<p>La <strong>population</strong> désigne l'ensemble complet de tous les individus qu'on veut étudier. Ce terme ne se limite pas aux personnes — une population peut être des entreprises, des tweets, des villes, des transactions bancaires.</p>
+<p>L'<strong>échantillon</strong> est un sous-groupe extrait de cette population, sur lequel on effectue les mesures concrètes. On travaille sur l'échantillon car étudier toute la population est généralement impossible : trop grand, trop coûteux, ou inaccessible.</p>
+
+<div class="box box-note">
+  <p><strong>Exemple :</strong> Tu veux savoir combien d'heures par semaine les étudiants utilisent leur smartphone. Population = tous les étudiants concernés par ton étude. Échantillon = 200 étudiants sélectionnés pour participer (n = 200).</p>
+</div>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th></th><th>Population</th><th>Échantillon</th></tr></thead>
+  <tbody>
+    <tr><td>Taille</td><td>N (majuscule)</td><td>n (minuscule)</td></tr>
+    <tr><td>Symbole moyenne</td><td>μ (mu)</td><td>x̄ (x-bar)</td></tr>
+    <tr><td>Symbole écart-type</td><td>σ (sigma)</td><td>s</td></tr>
+    <tr><td>Objectif</td><td>Ce qu'on veut connaître</td><td>Ce qu'on peut mesurer</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>Par convention, on utilise généralement <strong>N, μ et σ</strong> pour décrire la population, et <strong>n, x̄ et s</strong> pour décrire l'échantillon.</p>
+<div class="box box-purple"><p><strong>Deux mots utiles :</strong> un <strong>paramètre</strong> décrit une population (ex. μ, σ) ; une <strong>statistique</strong> est calculée sur un échantillon (ex. x̄, s).</p></div>
+
+<h2>Types de variables</h2>
+<p>Une <strong>variable</strong> est une propriété qui peut prendre plusieurs valeurs différentes selon les individus observés. Il y a deux grandes familles.</p>
+
+<svg viewBox="0 0 680 260" width="100%" style="margin:1.2rem 0" role="img">
+<title>Types de variables statistiques</title>
+<desc>Schéma arborescent : Variable → Quantitative (Discrète, Continue) et Qualitative</desc>
+<defs>
+<marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="#C8C5BC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+<rect x="255" y="20" width="170" height="44" rx="8" fill="#EFEDE8" stroke="#C8C5BC" stroke-width="1"/>
+<text x="340" y="37" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="600" fill="#1A1917">Variable</text>
+<text x="340" y="55" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#7A7875">propriété observable</text>
+
+<line x1="300" y1="64" x2="188" y2="118" stroke="#C8C5BC" stroke-width="1.2" marker-end="url(#arr)"/>
+<line x1="380" y1="64" x2="492" y2="118" stroke="#C8C5BC" stroke-width="1.2" marker-end="url(#arr)"/>
+
+<rect x="88" y="118" width="200" height="44" rx="8" fill="#EBF0FA" stroke="#2B52A0" stroke-width="1"/>
+<text x="188" y="135" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="600" fill="#2B52A0">Quantitative</text>
+<text x="188" y="153" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4B72C0">opérations math. possibles</text>
+
+<rect x="392" y="118" width="200" height="44" rx="8" fill="#FAF0E8" stroke="#C05A20" stroke-width="1"/>
+<text x="492" y="135" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="600" fill="#C05A20">Qualitative</text>
+<text x="492" y="153" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#C05A20">catégories nominales ou ordinales</text>
+
+<line x1="148" y1="162" x2="108" y2="196" stroke="#C8C5BC" stroke-width="1.2" marker-end="url(#arr)"/>
+<line x1="228" y1="162" x2="268" y2="196" stroke="#C8C5BC" stroke-width="1.2" marker-end="url(#arr)"/>
+
+<rect x="28" y="196" width="160" height="52" rx="8" fill="#EBF0FA" stroke="#4B72C0" stroke-width="1"/>
+<text x="108" y="215" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="#2B52A0">Discrète</text>
+<text x="108" y="232" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4B72C0">nbre d'enfants, de cours</text>
+
+<rect x="208" y="196" width="160" height="52" rx="8" fill="#E4F2EE" stroke="#0F6E56" stroke-width="1"/>
+<text x="288" y="215" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="#0F6E56">Continue</text>
+<text x="288" y="232" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#0F6E56">taille, durée, température</text>
+
+<text x="492" y="185" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#7A7875">Ex : genre, statut marital,</text>
+<text x="492" y="200" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#7A7875">nationalité, couleur</text>
+</svg>
+
+<h3>Variables quantitatives</h3>
+<p>On peut effectuer des opérations mathématiques dessus : addition, soustraction, calcul d'une moyenne.</p>
+<p><strong>Discrètes</strong> — prennent des valeurs distinctes que l'on peut compter, souvent des entiers. L'ensemble des valeurs peut être fini ou continuer 0, 1, 2, 3... sans valeur intermédiaire entre deux comptes.</p>
+<div class="box box-green"><p>Nombre d'enfants : 0, 1, 2, 3... → pas 1.7 enfant. Nombre de cours suivis par semestre.</p></div>
+
+<p><strong>Continues</strong> — peuvent, en théorie, prendre n'importe quelle valeur dans un intervalle. La valeur enregistrée dépend de la précision de l'instrument de mesure.</p>
+<div class="box box-green"><p>Température : 36.6°, 36.61°, 36.612°... · Taille · Durée d'une chanson.</p></div>
+
+<h3>Variables qualitatives (catégorielles)</h3>
+<p>Les valeurs sont des <strong>catégories</strong>. Elles peuvent être <strong>nominales</strong> (sans ordre) ou <strong>ordinales</strong> (avec un ordre, mais sans distance numérique définie entre les catégories).</p>
+<div class="box box-orange"><p>Nominal : statut marital, nationalité, couleur préférée. · Ordinal : niveau de satisfaction, niveau de diplôme.</p></div>
+
+<h2>Tableau récapitulatif</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Type</th><th>Sous-type</th><th>Exemple</th><th>Opérations possibles</th></tr></thead>
+  <tbody>
+    <tr><td>Quantitative</td><td>Discrète</td><td>Nbre d'enfants, de cours</td><td>Moyenne, somme, écart-type</td></tr>
+    <tr><td>Quantitative</td><td>Continue</td><td>Taille, durée, température</td><td>Moyenne, somme, écart-type</td></tr>
+    <tr><td>Qualitative</td><td>Nominale ou ordinale</td><td>Statut marital, satisfaction</td><td>Fréquences, proportions, mode ; médiane/rangs si ordinale</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="box box-purple">
+  <p><strong>Cas ambigus à connaître :</strong><br>
+  • Durée d'une chanson → quantitative continue (peut être 3:42.51)<br>
+  • Code postal → qualitative (1000 + 2000 n'a aucun sens géographique)<br>
+  • Note sur 20 → souvent traitée comme quantitative discrète, selon le contexte</p>
+</div>
+
+<div class="page-nav">
+  <a href="../index.html">← Table des matières</a>
+  <a href="ch02.html">Chapitre 02 →</a>
+</div>
+
+</div>
+</main>
+</div>
+<script src="../assets/nav-content.js"></script>
+</body>
+</html>

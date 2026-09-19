@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 14 — Scatter plots</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+.compact-list { margin:.75rem 0 1rem 1.2rem; color:var(--text-sec); }
+.compact-list li { margin:.35rem 0; }
+
+.wrap{padding:.5rem 0 1rem;font-family:var(--font-sans);}
+.section{margin:1.2rem 0 .4rem;font-size:10px;font-weight:500;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;}
+.chart-box{background:var(--surface-1);border:.5px solid var(--border);border-radius:12px;padding:16px;margin:8px 0;}
+.chart-title{font-size:12px;font-weight:500;color:var(--text-primary);margin-bottom:4px;}
+.chart-sub{font-size:11px;color:var(--text-secondary);margin-bottom:10px;}
+.note-box{background:var(--surface-1);border-left:3px solid #7F77DD;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--text-secondary);line-height:1.6;margin:10px 0;}
+.note-box b{color:var(--text-primary);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+
+</style>
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">☰</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content"><div class="content-inner">
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 14 · Corrélation & inférence</div>
+  <h1 class="ch-title">Scatter plots</h1>
+  <p class="ch-desc">Lire visuellement la direction, la force et la forme d’une relation entre deux variables quantitatives.</p>
+</div>
+
+<h2>L'idée centrale</h2>
+<p>Un scatter plot (nuage de points) représente la <strong>relation entre deux variables quantitatives</strong>. Chaque individu devient un point : sa position en X = sa valeur sur une variable, sa position en Y = sa valeur sur l'autre. Si l'analyse définit un prédicteur et une réponse, on place généralement le prédicteur sur X et la réponse sur Y.</p>
+<p>C'est le premier outil pour visualiser une corrélation <strong>avant</strong> de la calculer.</p>
+
+<h2>Ce qu'on lit sur un scatter plot</h2>
+<h3>Direction</h3>
+<ul class="compact-list"><li>Positive : quand X augmente, Y <strong>tend à</strong> augmenter.</li><li>Négative : quand X augmente, Y <strong>tend à</strong> diminuer.</li><li>Nulle : pas de tendance visible.</li></ul>
+<h3>Force</h3>
+<ul class="compact-list"><li>Pour une relation <strong>linéaire</strong>, forte : points proches d'une droite.</li><li>Faible : points très dispersés autour de cette tendance.</li></ul>
+<h3>Forme</h3>
+<ul class="compact-list"><li>Linéaire : une droite suffit à décrire la relation.</li><li>Non-linéaire : la relation suit une courbe.</li></ul>
+
+<h2>Exemples typiques</h2>
+<div class="table-wrap"><table><thead><tr><th>VI</th><th>VD</th><th>Relation attendue</th></tr></thead><tbody>
+<tr><td>Âge</td><td>Revenu annuel</td><td>Positive, modérée</td></tr>
+<tr><td>Heures de révision</td><td>Note à l'examen</td><td>Positive, forte</td></tr>
+<tr><td>Taille de la ville</td><td>Coût du logement</td><td>Positive, modérée</td></tr>
+<tr><td>Heures de sommeil</td><td>Erreurs au travail</td><td>Négative</td></tr>
+</tbody></table></div>
+
+<h2>Lien avec Pearson's r</h2>
+<p>Le scatter plot est <strong>visuel</strong> : il montre la tendance, les éventuels outliers et la forme de la relation. Pearson's r (chapitre 15) quantifie seulement la <strong>force et la direction de la tendance linéaire</strong>. Il est donc utile de regarder le scatter plot avant de calculer r.</p>
+
+<h2>Visualisations</h2>
+<div class="wrap"><div class="section">Les quatre types de relations</div>
+<div class="grid2">
+  <div class="chart-box">
+    <div class="chart-title">Corrélation positive forte</div>
+    <div class="chart-sub">Ex : heures de révision → note</div>
+    <div style="position:relative;height:160px;"><canvas id="sc-pos-strong" role="img" aria-label="Scatter plot corrélation positive forte">Points alignés montant vers la droite.</canvas></div>
+  </div>
+  <div class="chart-box">
+    <div class="chart-title">Corrélation positive faible</div>
+    <div class="chart-sub">Ex : âge → revenu</div>
+    <div style="position:relative;height:160px;"><canvas id="sc-pos-weak" role="img" aria-label="Scatter plot corrélation positive faible">Points dispersés avec légère tendance positive.</canvas></div>
+  </div>
+  <div class="chart-box">
+    <div class="chart-title">Corrélation négative</div>
+    <div class="chart-sub">Ex : heures de sommeil → erreurs</div>
+    <div style="position:relative;height:160px;"><canvas id="sc-neg" role="img" aria-label="Scatter plot corrélation négative">Points descendant vers la droite.</canvas></div>
+  </div>
+  <div class="chart-box">
+    <div class="chart-title">Pas de corrélation</div>
+    <div class="chart-sub">Ex : pointure → QI</div>
+    <div style="position:relative;height:160px;"><canvas id="sc-none" role="img" aria-label="Scatter plot sans corrélation">Points éparpillés sans tendance.</canvas></div>
+  </div>
+</div>
+
+<div class="section">Exemple complet — âge et revenu (n=10)</div>
+<div class="chart-box">
+  <div class="chart-title">Dataset : âge vs revenu annuel (CHF)</div>
+  <div class="chart-sub">On voit une tendance positive — mais est-elle significative ? → Pearson's r répondra au chapitre 15.</div>
+  <div style="position:relative;height:220px;"><canvas id="sc-main" role="img" aria-label="Scatter plot âge vs revenu pour 10 individus">Données âge revenu : 25→35000, 30→42000, 35→48000, 40→55000, 45→62000, 50→58000, 55→70000, 60→75000, 65→68000, 70→72000.</canvas></div>
+</div>
+<div class="note-box">
+  <b>Toujours regarder le scatter plot avant d'interpréter r.</b> Une relation non linéaire peut donner un r faible ou trompeur selon sa forme — parce que Pearson ne mesure que la composante <b>linéaire</b>.
+</div></div>
+
+<div class="page-nav">
+  <a href="ch13.html">← Chapitre 13</a>
+  <a href="ch15.html">Chapitre 15 →</a>
+</div>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const isDark=document.documentElement.dataset.mode==='dark'||(!document.documentElement.dataset.mode&&matchMedia('(prefers-color-scheme:dark)').matches);
+const gridC=isDark?'rgba(255,255,255,0.12)':'rgba(25,25,24,0.09)';
+const tick=isDark?'#A7A59D':'#6B6963';
+
+function scatter(id,pts,color,xLabel,yLabel){
+  new Chart(document.getElementById(id),{type:'scatter',
+    data:{datasets:[{data:pts,backgroundColor:color+'bb',borderColor:color,borderWidth:1,pointRadius:5,pointHoverRadius:7}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{grid:{color:gridC},ticks:{color:tick,font:{size:9}},title:{display:!!xLabel,text:xLabel||'',color:tick,font:{size:9}}},
+        y:{grid:{color:gridC},ticks:{color:tick,font:{size:9}},title:{display:!!yLabel,text:yLabel||'',color:tick,font:{size:9}}}
+      }}
+  });
+}
+
+function rnd(seed,n,xMin,xMax,slope,noise){
+  const pts=[];let s=seed;
+  function rand(){s=(s*9301+49297)%233280;return s/233280;}
+  for(let i=0;i<n;i++){
+    const x=xMin+(xMax-xMin)*rand();
+    const y=slope*x+(rand()-0.5)*noise;
+    pts.push({x:Math.round(x*10)/10,y:Math.round(y*10)/10});
+  }
+  return pts;
+}
+
+scatter('sc-pos-strong',rnd(42,20,0,10,2,3),'#2a78d6');
+scatter('sc-pos-weak',  rnd(13,20,0,10,1,55),'#1baf7a');
+scatter('sc-neg',       rnd(77,20,0,10,-1.5,4),'#eb6834');
+scatter('sc-none',      rnd(70,20,0,10,0,10),'#888780');
+
+const mainData=[
+  {x:25,y:35000},{x:30,y:42000},{x:35,y:48000},{x:40,y:55000},{x:45,y:62000},
+  {x:50,y:58000},{x:55,y:70000},{x:60,y:75000},{x:65,y:68000},{x:70,y:72000}
+];
+const n=mainData.length;
+const mx=mainData.reduce((a,p)=>a+p.x,0)/n;
+const my=mainData.reduce((a,p)=>a+p.y,0)/n;
+const b=mainData.reduce((a,p)=>a+(p.x-mx)*(p.y-my),0)/mainData.reduce((a,p)=>a+(p.x-mx)**2,0);
+const a_=my-b*mx;
+const xMin=20,xMax=75;
+const lineData=[{x:xMin,y:a_+b*xMin},{x:xMax,y:a_+b*xMax}];
+
+new Chart(document.getElementById('sc-main'),{type:'scatter',
+  data:{datasets:[
+    {label:'Individus',data:mainData,backgroundColor:'#2a78d6bb',borderColor:'#2a78d6',borderWidth:1,pointRadius:6,pointHoverRadius:8},
+    {label:'Tendance',data:lineData,type:'line',borderColor:'#D85A30',borderWidth:1.5,pointRadius:0,fill:false,borderDash:[5,4]},
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:true,labels:{color:tick,font:{size:10},boxWidth:14,boxHeight:2}},
+      tooltip:{callbacks:{label:t=>`Âge: ${t.parsed.x} ans · Revenu: CHF ${t.parsed.y.toLocaleString()}`}}},
+    scales:{
+      x:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'Âge (années)',color:tick,font:{size:10}},min:20,max:75},
+      y:{grid:{color:gridC},ticks:{color:tick,font:{size:10},callback:v=>(v/1000)+'k'},title:{display:true,text:'Revenu annuel (CHF)',color:tick,font:{size:10}}}
+    }}
+});
+</script>
+<script src="../assets/nav-content.js"></script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 09 — Distribution normale</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .clean-list { margin:.75rem 0 1rem 1.2rem; color:var(--text-sec); }
+  .clean-list li { margin:.35rem 0; }
+  .tool-card { border:1px solid var(--border); border-radius:var(--radius-md); padding:.9rem 1rem; background:var(--surface); }
+  .tool-card strong { display:block; margin-bottom:.3rem; color:var(--text-pri); }
+  .zone-row { display:flex; align-items:center; gap:12px; padding:9px 14px; border-radius:8px; margin-bottom:6px; font-size:.82rem; }
+  .zone-pct { font-size:1.2rem; font-weight:600; min-width:62px; }
+  .zone-detail { color:var(--text-sec); line-height:1.5; }
+  .normal-svg text { font-family:'Inter',system-ui,sans-serif; }
+</style>
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">☰</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content">
+<div class="content-inner">
+
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 09 · Distribution & probabilités</div>
+  <h1 class="ch-title">Distribution normale</h1>
+  <p class="ch-desc">La courbe en cloche, ses propriétés, la règle 68–95–99,7 et la vérification de la normalité.</p>
+</div>
+
+<h2>L'idée centrale</h2>
+<p>La distribution normale est l'un des modèles statistiques les plus importants. C'est une courbe en cloche <strong>parfaitement symétrique</strong>. Beaucoup de phénomènes réels sont approximativement normaux, par exemple certaines mesures biologiques ou erreurs de mesure — mais toutes les données ne le sont pas.</p>
+
+<h2>Propriétés fondamentales</h2>
+<ul class="clean-list">
+  <li>Symétrique autour de μ → skewness = 0</li>
+  <li>Mode = Médiane = Moyenne (tous au centre, au sommet de la cloche)</li>
+  <li>Entièrement définie par <strong>deux paramètres seulement</strong> : μ et σ</li>
+  <li>Dans ce cours, on la note <strong>N(μ, σ)</strong> : moyenne μ et écart-type σ</li>
+  <li>L'aire totale sous la courbe = <strong>1</strong> (= 100 % des données)</li>
+</ul>
+<blockquote><p>Une fois μ et σ connus, tout le reste est déductible — forme, probabilités, intervalles.</p></blockquote>
+
+<h2>Pourquoi la normale apparaît souvent — Théorème central limite</h2>
+<p>Le théorème central limite explique pourquoi la normale apparaît si souvent quand on travaille avec des <strong>sommes ou des moyennes</strong>.</p>
+<blockquote><p>Quand on additionne ou moyenne beaucoup de contributions indépendantes, sans qu'une seule domine toutes les autres, la distribution du résultat tend souvent vers une forme normale lorsque n devient grand.</p></blockquote>
+<p><strong>Important :</strong> le théorème central limite ne dit pas que chaque variable observée est normale. Il explique surtout pourquoi les sommes et les moyennes deviennent souvent approximativement normales.</p>
+
+<h2>Comment vérifier qu'une distribution est normale</h2>
+<p>On ne peut jamais le prouver avec certitude, mais on utilise trois outils :</p>
+<div class="grid-3">
+  <div class="tool-card"><strong>1. Histogramme</strong><span style="color:var(--text-sec);font-size:.88rem">Visuellement, ressemble-t-il à une cloche symétrique ? Premier signal rapide.</span></div>
+  <div class="tool-card"><strong>2. Test de Shapiro-Wilk</strong><span style="color:var(--text-sec);font-size:.88rem">Test statistique formel souvent utilisé pour les petits et moyens échantillons. Si p &gt; 0.05 → on n'a pas assez d'éléments pour rejeter la normalité.</span></div>
+  <div class="tool-card"><strong>3. Q-Q plot</strong><span style="color:var(--text-sec);font-size:.88rem">On compare les quantiles du dataset à ceux d'une normale théorique. Si les points s'alignent approximativement sur une droite → les données sont compatibles avec une distribution normale.</span></div>
+</div>
+
+<h2>La règle empirique 68 – 95 – 99,7</h2>
+<p>La propriété la plus importante de la courbe normale. Ces pourcentages sont des <strong>approximations de probabilités fixes</strong> de la distribution normale. Elles s'appliquent à toute distribution normale, quelles que soient les valeurs de μ et σ.</p>
+<div class="grid-3">
+  <div class="stat-card"><div class="lbl">μ ± 1σ</div><div class="val" style="color:var(--accent)">68 %</div></div>
+  <div class="stat-card"><div class="lbl">μ ± 2σ</div><div class="val" style="color:var(--green)">95 %</div></div>
+  <div class="stat-card"><div class="lbl">μ ± 3σ</div><div class="val" style="color:var(--purple)">99,7 %</div></div>
+</div>
+
+<div class="chart-card">
+  <h4>Règle empirique 68 – 95 – 99,7 sur nos données</h4>
+  <p>Les tirets en bas = les 30 notes réelles projetées sur l'axe.</p>
+  <svg id="normal-curve" class="normal-svg" viewBox="0 0 640 220" width="100%" role="img">
+    <title>Courbe normale avec zones empiriques</title>
+    <desc>Courbe en cloche avec zones colorées ±1σ, ±2σ, ±3σ et notes réelles projetées.</desc>
+  </svg>
+  <div class="legend" style="justify-content:center">
+    <span class="leg"><span class="leg-sq" style="background:rgba(55,138,221,.55)"></span>±1σ = 68%</span>
+    <span class="leg"><span class="leg-sq" style="background:rgba(29,158,117,.35)"></span>±2σ = 95%</span>
+    <span class="leg"><span class="leg-sq" style="background:rgba(127,119,221,.25)"></span>±3σ = 99.7%</span>
+    <span class="leg"><span style="display:inline-block;width:16px;height:2px;background:#D85A30"></span>μ</span>
+  </div>
+</div>
+
+<h2>Calcul étape par étape avec nos 30 notes</h2>
+<p><strong>Dataset</strong> : 8 9 9 10 10 10 11 11 11 11 12 12 12 12 12 13 13 13 13 14 14 14 15 15 15 16 16 17 17 18</p>
+<div class="box box-note"><p>Pour cet exemple, on considère ces 30 notes comme la <strong>population du groupe étudié</strong>. On utilise donc μ et σ, avec le diviseur n.</p></div>
+
+<h3>Étape 1 — Calculer μ</h3>
+<div class="formula">μ = Σxᵢ / N = 383 / 30 = <strong>12.77</strong></div>
+
+<h3>Étape 2 — Calculer σ</h3>
+<div class="formula">σ² = Σ(xᵢ − μ)² / N = 193.37 / 30 = <strong>6.45</strong><br>σ = √6.45 = <strong>2.54</strong></div>
+
+<h3>Étape 3 — Appliquer la règle empirique</h3>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Intervalle</th><th>Calcul</th><th>Bornes</th><th>Théorie</th><th>Dataset réel</th></tr></thead>
+  <tbody>
+    <tr><td>±1σ</td><td>12.77 ± 2.54</td><td>10.23 → 15.31</td><td>68 %</td><td>19/30 = <strong>63 %</strong></td></tr>
+    <tr><td>±2σ</td><td>12.77 ± 5.08</td><td>7.69 → 17.85</td><td>95 %</td><td>29/30 = <strong>97 %</strong></td></tr>
+    <tr><td>±3σ</td><td>12.77 ± 7.62</td><td>5.15 → 20.39</td><td>99.7 %</td><td>30/30 = <strong>100 %</strong></td></tr>
+  </tbody>
+</table>
+</div>
+<p>Les résultats observés ne sont pas exactement 68/95/99.7 % — c'est normal. Les valeurs 68/95/99.7 décrivent la <strong>distribution normale théorique</strong>. Dans un échantillon fini, les proportions observées fluctuent autour de ces valeurs.</p>
+
+<div id="zones-container" style="margin-top:1rem"></div>
+
+<h2>Symétrie — Mode = Médiane = Moyenne</h2>
+<div class="chart-card">
+  <h4>Les trois mesures sont confondues au centre de la cloche</h4>
+  <p>C'est la définition même de la distribution normale — contrairement aux distributions asymétriques.</p>
+  <div class="chart-wrap" style="height:150px"><canvas id="sym-chart" role="img" aria-label="Comparaison normale vs asymétrique"></canvas></div>
+  <div class="legend" style="justify-content:center;margin-top:.75rem">
+    <span class="leg"><span style="display:inline-block;width:16px;height:2px;background:#2a78d6"></span>Normale — Mode=Méd=Moy</span>
+    <span class="leg"><span style="display:inline-block;width:16px;height:2px;background:#eb6834"></span>Asymétrie positive — Moy &gt; Méd &gt; Mode</span>
+  </div>
+</div>
+
+<h2>Ce que le modèle N(12.77, 2.54) permet de prévoir</h2>
+<p>Si l'on modélise les notes par cette distribution normale :</p>
+<ul class="clean-list">
+  <li>environ 68 % des valeurs se situent entre <strong>10.23 et 15.31</strong></li>
+  <li>environ 95 % se situent entre <strong>7.69 et 17.85</strong></li>
+  <li>une note de 18 correspond à <strong>z ≈ +2.06</strong> → environ les <strong>2 % supérieurs</strong> du modèle normal</li>
+  <li>dans la distribution normale théorique, <strong>moyenne = médiane = mode = 12.77</strong></li>
+</ul>
+
+<h2>Vérification de la normalité — Q-Q plot</h2>
+<div class="chart-card">
+  <h4>Q-Q plot de nos 30 notes</h4>
+  <p>Si les points suivent approximativement la droite, les données sont compatibles avec une normale. De petits écarts sont fréquents avec n = 30.</p>
+  <div class="chart-wrap" style="height:220px"><canvas id="qq-chart" role="img" aria-label="Q-Q plot des 30 notes"></canvas></div>
+</div>
+<div class="box box-purple">
+  <p><strong>Limite importante :</strong> la règle empirique et toutes les déductions sur N(μ, σ) ne fonctionnent que si la distribution est effectivement normale. D'où l'importance de vérifier avant d'appliquer — histogramme, Shapiro-Wilk, ou Q-Q plot.</p>
+</div>
+<p>Le Q-Q plot est particulièrement utile ici — les points suivent bien la droite rouge, ce qui confirme visuellement que nos 30 notes suivent approximativement une distribution normale. Les légères déviations aux extrêmes sont attendues avec n = 30.</p>
+
+<div class="page-nav">
+  <a href="ch08.html">← Chapitre 08</a>
+  <a href="ch10.html">Chapitre 10 →</a>
+</div>
+
+</div>
+</main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+const gridC=isDark?'rgba(255,255,255,0.12)':'rgba(25,25,24,0.09)';
+const tick='#7A7875';
+const mu=12.77, sd=2.54;
+const notes=[8,9,9,10,10,10,11,11,11,11,12,12,12,12,12,13,13,13,13,14,14,14,15,15,15,16,16,17,17,18];
+function normPDF(x,m,s){return Math.exp(-0.5*((x-m)/s)**2)/(s*Math.sqrt(2*Math.PI));}
+function svgEl(tag,attrs,par){const e=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const[k,v]of Object.entries(attrs))e.setAttribute(k,v);if(par)par.appendChild(e);return e;}
+function svgTx(txt,attrs,par){const e=svgEl('text',attrs,par);e.textContent=txt;return e;}
+
+const svg=document.getElementById('normal-curve');
+const W=640,H=220,mL=50,mR=20,mT=14,mB=50,pW=W-mL-mR,pH=H-mT-mB;
+const xMin=mu-4*sd,xMax=mu+4*sd,toX=v=>mL+(v-xMin)/(xMax-xMin)*pW;
+const yMax=normPDF(mu,mu,sd)*1.1,toY=y=>mT+pH-(y/yMax)*pH;
+[
+  {k:3,fill:'rgba(127,119,221,.20)'},
+  {k:2,fill:'rgba(29,158,117,.28)'},
+  {k:1,fill:'rgba(55,138,221,.45)'}
+].forEach(z=>{const lo=mu-z.k*sd,hi=mu+z.k*sd,pts=[];for(let x=lo;x<=hi;x+=(hi-lo)/120)pts.push(`${toX(x).toFixed(1)},${toY(normPDF(x,mu,sd)).toFixed(1)}`);pts.push(`${toX(hi).toFixed(1)},${toY(0).toFixed(1)}`);pts.push(`${toX(lo).toFixed(1)},${toY(0).toFixed(1)}`);svgEl('polygon',{points:pts.join(' '),fill:z.fill},svg);});
+const curvePts=[];for(let x=xMin;x<=xMax;x+=(xMax-xMin)/300)curvePts.push(`${toX(x).toFixed(1)},${toY(normPDF(x,mu,sd)).toFixed(1)}`);
+svgEl('polyline',{points:curvePts.join(' '),fill:'none',stroke:'#2B52A0','stroke-width':'2.2','stroke-linejoin':'round'},svg);
+svgEl('line',{x1:mL,y1:mT+pH,x2:W-mR,y2:mT+pH,stroke:isDark?'rgba(255,255,255,.2)':'rgba(0,0,0,.15)','stroke-width':'1'},svg);
+svgEl('line',{x1:toX(mu),y1:mT,x2:toX(mu),y2:mT+pH,stroke:'#D85A30','stroke-width':'1.5','stroke-dasharray':'4,3'},svg);
+[-3,-2,-1,0,1,2,3].forEach(k=>{const x=mu+k*sd,sx=toX(x),lbl=k===0?'μ':k>0?`μ+${k}σ`:`μ${k}σ`;svgTx(lbl,{x:sx,y:mT+pH+13,'text-anchor':'middle','font-size':'9.5',fill:k===0?'#D85A30':tick,'font-weight':k===0?'600':'400'},svg);svgTx((mu+k*sd).toFixed(1),{x:sx,y:mT+pH+24,'text-anchor':'middle','font-size':'8.5',fill:tick},svg);});
+const tickY=mT+pH+36;notes.forEach(v=>{const k=Math.abs((v-mu)/sd),col=k<=1?'#378ADD':k<=2?'#1D9E75':'#7F77DD';svgEl('line',{x1:toX(v),y1:tickY-5,x2:toX(v),y2:tickY+5,stroke:col,'stroke-width':'1.5'},svg);});
+svgTx('données réelles',{x:mL,y:tickY+16,'font-size':'9',fill:tick},svg);
+
+const zc=document.getElementById('zones-container');
+[
+  {k:1,pct:'68 %',col:'#2B52A0',bg:isDark?'rgba(55,138,221,.12)':'#EBF0FA'},
+  {k:2,pct:'95 %',col:'#0F6E56',bg:isDark?'rgba(29,158,117,.12)':'#E4F2EE'},
+  {k:3,pct:'99.7 %',col:'#5B3FA0',bg:isDark?'rgba(127,119,221,.12)':'#F0ECFA'}
+].forEach(z=>{const lo=(mu-z.k*sd).toFixed(2),hi=(mu+z.k*sd).toFixed(2),cnt=notes.filter(v=>v>=mu-z.k*sd&&v<=mu+z.k*sd).length,pctReal=(cnt/notes.length*100).toFixed(0),d=document.createElement('div');d.className='zone-row';d.style.background=z.bg;d.innerHTML=`<div class="zone-pct" style="color:${z.col}">${z.pct}</div><div class="zone-detail"><strong style="color:${z.col}">μ ± ${z.k}σ</strong> → de <strong>${lo}</strong> à <strong>${hi}</strong><br>Dans ce dataset : <strong>${cnt}/30 étudiants (${pctReal} %)</strong> dans cet intervalle</div>`;zc.appendChild(d);});
+
+const xs2=Array.from({length:80},(_,i)=>6+i*0.2);
+new Chart(document.getElementById('sym-chart'),{type:'line',data:{labels:xs2.map(x=>x.toFixed(1)),datasets:[{label:'Normale',data:xs2.map(x=>normPDF(x,13,2.5)),borderColor:'#2a78d6',borderWidth:2,pointRadius:0,fill:false,tension:.4},{label:'Asymétrie +',data:xs2.map(x=>normPDF(x,11,2)*1.3+normPDF(x,16,4)*.35),borderColor:'#eb6834',borderWidth:2,pointRadius:0,fill:false,tension:.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{display:false},y:{display:false,beginAtZero:true}}}});
+
+const sorted=[...notes].sort((a,b)=>a-b),n=sorted.length;
+function normInv(p){const a=[2.515517,0.802853,0.010328],b=[1.432788,0.189269,0.001308];if(p<0.5){const t=Math.sqrt(-2*Math.log(p));return-(t-(a[0]+a[1]*t+a[2]*t*t)/(1+b[0]*t+b[1]*t*t+b[2]*t*t*t));}const t=Math.sqrt(-2*Math.log(1-p));return t-(a[0]+a[1]*t+a[2]*t*t)/(1+b[0]*t+b[1]*t*t+b[2]*t*t*t);}
+const qqPts=sorted.map((v,i)=>({x:parseFloat(normInv((i+0.5)/n).toFixed(3)),y:v}));
+const qqMin=qqPts[0].x,qqMax=qqPts[qqPts.length-1].x,lineData=[{x:qqMin,y:mu+qqMin*sd},{x:qqMax,y:mu+qqMax*sd}];
+new Chart(document.getElementById('qq-chart'),{type:'scatter',data:{datasets:[{label:'Notes',data:qqPts,backgroundColor:'#2a78d6',pointRadius:5,pointHoverRadius:7},{label:'Droite normale',data:lineData,type:'line',borderColor:'#D85A30',borderWidth:1.5,pointRadius:0,fill:false,borderDash:[4,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:t=>`z=${t.parsed.x.toFixed(2)}, note=${t.parsed.y}`}}},scales:{x:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'Quantiles théoriques (z)',color:tick,font:{size:10}}},y:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'Quantiles observés (notes)',color:tick,font:{size:10}}}}}});
+</script>
+<script src="../assets/nav-content.js"></script>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>404 — Page introuvable · Statistiques</title>
+<script>
+(function () {
+  const saved = localStorage.getItem('stats-theme');
+  const pref = ['auto','light','dark'].includes(saved) ? saved : 'auto';
+  const mode = pref === 'auto'
+    ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+    : pref;
+  document.documentElement.dataset.theme = pref;
+  document.documentElement.dataset.mode = mode;
+  document.documentElement.style.colorScheme = mode;
+})();
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+
+:root{
+  --bg:#F7F6F2;
+  --surface:#FFFFFF;
+  --surface-2:#EFEEE9;
+  --border:#D8D6CF;
+  --text-pri:#191918;
+  --text-sec:#44433F;
+  --text-muted:#6B6963;
+  --accent:#2857A8;
+  --accent-light:#EAF0FB;
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  background:var(--bg);
+  color:var(--text-pri);
+}
+html[data-mode="dark"]{
+  --bg:#121211;
+  --surface:#1B1B19;
+  --surface-2:#24231F;
+  --border:#383733;
+  --text-pri:#F2F1EC;
+  --text-sec:#C4C2BA;
+  --text-muted:#94928B;
+  --accent:#79A6FF;
+  --accent-light:#1B2942;
+}
+body{min-height:100vh;background:var(--bg);color:var(--text-pri)}
+.error-shell{min-height:100vh;display:grid;grid-template-rows:auto 1fr}
+
+.topbar{
+  width:min(100% - 2rem,1120px);
+  margin:0 auto;
+  min-height:76px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+}
+.brand{
+  color:var(--text-pri);
+  text-decoration:none;
+  font-size:.92rem;
+  font-weight:600;
+}
+.brand small{
+  display:block;
+  color:var(--text-muted);
+  font:500 .65rem/1.4 'JetBrains Mono',monospace;
+  letter-spacing:.06em;
+  margin-bottom:.12rem;
+}
+
+.theme-switch{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:.25rem;
+  padding:.25rem;
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  border-radius:9px;
+}
+.theme-switch button{
+  border:0;
+  border-radius:6px;
+  padding:.38rem .58rem;
+  background:transparent;
+  color:var(--text-sec);
+  font:500 .68rem 'Inter',sans-serif;
+  cursor:pointer;
+}
+.theme-switch button:hover{background:var(--surface);color:var(--text-pri)}
+.theme-switch button[aria-pressed="true"]{
+  background:var(--surface);
+  color:var(--accent);
+  box-shadow:0 0 0 1px var(--border);
+}
+.theme-switch button:focus-visible,.home-btn:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:2px;
+}
+
+.error-main{
+  display:grid;
+  place-items:center;
+  padding:2rem 1rem 7rem;
+}
+.error-card{
+  width:min(100%,680px);
+  text-align:center;
+  padding:3rem 2rem;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;
+}
+.error-code{
+  font:500 clamp(4.5rem,16vw,8rem)/.95 'JetBrains Mono',monospace;
+  letter-spacing:-.07em;
+  color:var(--accent);
+  margin:0 0 1.25rem;
+}
+.error-card h1{
+  font-size:clamp(1.5rem,4vw,2rem);
+  line-height:1.2;
+  letter-spacing:-.03em;
+  margin:0 0 .7rem;
+}
+.error-card p{
+  max-width:48ch;
+  margin:0 auto 1.6rem;
+  color:var(--text-sec);
+  line-height:1.65;
+}
+.home-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.45rem;
+  min-height:42px;
+  padding:.55rem 1rem;
+  border-radius:8px;
+  border:1px solid var(--accent);
+  background:var(--accent-light);
+  color:var(--accent);
+  text-decoration:none;
+  font-size:.88rem;
+  font-weight:600;
+}
+.home-btn:hover{filter:brightness(1.04)}
+.path{
+  margin-top:1.5rem;
+  color:var(--text-muted);
+  font:400 .72rem/1.5 'JetBrains Mono',monospace;
+  overflow-wrap:anywhere;
+}
+@media(max-width:560px){
+  .topbar{align-items:flex-start;padding-top:1rem;min-height:96px}
+  .theme-switch button{padding:.36rem .4rem}
+  .error-card{padding:2.25rem 1.25rem}
+}
+</style>
+</head>
+<body>
+<div class="error-shell">
+  <header class="topbar">
+    <a class="brand" id="brand-link" href="#">Statistiques</a>
+
+    <div class="theme-switch" role="group" aria-label="Thème d’affichage">
+      <button type="button" data-theme-choice="auto" aria-pressed="false">Auto</button>
+      <button type="button" data-theme-choice="light" aria-pressed="false">Clair</button>
+      <button type="button" data-theme-choice="dark" aria-pressed="false">Sombre</button>
+    </div>
+  </header>
+
+  <main class="error-main">
+    <section class="error-card" aria-labelledby="error-title">
+      <div class="error-code" aria-hidden="true">404</div>
+      <h1 id="error-title">Page introuvable</h1>
+      <p>Cette page n’existe pas ou a été déplacée. Retourne à la table des matières pour continuer le cours.</p>
+      <a class="home-btn" id="home-link" href="#">← Table des matières</a>
+      <div class="path" id="missing-path"></div>
+    </section>
+  </main>
+</div>
+
+<script>
+(function () {
+  const STORAGE_KEY = 'stats-theme';
+  const allowed = new Set(['auto','light','dark']);
+  const media = matchMedia('(prefers-color-scheme: dark)');
+
+  function getPreference(){
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return allowed.has(saved) ? saved : 'auto';
+  }
+  function apply(pref){
+    const p = allowed.has(pref) ? pref : 'auto';
+    const mode = p === 'auto' ? (media.matches ? 'dark' : 'light') : p;
+    document.documentElement.dataset.theme = p;
+    document.documentElement.dataset.mode = mode;
+    document.documentElement.style.colorScheme = mode;
+    document.querySelectorAll('[data-theme-choice]').forEach(btn=>{
+      btn.setAttribute('aria-pressed', btn.dataset.themeChoice === p ? 'true' : 'false');
+    });
+  }
+  document.querySelectorAll('[data-theme-choice]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      localStorage.setItem(STORAGE_KEY, btn.dataset.themeChoice);
+      apply(btn.dataset.themeChoice);
+    });
+  });
+  if (media.addEventListener) {
+    media.addEventListener('change',()=>{ if(getPreference()==='auto') apply('auto'); });
+  }
+  apply(getPreference());
+
+  function setBase(base){
+    const home = base + 'index.html';
+    document.getElementById('home-link').href = home;
+    document.getElementById('brand-link').href = home;
+  }
+
+  const pathname = location.pathname;
+  document.getElementById('missing-path').textContent = pathname;
+
+  if (location.protocol === 'file:') {
+    setBase('./');
+    return;
+  }
+
+  const segments = pathname.split('/').filter(Boolean);
+  const candidates = [];
+
+  if (location.hostname.endsWith('.github.io') && segments.length) {
+    candidates.push('/' + segments[0] + '/');
+  }
+  candidates.push('/');
+
+  (async function(){
+    for(const base of [...new Set(candidates)]){
+      try{
+        const response = await fetch(base + 'index.html', {method:'HEAD', cache:'no-store'});
+        if(response.ok){ setBase(base); return; }
+      }catch(e){}
+    }
+    setBase(candidates[0] || '/');
+  })();
+})();
+</script>
+</body>
+</html>

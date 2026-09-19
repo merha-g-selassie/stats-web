@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Statistiques — Notes de cours</title>
+<script src="assets/theme.js"></script>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: .5rem;
+    margin: 1.25rem 0;
+  }
+  .toc-item {
+    display: flex; align-items: baseline; gap: .75rem;
+    padding: .6rem .85rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    text-decoration: none;
+    color: var(--text-sec);
+    font-size: .875rem;
+    transition: background .15s, border-color .15s;
+  }
+  .toc-item:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+  .toc-item .num { font-family: 'JetBrains Mono', monospace; font-size: .72rem; color: var(--text-muted); min-width: 1.8rem; }
+  .toc-section { font-size: .72rem; font-weight: 600; letter-spacing: .08em; color: var(--text-muted); text-transform: uppercase; margin: 1.5rem 0 .5rem; }
+</style>
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">☰</button>
+<div class="layout">
+  <nav class="nav"></nav>
+  <main class="content">
+    <div class="content-inner">
+      <div class="ch-header">
+        <h1 class="ch-title">Statistiques</h1>
+        <p class="ch-desc">19 chapitres — des notions de base à la corrélation, l’inférence et la régression linéaire.</p>
+      </div>
+
+      <div class="toc-section">Fondements</div>
+      <div class="toc-grid">
+        <a class="toc-item" href="chapitres/ch01.html"><span class="num">01</span> Définitions de base</a>
+        <a class="toc-item" href="chapitres/ch02.html"><span class="num">02</span> Variables ind. vs dépendantes</a>
+        <a class="toc-item" href="chapitres/ch03.html"><span class="num">03</span> Types de données</a>
+        <a class="toc-item" href="chapitres/ch04.html"><span class="num">04</span> Distributions de fréquences</a>
+      </div>
+
+      <div class="toc-section">Statistiques descriptives</div>
+      <div class="toc-grid">
+        <a class="toc-item" href="chapitres/ch05.html"><span class="num">05</span> Visualisation — données qualitatives</a>
+        <a class="toc-item" href="chapitres/ch06.html"><span class="num">06</span> Visualisation — données quantitatives</a>
+        <a class="toc-item" href="chapitres/ch07.html"><span class="num">07</span> Tendance centrale</a>
+        <a class="toc-item" href="chapitres/ch08.html"><span class="num">08</span> Mesures de dispersion</a>
+      </div>
+
+      <div class="toc-section">Distribution & probabilités</div>
+      <div class="toc-grid">
+        <a class="toc-item" href="chapitres/ch09.html"><span class="num">09</span> Distribution normale</a>
+        <a class="toc-item" href="chapitres/ch10.html"><span class="num">10</span> Z-scores</a>
+        <a class="toc-item" href="chapitres/ch11.html"><span class="num">11</span> Probabilités</a>
+        <a class="toc-item" href="chapitres/ch12.html"><span class="num">12</span> Permutations & combinaisons</a>
+        <a class="toc-item" href="chapitres/ch13.html"><span class="num">13</span> Loi des grands nombres</a>
+      </div>
+
+      <div class="toc-section">Corrélation & inférence</div>
+      <div class="toc-grid">
+        <a class="toc-item" href="chapitres/ch14.html"><span class="num">14</span> Scatter plots</a>
+        <a class="toc-item" href="chapitres/ch15.html"><span class="num">15</span> Corrélation de Pearson</a>
+        <a class="toc-item" href="chapitres/ch16.html"><span class="num">16</span> Hypothesis testing</a>
+        <a class="toc-item" href="chapitres/ch17.html"><span class="num">17</span> Corrélation de Spearman</a>
+        <a class="toc-item" href="chapitres/ch18.html"><span class="num">18</span> Régression linéaire</a>
+        <a class="toc-item" href="chapitres/ch19.html"><span class="num">19</span> Corrélation vs causalité</a>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="assets/nav-content.js"></script>
+</body>
+</html>

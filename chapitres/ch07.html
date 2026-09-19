@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ch. 07 — Tendance centrale</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">&#9776;</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content">
+<div class="content-inner">
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 07</div>
+  <h1 class="ch-title">Tendance centrale</h1>
+  <p class="ch-desc">Moyenne, médiane et mode — choisir la bonne mesure.</p>
+</div>
+
+<h2>L'idée centrale</h2>
+<p>Une mesure de tendance centrale répond à : <strong>quelle est la valeur typique de ce dataset ?</strong> Trois réponses possibles selon le contexte : la moyenne, la médiane, le mode.</p>
+
+<h2>1. Moyenne (Mean)</h2>
+<p>Somme de toutes les valeurs divisée par n. Utilise <strong>toutes</strong> les valeurs — c'est sa force et sa faiblesse.</p>
+<div class="formula">&mu; = &Sigma;x&#7522; / N &nbsp;&nbsp; (population) &nbsp;&nbsp;&nbsp; x&#772; = &Sigma;x&#7522; / n &nbsp;&nbsp; (échantillon)</div>
+<p><strong>Exemple</strong> — notes de 5 étudiants : 10, 12, 13, 14, 16</p>
+<div class="formula">x&#772; = (10 + 12 + 13 + 14 + 16) / 5 = 65 / 5 = <strong>13</strong></div>
+
+<div class="chart-card">
+  <h4>Effet d'un outlier sur la moyenne</h4>
+  <p>Même dataset avec ou sans valeur extrême. La médiane reste stable, la moyenne explose.</p>
+  <div class="stat-cards">
+    <div class="stat-card"><div class="lbl">Moyenne</div><div class="val" id="mv" style="color:#2B52A0">—</div></div>
+    <div class="stat-card"><div class="lbl">Médiane</div><div class="val" id="med" style="color:#0F6E56">—</div></div>
+    <div class="stat-card"><div class="lbl">Mode</div><div class="val" id="mod" style="color:#C05A20">—</div></div>
+  </div>
+  <div class="chart-wrap" style="height:150px"><canvas id="out-ch" role="img" aria-label="Histogramme avec/sans outlier"></canvas></div>
+  <div class="btn-group">
+    <button class="btn active" id="b-no" onclick="setOut(false)">Sans outlier</button>
+    <button class="btn" id="b-yes" onclick="setOut(true)">Avec outlier (56)</button>
+  </div>
+</div>
+
+<h2>2. Médiane</h2>
+<p>Valeur centrale une fois les données triées. Robuste aux outliers — un salaire extrême ne la déplace presque pas.</p>
+<ul style="margin:.5rem 0 .9rem 1.2rem;color:var(--text-sec);font-size:.9rem;line-height:1.8">
+<li>n impair → valeur à la position (n+1)/2</li>
+<li>n pair → moyenne des valeurs aux positions n/2 et n/2+1</li>
+</ul>
+<div class="box box-green"><p><strong>Exemple</strong> : 3, 7, 7, 12, 15, 19, 21, 24 (n = 8, pair)<br>Positions 4 et 5 → valeurs <strong>12</strong> et <strong>15</strong><br>Médiane = (12 + 15) / 2 = <strong>13.5</strong></p></div>
+
+<h2>3. Mode</h2>
+<p>Valeur la plus fréquente. Parmi moyenne, médiane et mode, c'est la seule mesure applicable aux données nominales. Une distribution peut être unimodale, bimodale ou multimodale.</p>
+<div class="chart-card">
+  <h4>Unimodal vs bimodal</h4>
+  <p>Une distribution bimodale peut suggérer deux sous-groupes dans les données — c'est un signal à examiner, pas une preuve.</p>
+  <div class="chart-wrap" style="height:150px"><canvas id="mode-ch" role="img" aria-label="Unimodal vs bimodal"></canvas></div>
+  <div class="btn-group">
+    <button class="btn active" id="b-uni" onclick="setMode('uni')">Unimodal — mode = 13</button>
+    <button class="btn" id="b-bi" onclick="setMode('bi')">Bimodal — modes = 9 et 16</button>
+  </div>
+</div>
+
+<h2>Relation typique entre les trois selon la forme</h2>
+<p>Pour des distributions unimodales simples, on observe souvent le schéma suivant. C'est une <strong>règle pratique</strong>, pas une identité valable pour tous les datasets.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Forme</th><th>Relation typique</th></tr></thead>
+<tbody>
+<tr><td>Normale</td><td>Mode = Médiane = Moyenne</td></tr>
+<tr><td>Asymétrie positive</td><td>Mode &lt; Médiane &lt; Moyenne</td></tr>
+<tr><td>Asymétrie négative</td><td>Moyenne &lt; Médiane &lt; Mode</td></tr>
+</tbody></table></div>
+
+<h2>Quelle mesure choisir ?</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Situation</th><th>Mesure recommandée</th></tr></thead>
+<tbody>
+<tr><td>Distribution symétrique, sans outliers</td><td>Moyenne</td></tr>
+<tr><td>Distribution asymétrique ou outliers</td><td>Médiane</td></tr>
+<tr><td>Données nominales</td><td>Mode</td></tr>
+<tr><td>Données ordinales</td><td>Médiane ou mode</td></tr>
+</tbody></table></div>
+<div class="box box-purple"><p>L'OFS publie le salaire <strong>médian</strong> en Suisse, pas le moyen — parce que la distribution des revenus est asymétrique positive. Quelques très hauts salaires tirent la moyenne vers le haut et la rendent peu représentative de l'individu typique.</p></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+const gc=isDark?'rgba(255,255,255,.08)':'rgba(0,0,0,.06)';
+const tk='#7A7875';
+function med(a){const s=[...a].sort((x,y)=>x-y),n=s.length;return n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2;}
+function mod(a){const c={};a.forEach(v=>c[v]=(c[v]||0)+1);const m=Math.max(...Object.values(c));return Object.keys(c).filter(k=>+c[k]===m).join(' & ');}
+function mean(a){return a.reduce((x,y)=>x+y,0)/a.length;}
+const dNo=[10,12,12,13,13,13,14,14,16];
+const dYes=[10,12,12,13,13,13,14,14,56];
+let oc;
+function setOut(w){
+  const d=w?dYes:dNo;
+  document.getElementById('mv').textContent=mean(d).toFixed(1);
+  document.getElementById('med').textContent=med(d).toFixed(1);
+  document.getElementById('mod').textContent=mod(d);
+  document.getElementById('b-no').className='btn'+(w?'':' active');
+  document.getElementById('b-yes').className='btn'+(w?' active':'');
+  const la=w?['10','12','13','14','56']:['10','12','13','14','16'];
+  const dt=w?[1,2,3,2,1]:[1,2,3,2,1];
+  if(oc)oc.destroy();
+  oc=new Chart(document.getElementById('out-ch'),{type:'bar',
+    data:{labels:la,datasets:[{data:dt,backgroundColor:la.map(l=>l==='56'?'#B03030':'#2B52A0'),
+    borderColor:isDark?'#141413':'#fff',borderWidth:1.5,borderRadius:4,borderSkipped:false,categoryPercentage:.6,barPercentage:.9}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{color:tk,font:{size:11}}},y:{grid:{color:gc},ticks:{color:tk,font:{size:11},stepSize:1},beginAtZero:true,max:4}}}
+  });
+}
+setOut(false);
+let mc;
+function setMode(t){
+  const la=['8','9','10','11','12','13','14','15','16','17','18'];
+  const uni=[1,1,2,3,4,5,4,3,2,1,0];
+  const bi=[0,4,3,2,1,0,1,2,3,4,1];
+  const d=t==='uni'?uni:bi;
+  const pk=Math.max(...d);
+  document.getElementById('b-uni').className='btn'+(t==='uni'?' active':'');
+  document.getElementById('b-bi').className='btn'+(t==='bi'?' active':'');
+  if(mc)mc.destroy();
+  mc=new Chart(document.getElementById('mode-ch'),{type:'bar',
+    data:{labels:la,datasets:[{data:d,backgroundColor:d.map(v=>v===pk?'#C05A20':'rgba(43,82,160,.4)'),
+    borderColor:isDark?'#141413':'#fff',borderWidth:1.5,borderRadius:3,borderSkipped:false,categoryPercentage:.9,barPercentage:.9}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{color:tk,font:{size:11}}},y:{grid:{color:gc},ticks:{color:tk,font:{size:11},stepSize:1},beginAtZero:true}}}
+  });
+}
+setMode('uni');
+</script>
+
+<div class="page-nav">
+  <a href="ch06.html">← Chapitre 06</a>
+  <a href="ch08.html">Chapitre 08 →</a>
+</div>
+</div></main></div>
+<script src="../assets/nav-content.js"></script>
+</body></html>
