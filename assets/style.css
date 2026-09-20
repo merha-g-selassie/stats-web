@@ -168,6 +168,7 @@ blockquote p { margin: 0; }
 .content {
   margin-left: var(--nav-w);
   flex: 1;
+  min-width: 0;
   padding: 3rem 3rem 6rem;
 }
 .content-inner {
@@ -233,6 +234,7 @@ td:first-child { font-weight: 500; color: var(--text-pri); }
 /* Grid layouts */
 .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 1rem; margin: 1rem 0; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1rem; margin: 1rem 0; }
+.grid-2 > *, .grid-3 > * { min-width: 0; }
 
 /* Stat cards */
 .stat-cards { display: flex; gap: .75rem; margin: 1rem 0; flex-wrap: wrap; }
@@ -404,6 +406,7 @@ td:first-child { font-weight: 500; color: var(--text-pri); }
 /* ── Readability & charts ────────────────────────────────────────── */
 .chart-box, .chart-card { overflow: hidden; }
 .chart-box canvas, .chart-card canvas { max-width: 100% !important; }
+.chart-box svg, .chart-card svg { max-width: 100%; height: auto; display: block; }
 .corr-mini-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; width:100%; }
 .corr-mini-grid > div { min-width:0; overflow:hidden; }
 .corr-mini-grid canvas { width:100% !important; max-width:100% !important; }
