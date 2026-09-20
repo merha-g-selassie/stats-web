@@ -18,8 +18,8 @@
 .note-box{background:var(--surface-1);border-left:3px solid #7F77DD;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--text-secondary);line-height:1.6;margin:10px 0;}
 .note-box b{color:var(--text-primary);}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.stat-row{display:flex;gap:10px;margin:10px 0;}
-.stat-card{flex:1;background:var(--surface-1);border:.5px solid var(--border);border-radius:8px;padding:10px;text-align:center;}
+.stat-row{display:flex;gap:10px;margin:10px 0;flex-wrap:wrap;}
+.stat-card{flex:1;min-width:140px;background:var(--surface-1);border:.5px solid var(--border);border-radius:8px;padding:10px;text-align:center;}
 .stat-card .lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;}
 .stat-card .val{font-size:22px;font-weight:500;}
 
@@ -37,36 +37,117 @@
 </div>
 
 <h2>L'idée centrale</h2>
-<p>Permutations et combinaisons répondent à la même question de base : <strong>de combien de façons peut-on choisir k éléments parmi n ?</strong> Ici, on suppose qu'on choisit <strong>sans répétition</strong>. La différence est une seule : est-ce que <strong>l'ordre compte</strong> ?</p>
+<p>Permutations et combinaisons servent à répondre à une question de comptage : <strong>combien de résultats différents peut-on former en choisissant quelques éléments parmi un ensemble plus grand ?</strong></p>
+<p>Dans ce chapitre, on note :</p>
+<div class="grid-2">
+  <div class="box box-note"><p><strong>n</strong> = le nombre total d'éléments disponibles.</p></div>
+  <div class="box box-green"><p><strong>k</strong> = le nombre d'éléments que l'on choisit.</p></div>
+</div>
+<p><strong>Exemple :</strong> 6 étudiants sont disponibles et on veut en sélectionner 3. Alors <strong>n = 6</strong> et <strong>k = 3</strong>.</p>
+
+<div class="box box-orange"><p><strong>Hypothèse de ce chapitre :</strong> on choisit <strong>sans répétition</strong>. Une même personne ou un même objet ne peut donc pas être sélectionné plusieurs fois dans le même résultat. Si Alice a déjà été choisie, elle n'est plus disponible pour le choix suivant.</p></div>
+
+<h2>La question décisive : est-ce que l'ordre compte ?</h2>
+<p>Avant de chercher une formule, pose cette question :</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Situation</th><th>L'ordre change-t-il le résultat ?</th><th>Outil</th></tr></thead>
+<tbody>
+<tr><td>Attribuer 1re, 2e et 3e place à trois personnes</td><td>Oui : A-B-C ≠ B-A-C</td><td><strong>Permutation</strong></td></tr>
+<tr><td>Former un groupe de trois personnes</td><td>Non : {A,B,C} = {C,A,B}</td><td><strong>Combinaison</strong></td></tr>
+</tbody></table></div>
+<blockquote><p><strong>Règle simple :</strong> si changer l'ordre produit un nouveau résultat, utilise une permutation. Si l'ordre ne change rien, utilise une combinaison.</p></blockquote>
 
 <h2>Permutations — l'ordre compte</h2>
-<p>Si l'ordre dans lequel on choisit les éléments change le résultat, c'est une permutation.</p>
-<p><strong>Exemple :</strong> 3 personnes (A, B, C) pour 2 places sur un podium. A puis B ≠ B puis A.</p>
+<p>Une <strong>permutation</strong> compte les sélections pour lesquelles la position de chaque élément a de l'importance.</p>
+
+<h3>Exemple détaillé — 6 candidats pour 3 postes distincts</h3>
+<p>On dispose de 6 candidats et on doit attribuer trois postes différents : président, vice-président et secrétaire.</p>
+<ul class="steps">
+  <li><span class="step-n">1</span><div>Pour le premier poste, on peut choisir parmi <strong>6</strong> personnes.</div></li>
+  <li><span class="step-n">2</span><div>Une personne est déjà prise : il reste <strong>5</strong> choix pour le deuxième poste.</div></li>
+  <li><span class="step-n">3</span><div>Il reste ensuite <strong>4</strong> choix pour le troisième poste.</div></li>
+</ul>
+<div class="formula">6 × 5 × 4 = <strong>120</strong></div>
+<p>Il existe donc <strong>120 affectations différentes</strong>. Ici, Alice présidente et Bob vice-président n'est pas le même résultat que Bob président et Alice vice-présidente.</p>
+
+<h3>D'où vient la formule ?</h3>
+<p>Le produit précédent est exactement le début d'une factorielle :</p>
+<div class="formula">6! = 6 × 5 × 4 × 3 × 2 × 1</div>
+<p>Mais on veut s'arrêter après trois facteurs. On divise donc par les facteurs qui restent :</p>
+<div class="formula">P(6,3) = 6! / 3! = (6 × 5 × 4 × 3 × 2 × 1) / (3 × 2 × 1) = 6 × 5 × 4 = <strong>120</strong></div>
+<p>La formule générale est :</p>
 <div class="formula">P(n, k) = n! / (n − k)!</div>
-<p><strong>Factorielle :</strong> n! = n × (n−1) × (n−2) × ... × 1</p>
+
+<h3>Factorielle</h3>
+<p>La notation <strong>n!</strong> signifie que l'on multiplie tous les entiers de n jusqu'à 1 :</p>
 <div class="formula">5! = 5 × 4 × 3 × 2 × 1 = <strong>120</strong><br>0! = <strong>1</strong> par convention</div>
-<p><strong>Exemple — 6 animaux, 3 emplacements distincts dans un zoo :</strong></p>
-<div class="formula">P(6, 3) = 6! / (6−3)! = 6! / 3! = 720 / 6 = <strong>120 arrangements</strong></div>
-<p>Dans le 1er emplacement on peut mettre 6 animaux, dans le 2ème il en reste 5, dans le 3ème il en reste 4 → 6 × 5 × 4 = 120.</p>
 
 <h2>Combinaisons — l'ordre ne compte pas</h2>
-<p>Si l'ordre ne change pas le résultat — on choisit juste un groupe — c'est une combinaison.</p>
-<p><strong>Exemple :</strong> choisir 3 étudiants parmi 6 pour former un groupe de travail. {A, B, C} = {C, A, B} → même groupe.</p>
+<p>Une <strong>combinaison</strong> compte des groupes pour lesquels l'ordre des membres n'a aucune importance.</p>
+
+<h3>Exemple détaillé — choisir 3 étudiants parmi 6</h3>
+<p>Supposons qu'on veuille simplement former un groupe de trois personnes parmi six étudiants.</p>
+<p>Si l'on utilisait la formule des permutations, on obtiendrait 120 séquences. Mais un même groupe serait compté plusieurs fois.</p>
+<p>Par exemple, pour le groupe <strong>{A, B, C}</strong>, les six ordres suivants représentent toujours exactement les mêmes trois personnes :</p>
+<div class="table-wrap"><table>
+<tbody>
+<tr><td>ABC</td><td>ACB</td><td>BAC</td></tr>
+<tr><td>BCA</td><td>CAB</td><td>CBA</td></tr>
+</tbody></table></div>
+<p>Ces 6 ordres correspondent à :</p>
+<div class="formula">3! = 3 × 2 × 1 = 6</div>
+<p>Chaque groupe a donc été compté <strong>6 fois</strong> dans les permutations. Pour obtenir le nombre de groupes uniques, on divise par 3! :</p>
+<div class="formula">120 / 6 = <strong>20 groupes</strong></div>
+<p>Cela donne la formule générale :</p>
 <div class="formula">C(n, k) = n! / [k! × (n − k)!]</div>
-<p>On divise par k! pour éliminer tous les ordres équivalents.</p>
-<div class="formula">C(6, 3) = 6! / (3! × 3!) = 720 / (6 × 6) = <strong>20 combinaisons</strong></div>
-<p>On passe de 120 à 20 — on divise par 3! = 6 car chaque groupe de 3 peut être arrangé de 6 façons différentes, qui comptent toutes comme la même combinaison.</p>
+<div class="formula">C(6,3) = 6! / (3! × 3!) = 720 / (6 × 6) = <strong>20</strong></div>
+
+<div class="box box-green"><p><strong>Pourquoi diviser par k! ?</strong> Parce que les k éléments d'un même groupe peuvent être ordonnés de k! façons, alors que toutes ces façons doivent compter comme <strong>un seul groupe</strong>.</p></div>
 
 <h2>Permutations vs combinaisons</h2>
 <div class="table-wrap"><table>
 <thead><tr><th></th><th>Permutations</th><th>Combinaisons</th></tr></thead>
 <tbody>
+<tr><td>Question</td><td>Combien d'arrangements ?</td><td>Combien de groupes ?</td></tr>
 <tr><td>L'ordre</td><td>Compte</td><td>Ne compte pas</td></tr>
-<tr><td>Formule</td><td>n! / (n−k)!</td><td>n! / [k! × (n−k)!]</td></tr>
-<tr><td>Résultat</td><td>Plus grand pour k ≥ 2</td><td>Plus petit pour k ≥ 2</td></tr>
-<tr><td>Exemple</td><td>Podium, classement, attribution de postes</td><td>Équipes, groupes, tirages sans ordre</td></tr>
+<tr><td>Formule</td><td>P(n,k) = n!/(n−k)!</td><td>C(n,k) = n!/[k!(n−k)!]</td></tr>
+<tr><td>Exemple</td><td>Podium, classement, postes distincts</td><td>Équipe, comité, échantillon sans ordre</td></tr>
 </tbody></table></div>
-<blockquote><p><strong>Règle mnémotechnique :</strong> si tu peux dire « peu importe l'ordre » → combinaison. Si l'ordre change quelque chose → permutation.</p></blockquote>
+
+<h2>Comment choisir rapidement la bonne formule ?</h2>
+<ul class="steps">
+  <li><span class="step-n">1</span><div><strong>Identifie n et k.</strong> Combien d'éléments sont disponibles ? Combien en choisis-tu ?</div></li>
+  <li><span class="step-n">2</span><div><strong>Demande si l'ordre compte.</strong> Si A-B-C et C-B-A sont des résultats différents, permutation.</div></li>
+  <li><span class="step-n">3</span><div>Si A-B-C et C-B-A représentent le même groupe, <strong>combinaison</strong>.</div></li>
+</ul>
+
+<h3>Mini-exemples</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Problème</th><th>n</th><th>k</th><th>Ordre ?</th><th>Choix</th></tr></thead>
+<tbody>
+<tr><td>Podium de 3 personnes parmi 10</td><td>10</td><td>3</td><td>Oui</td><td>Permutation</td></tr>
+<tr><td>Comité de 3 personnes parmi 10</td><td>10</td><td>3</td><td>Non</td><td>Combinaison</td></tr>
+<tr><td>Choisir 5 personnes pour une enquête parmi 20</td><td>20</td><td>5</td><td>Non</td><td>Combinaison</td></tr>
+<tr><td>Attribuer trois rôles différents parmi 8 personnes</td><td>8</td><td>3</td><td>Oui</td><td>Permutation</td></tr>
+</tbody></table></div>
+
+<h2>Pourquoi cela sert en probabilités</h2>
+<p>Les probabilités demandent souvent de compter le nombre de résultats possibles et le nombre de résultats favorables. Les combinaisons et permutations fournissent précisément ces nombres lorsque l'énumération à la main devient trop longue.</p>
+
+<h3>Exemple — tirer 2 personnes parmi 5</h3>
+<p>On choisit deux personnes parmi cinq pour participer à un entretien, sans tenir compte de l'ordre.</p>
+<div class="formula">C(5,2) = 5! / (2! × 3!) = <strong>10</strong></div>
+<p>Il existe donc <strong>10 paires possibles</strong>. Si une seule paire particulière nous intéresse et que toutes les paires sont équiprobables, sa probabilité est :</p>
+<div class="formula">1 / 10 = <strong>10 %</strong></div>
+<div class="box box-note"><p><strong>Lien avec les sciences sociales :</strong> lors d'un tirage aléatoire simple, les combinaisons peuvent servir à compter le nombre d'échantillons différents que l'on pourrait former à partir d'une population finie. En pratique, on ne les énumère presque jamais tous, mais ce raisonnement aide à comprendre la logique de l'échantillonnage.</p></div>
+
+<h2>Cas particuliers à retenir</h2>
+<ul class="compact-list">
+  <li>Si <strong>k = 1</strong>, permutation et combinaison donnent toutes deux n : choisir une seule personne ne crée pas de problème d'ordre.</li>
+  <li>Si <strong>k = 0</strong>, les deux valent 1 par convention : il existe une seule façon de ne rien choisir.</li>
+  <li>Pour <strong>k ≥ 2</strong>, les permutations sont généralement plus nombreuses parce que plusieurs ordres correspondent à une seule combinaison.</li>
+  <li>Les formules de ce chapitre supposent <strong>sans répétition</strong>. Avec répétition autorisée, d'autres formules sont nécessaires.</li>
+</ul>
 
 <h2>Visualisations et calculateur interactif</h2>
 <div class="wrap"><div class="section">Permutations — l'ordre compte</div>

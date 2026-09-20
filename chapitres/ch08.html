@@ -20,27 +20,60 @@
   <p class="ch-desc">Étendue, variance, écart-type, percentiles, quartiles, IQR, boxplots, asymétrie, CV — mesurer l'éparpillement et la position des données.</p>
 </div>
 
-<h2>L'idée centrale</h2>
-<p>Deux datasets peuvent avoir la même moyenne et être complètement différents. La dispersion répond à : <strong>les valeurs sont-elles regroupées ou éparpillées autour de la moyenne ?</strong></p>
+<h2>L'idée centrale : qu'est-ce que la dispersion ?</h2>
+<p>La <strong>dispersion</strong> indique à quel point les observations d'un dataset se ressemblent ou diffèrent entre elles autour de leur centre. Deux datasets peuvent avoir <strong>exactement la même moyenne</strong> et être complètement différents : la dispersion répond à la question que la moyenne seule ne peut pas trancher — <strong>les valeurs sont-elles regroupées ou éparpillées ?</strong></p>
+
+<h3>Pourquoi est-ce important ?</h3>
+<p>Deux exemples concrets montrent qu'une moyenne identique peut cacher des réalités très différentes.</p>
+
+<div class="grid-2">
+  <div class="box box-note"><p><strong>Exemple — revenu</strong><br>Deux quartiers ont tous les deux un revenu moyen de <strong>6 000 CHF</strong>.<br>Quartier A : la plupart des revenus sont proches de 6 000 CHF.<br>Quartier B : certains revenus sont très bas, d'autres très élevés.<br><span style="color:var(--text-muted)">Même moyenne, mais une inégalité très différente.</span></p></div>
+  <div class="box box-green"><p><strong>Exemple — sondage</strong><br>Deux groupes notent une question en moyenne <strong>5/10</strong>.<br>Groupe A : la plupart des réponses tournent autour de 5.<br>Groupe B : la moitié répond autour de 1–2, l'autre moitié autour de 8–9.<br><span style="color:var(--text-muted)">Groupe A = consensus. Groupe B = polarisation.</span></p></div>
+</div>
+
+<p>La dispersion nous aide à comprendre :</p>
+<ul style="margin:.5rem 0 .9rem 1.2rem;color:var(--text-sec);font-size:.9rem;line-height:1.8">
+<li>si la moyenne représente bien le groupe ;</li>
+<li>à quel point les observations sont hétérogènes ;</li>
+<li>si les valeurs sont regroupées ou dispersées ;</li>
+<li>si des observations extrêmes pèsent sur l'analyse ;</li>
+<li>comment des groupes de moyenne identique peuvent différer fortement.</li>
+</ul>
+
+<div class="box box-purple"><p><strong>Pourquoi mesurer la dispersion ?</strong> Parce que la moyenne seule peut être trompeuse : deux datasets « en moyenne identiques » peuvent décrire des réalités opposées — un groupe homogène et un groupe très inégal ou polarisé.</p></div>
+
+<h2>Deux classes, même moyenne</h2>
+<p>Dataset — <strong>Classe A</strong> : 11, 12, 13, 14, 15 &nbsp;·&nbsp; <strong>Classe B</strong> : 5, 9, 13, 17, 21</p>
+<div class="formula">Moyenne A = (11 + 12 + 13 + 14 + 15) / 5 = 65 / 5 = <strong>13</strong><br>Moyenne B = (5 + 9 + 13 + 17 + 21) / 5 = 65 / 5 = <strong>13</strong></div>
 
 <div class="chart-card">
   <h4>Deux classes, même moyenne (13) — dispersions très différentes</h4>
   <p>La tendance centrale seule ne suffit pas à décrire un dataset.</p>
   <div class="chart-wrap" style="height:180px"><canvas id="disp-comp" role="img" aria-label="Deux distributions de même moyenne mais dispersions différentes"></canvas></div>
   <div class="legend" style="margin-top:.75rem">
-    <span class="leg"><span class="leg-sq" style="background:#2B52A0"></span>Classe A — s = 1.08</span>
-    <span class="leg"><span class="leg-sq" style="background:#C05A20"></span>Classe B — s = 6.32</span>
+    <span class="leg"><span class="leg-sq" style="background:#2B52A0"></span>Classe A — s ≈ 1.58</span>
+    <span class="leg"><span class="leg-sq" style="background:#C05A20"></span>Classe B — s ≈ 6.32</span>
   </div>
 </div>
+<p style="font-size:.85rem;color:var(--text-muted)">Même moyenne (13) des deux côtés : la Classe A est concentrée tout près de 13, la Classe B s'étale sur un intervalle beaucoup plus large. La moyenne seule ne permet pas de voir cette différence — il faut une mesure de dispersion.</p>
 
 <h2>1. Étendue (Range)</h2>
-<p><strong>Valeur max − valeur min.</strong> La plus simple, la moins fiable. Un seul outlier suffit à l'exploser — elle ne dit rien sur la distribution entre les deux extrêmes.</p>
+<p><strong>Valeur max − valeur min.</strong> La plus simple des mesures de dispersion.</p>
 <div class="formula">Étendue = max(xᵢ) − min(xᵢ)</div>
+<div class="formula">Étendue A = 15 − 11 = <strong>4</strong><br>Étendue B = 21 − 5 = <strong>16</strong></div>
+<p>La Classe B couvre un intervalle bien plus large que la Classe A — cohérent avec ce que montre le graphique ci-dessus.</p>
+
+<p><strong>Limite de l'étendue :</strong> elle n'utilise que deux observations (le minimum et le maximum) et ignore tout ce qui se passe entre les deux.</p>
+<div class="formula">2, 3, 4, 5, 6 → étendue = 6 − 2 = <strong>4</strong><br>2, 3, 4, 5, 6, <strong>30</strong> → étendue = 30 − 2 = <strong>28</strong></div>
+<p style="font-size:.85rem;color:var(--text-muted)">Une seule valeur extrême ajoutée fait passer l'étendue de 4 à 28, alors que les cinq premières valeurs n'ont pas changé. L'étendue est donc <strong>très sensible aux valeurs extrêmes</strong> — elle ne dit rien sur la distribution entre les deux extrêmes.</p>
 
 <h2>2. Variance et écart-type</h2>
+<p>L'étendue n'utilise que deux observations. La <strong>variance</strong>, elle, utilise <strong>chaque</strong> observation du dataset.</p>
+<p>Idée en langage simple : <strong>la variance mesure l'éparpillement en regardant l'écart entre chaque valeur et la moyenne, puis en mettant ces écarts au carré.</strong></p>
 
 <h3>Pourquoi pas la moyenne des écarts bruts ?</h3>
-<p>La somme des écarts (xᵢ − x̄) vaut <strong>toujours 0</strong> — les positifs et négatifs s'annulent. On élève au carré pour rendre tous les écarts positifs.</p>
+<p>La somme des écarts (xᵢ − x̄) vaut <strong>toujours 0</strong> — les positifs et négatifs s'annulent. On élève au carré pour trois raisons : cela rend tous les écarts positifs (plus d'annulation), et un grand écart contribue <strong>beaucoup plus fortement</strong> qu'un petit écart, une fois mis au carré.</p>
+<p style="font-size:.85rem;color:var(--text-muted)"><strong>Inconvénient :</strong> mettre les écarts au carré met aussi le résultat dans une <strong>unité au carré</strong>. Si les valeurs sont des points, la variance est en points² — une unité difficile à interpréter directement. C'est pour cela qu'on utilise ensuite l'écart-type (voir plus bas).</p>
 
 <div class="chart-card">
   <h4>Écarts à la moyenne — dataset 10, 12, 14, 16, 18 (x̄ = 14)</h4>
@@ -63,6 +96,25 @@
     <span style="font-size:.8rem;color:var(--text-muted)">Diviseur n−1 — correction de Bessel</span></p>
   </div>
 </div>
+
+<h3>Écart-type : ramener la variance dans l'unité d'origine</h3>
+<p><strong>L'écart-type est la racine carrée de la variance. Il ramène donc le résultat dans la même unité que les données.</strong> En langage simple : <strong>l'écart-type donne une idée de la distance typique des observations par rapport à la moyenne</strong> — sans être, au sens strict, la moyenne arithmétique des distances individuelles.</p>
+<p>Exemple : pour des notes de moyenne 14 et d'écart-type ≈ 3.16 (nous calculerons cette valeur juste en dessous), on peut dire : <em>« les notes se trouvent typiquement à quelques points de la moyenne de 14. »</em></p>
+<div class="grid-2">
+  <div class="box box-note"><p><strong>Écart-type petit</strong><br>Les valeurs sont concentrées près de la moyenne.</p></div>
+  <div class="box box-orange"><p><strong>Écart-type grand</strong><br>Les valeurs sont dispersées, plus loin de la moyenne.</p></div>
+</div>
+
+<div class="box box-purple">
+  <p><strong>Pourquoi l'écart-type compte en sciences sociales</strong></p>
+  <ul style="margin:.5rem 0 0 1.2rem;line-height:1.8">
+    <li><strong>Revenu</strong> — un écart-type élevé signale une forte hétérogénéité des revenus.</li>
+    <li><strong>Âge</strong> — un écart-type faible indique un échantillon d'âges proches ; élevé, une population très étalée en âge.</li>
+    <li><strong>Échelle de sondage</strong> — un écart-type faible indique un accord général autour de la moyenne ; élevé, des réponses très différentes (voire polarisées).</li>
+    <li><strong>Heures travaillées</strong> — une même moyenne peut cacher des horaires très différents selon la dispersion.</li>
+  </ul>
+</div>
+<p style="font-size:.85rem;color:var(--text-muted)">Pour des données très asymétriques ou avec des valeurs extrêmes, l'IQR (vu plus loin dans ce chapitre) est parfois plus informatif que l'écart-type.</p>
 
 <h3>Calcul étape par étape</h3>
 <p>Dataset : <strong>10, 12, 14, 16, 18</strong> — moyenne = 14. Le tableau des écarts ne dépend pas du diviseur : on le calcule une fois, puis on divise différemment selon que ces 5 valeurs sont <strong>toute la population</strong> ou <strong>un échantillon</strong>.</p>
@@ -132,28 +184,48 @@
 <p style="font-size:.85rem;color:var(--text-muted)">Attention à ne pas utiliser le diviseur N (population) pour une variance d'échantillon, ni l'inverse : le choix du diviseur dépend de ce que représentent les données, pas de la formule utilisée.</p>
 
 <h2>3. Percentiles</h2>
-<p>Un <strong>percentile</strong> (aussi appelé centile) indique une <strong>position</strong> dans une distribution triée. Le p-ème percentile est une valeur telle qu'environ p % des observations lui sont inférieures ou égales, selon la convention utilisée.</p>
-<ul style="margin:.5rem 0 .9rem 1.2rem;color:var(--text-sec);font-size:.9rem;line-height:1.8">
-<li>le 25ᵉ percentile marque environ le premier quart des données ;</li>
-<li>le 50ᵉ percentile correspond à la médiane ;</li>
-<li>le 90ᵉ percentile marque une valeur proche du haut de la distribution : environ 90 % des observations lui sont inférieures ou égales.</li>
-</ul>
+<p>Un <strong>percentile</strong> sert à <strong>situer une valeur par rapport aux autres valeurs d'un groupe</strong>. C'est un repère de position, pas une note ou un score.</p>
+<p>Le <strong>90ᵉ percentile</strong> est une valeur-seuil : environ <strong>90 % des observations sont à cette valeur ou en dessous</strong>, et environ <strong>10 % sont au-dessus</strong>. La direction compte : « au 90ᵉ percentile » veut dire proche du haut du groupe, pas du bas.</p>
 
-<div class="box box-orange">
-  <p><strong>Pourcentage ≠ percentile</strong><br>
-  Un <strong>pourcentage</strong> décrit une proportion : 18 bonnes réponses sur 20 = <strong>90 %</strong>.<br>
-  Un <strong>percentile</strong> décrit une position relative dans un groupe : être au <strong>90ᵉ percentile</strong> signifie se situer autour ou au-dessus de 90 % de la distribution de référence — cela ne veut <strong>pas</strong> dire que le score lui-même est de 90 %.</p>
+<div class="box box-note">
+  <p><strong>Exemple concret</strong> — imaginez 100 personnes qui passent un test. Si votre score se situe au <strong>90ᵉ percentile</strong> :</p>
+  <ul style="margin:.5rem 0 0 1.2rem;line-height:1.8">
+    <li>environ <strong>90 personnes</strong> ont obtenu ce score ou moins ;</li>
+    <li>environ <strong>10 personnes</strong> ont obtenu un score plus élevé.</li>
+  </ul>
+  <p style="margin-top:.5rem">Votre score est donc <strong>élevé par rapport au groupe</strong>. Cela ne veut <strong>pas</strong> dire que votre score vaut 90 %.</p>
 </div>
+
+<h3>Pourcentage vs percentile</h3>
+<p>Exemple : 18 bonnes réponses sur 20 = <strong>90 %</strong>. C'est un <strong>pourcentage</strong> : une part d'un total, indépendante de qui d'autre a répondu.</p>
+<p>Le <strong>percentile</strong> de ce même score de 18/20 dépend, lui, des <strong>autres scores</strong> du groupe :</p>
+<ul style="margin:.5rem 0 .9rem 1.2rem;color:var(--text-sec);font-size:.9rem;line-height:1.8">
+<li>si presque tout le monde a obtenu 19 ou 20, un score de 18/20 peut avoir un percentile <strong>relativement bas</strong> ;</li>
+<li>si presque tout le monde a obtenu entre 10 et 14, ce même 18/20 peut avoir un percentile <strong>très élevé</strong>.</li>
+</ul>
+<div class="box box-orange">
+  <p><strong>Pourcentage</strong> = une part d'un total (indépendant des autres observations).<br>
+  <strong>Percentile</strong> = une position par rapport aux autres observations (dépend entièrement du groupe de référence).</p>
+</div>
+
+<h3>Pourquoi dit-on « environ » ?</h3>
+<p>Une fois l'idée comprise, une précision s'impose : on parle presque toujours d'un percentile <strong>approximatif</strong>, parce que :</p>
+<ul style="margin:.5rem 0 .9rem 1.2rem;color:var(--text-sec);font-size:.9rem;line-height:1.8">
+<li>l'échantillon est de taille finie — on ne peut pas toujours tomber pile sur un pourcentage rond ;</li>
+<li>des <strong>ex æquo</strong> (valeurs identiques) peuvent se produire ;</li>
+<li>différentes conventions ou logiciels utilisent des règles de calcul légèrement différentes.</li>
+</ul>
 
 <h3>Rang percentile d'une valeur</h3>
 <p>Le <strong>rang percentile</strong> d'une valeur indique quel pourcentage des observations lui sont inférieures. Pour un calcul manuel simple :</p>
 <div class="formula">rang percentile ≈ (nb d'observations en dessous de x / n total) × 100</div>
+<p>Dataset trié : <strong>42, 48, 51, 55, 60, 64, 68, 72, 76, 81</strong></p>
 <div class="box box-note">
-  <p><strong>Exemple</strong> — données triées : 42, 48, 51, 55, 60, 64, 68, 72, 76, 81<br>
-  Pour x = 72 : 7 observations sont en dessous, sur 10 au total.<br>
-  Rang percentile ≈ 7 / 10 × 100 = <strong>70</strong> → 72 se situe environ au <strong>70ᵉ percentile</strong>.</p>
+  <p>Pour x = 72 : <strong>7</strong> valeurs sont strictement en dessous de 72, sur 10 au total.</p>
+  <div class="formula">7 / 10 × 100 = <strong>70</strong></div>
+  <p>Autrement dit, avec cette convention, <strong>70 % des observations sont strictement en dessous de 72</strong> : on attribue donc à 72 un rang percentile de 70. Si l'on comptait aussi 72 parmi les valeurs « à cette valeur ou en dessous », on en compterait 8 sur 10, soit 80 % — d'où l'importance de préciser la convention utilisée.</p>
 </div>
-<p style="font-size:.85rem;color:var(--text-muted)">Les formules de rang percentile varient selon la gestion des ex æquo — un logiciel peut renvoyer une valeur légèrement différente. Ce qui compte est la <strong>position relative</strong> de la valeur dans la distribution.</p>
+<p style="font-size:.85rem;color:var(--text-muted)">Une autre convention pourrait traiter la valeur sélectionnée ou les ex æquo différemment et renvoyer un résultat légèrement différent. Ce qui compte est la <strong>position relative</strong> de la valeur dans la distribution.</p>
 
 <h3>Trouver la valeur d'un percentile — méthode du rang le plus proche</h3>
 <p>Pour trouver la valeur correspondant à un percentile donné, on peut utiliser la <strong>méthode du rang le plus proche</strong> :</p>
@@ -162,19 +234,43 @@
 <li>calculer r = plafond((p / 100) × n) — arrondi au nombre entier supérieur ;</li>
 <li>prendre l'observation au rang r.</li>
 </ol>
+<p>Dataset trié : <strong>12, 15, 18, 20, 22, 25, 28, 30, 35, 40</strong> (n = 10)</p>
 <div class="box box-green">
-  <p><strong>Exemple</strong> — données triées : 12, 15, 18, 20, 22, 25, 28, 30, 35, 40 (n = 10)<br>
-  80ᵉ percentile : r = plafond(0.80 × 10) = <strong>8</strong> → la 8ᵉ observation est <strong>30</strong>.<br>
-  Le 80ᵉ percentile est donc <strong>30</strong>.</p>
+  <p>80ᵉ percentile (P80) : r = plafond(0.80 × 10) = <strong>8</strong> → la 8ᵉ observation est <strong>30</strong>.</p>
+  <p style="margin-top:.5rem">Avec cette convention, <strong>30 est le seuil P80</strong> : 8 des 10 observations sont à 30 ou en dessous. L'important n'est pas tant la formule que cette <strong>interprétation</strong> — le résultat exact du calcul ne sert à rien si on ne sait pas ce qu'il signifie.</p>
 </div>
 <p style="font-size:.85rem;color:var(--text-muted)">Il n'existe pas d'algorithme universel pour calculer les percentiles : Excel, R, Python ou SPSS peuvent utiliser des règles d'interpolation différentes et donner un résultat légèrement différent. Sur ce site, on utilise la <strong>méthode du rang le plus proche</strong> pour les percentiles en général, et la <strong>méthode de la médiane de chaque moitié</strong> (ci-dessous) pour les quartiles.</p>
 
 <h2>4. Quartiles et résumé à cinq nombres</h2>
-<p>Les <strong>quartiles</strong> sont trois points de coupure qui divisent les données triées en quatre parties égales.</p>
+<p>Les <strong>quartiles</strong> sont des percentiles particuliers qui découpent les données triées en <strong>quatre grandes parties</strong>, chacune représentant environ un quart (25 %) des observations.</p>
 <div class="grid-3">
   <div class="box box-note"><p><strong>Q1</strong><br>≈ 25ᵉ percentile</p></div>
   <div class="box box-green"><p><strong>Q2 = médiane</strong><br>≈ 50ᵉ percentile</p></div>
   <div class="box box-purple"><p><strong>Q3</strong><br>≈ 75ᵉ percentile</p></div>
+</div>
+
+<div class="chart-card">
+  <h4>Quatre quarts de la distribution</h4>
+  <p>Chaque quart contient environ 25 % des observations. Les distances numériques entre Q1, Q2 et Q3 ne sont <strong>pas nécessairement égales</strong> — seule la part d'observations l'est.</p>
+  <svg viewBox="0 0 640 70" width="100%" role="img" aria-label="Quatre quarts de 0 à 25%, 25 à 50%, 50 à 75%, 75 à 100% avec Q1, Q2, Q3">
+    <g stroke="var(--border)" stroke-width="1">
+      <rect x="20" y="15" width="150" height="28" fill="var(--accent-light)"/>
+      <rect x="170" y="15" width="150" height="28" fill="var(--green-light)"/>
+      <rect x="320" y="15" width="150" height="28" fill="var(--purple-light)"/>
+      <rect x="470" y="15" width="150" height="28" fill="var(--orange-light)"/>
+    </g>
+    <g font-size="11" fill="var(--text-sec)" text-anchor="middle">
+      <text x="95" y="34">0–25 %</text>
+      <text x="245" y="34">25–50 %</text>
+      <text x="395" y="34">50–75 %</text>
+      <text x="545" y="34">75–100 %</text>
+    </g>
+    <g font-size="11" font-weight="600" text-anchor="middle">
+      <text x="170" y="60" fill="var(--accent)">Q1</text>
+      <text x="320" y="60" fill="var(--green)">Q2 (médiane)</text>
+      <text x="470" y="60" fill="var(--purple)">Q3</text>
+    </g>
+  </svg>
 </div>
 
 <h3>Convention de calcul — médiane de chaque moitié</h3>
@@ -219,24 +315,32 @@
 </div>
 
 <h2>5. IQR — robuste aux outliers</h2>
-<p><strong>IQR = Q3 − Q1.</strong> Mesure la dispersion des 50 % centraux et est <strong>robuste aux valeurs extrêmes</strong> — contrairement à l'étendue, qui dépend entièrement des deux valeurs les plus extrêmes. C'est la largeur de la boîte dans un boxplot.</p>
-
-<div class="chart-card">
-  <h4>IQR sur un petit dataset : Q1 = 11, Q3 = 17, IQR = 6</h4>
-  <p>Ici on utilise la convention « médiane de chaque moitié » : pour 10, 12, 14, 16, 18, Q1 = 11 et Q3 = 17. D'autres logiciels peuvent utiliser une convention légèrement différente.</p>
-  <p>Dans ce boxplot simplifié, les moustaches vont jusqu'au min et au max — une variante pédagogique courante. La section suivante présente le boxplot de Tukey, la convention standard.</p>
-  <div class="chart-wrap" style="height:100px"><canvas id="iqr-chart" role="img" aria-label="Boxplot montrant IQR"></canvas></div>
-</div>
+<p><strong>L'IQR mesure la largeur de la moitié centrale des données.</strong> C'est la largeur de la boîte dans un boxplot.</p>
+<div class="formula">IQR = Q3 − Q1</div>
+<p>On continue avec le <strong>même dataset</strong> que ci-dessus (Q1 = 3, Q3 = 7) :</p>
+<div class="formula">IQR = 7 − 3 = <strong>4</strong></div>
+<p>Les 50 % centraux des observations se situent donc entre <strong>3</strong> et <strong>7</strong>.</p>
+<p><strong>Pourquoi l'IQR est-il robuste ?</strong> La valeur extrême 27 est très éloignée du reste des données, mais Q1 et Q3 sont des <strong>positions</strong> dans les données triées — ils sont beaucoup moins affectés par 27 que ne le serait l'étendue (qui, elle, irait directement de 1 à 27). L'IQR reste à 4 que la valeur extrême soit 27, 50 ou 1000 : seule sa position au-delà de Q3 compte, pas sa valeur exacte.</p>
 
 <h3>Limites (fences) et outliers potentiels</h3>
 <p>Une règle courante pour repérer des <strong>outliers potentiels</strong> utilise l'IQR :</p>
 <div class="formula">Limite inférieure = Q1 − 1.5 × IQR<br>Limite supérieure = Q3 + 1.5 × IQR</div>
-<p>Avec le dataset de la section 4 (Q1 = 3, Q3 = 7, IQR = 4) :</p>
+<p>Avec IQR = 4 :</p>
 <div class="box box-note">
   <p>Limite inférieure = 3 − 1.5 × 4 = <strong>−3</strong><br>
-  Limite supérieure = 7 + 1.5 × 4 = <strong>13</strong><br>
-  Toute valeur en dessous de −3 ou au-dessus de 13 est signalée comme <strong>outlier potentiel</strong> → <strong>27</strong> en est un.</p>
+  Limite supérieure = 7 + 1.5 × 4 = <strong>13</strong></p>
 </div>
+<div class="table-wrap">
+<table class="table-calc">
+  <thead><tr><th>Valeur</th><th>Comparaison</th><th>Résultat</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>1 &gt; −3</td><td class="hi-accent">à l'intérieur</td></tr>
+    <tr><td>9</td><td>9 &lt; 13</td><td class="hi-accent">à l'intérieur</td></tr>
+    <tr><td>27</td><td>27 &gt; 13</td><td class="hi-orange">outlier potentiel</td></tr>
+  </tbody>
+</table>
+</div>
+<p style="font-size:.85rem;color:var(--text-muted)"><strong>« Potentiel »</strong> : cette règle signale une valeur <strong>pour investigation</strong>, elle ne prouve pas que la valeur est fausse.</p>
 <div class="box box-orange">
   <p><strong>Important :</strong> une valeur signalée comme outlier ne doit pas être supprimée automatiquement. Elle peut refléter une erreur de saisie ou de mesure, une observation réelle mais inhabituelle, ou un sous-groupe pertinent. La bonne réaction est d'<strong>investiguer</strong> selon le contexte et l'objectif de l'analyse.</p>
 </div>
@@ -251,9 +355,20 @@
 <li>les observations au-delà des limites sont affichées séparément comme <strong>outliers potentiels</strong>.</li>
 </ul>
 
+<p>Toujours le <strong>même dataset</strong> : Q1 = 3, médiane = 5, Q3 = 7, IQR = 4, limites = −3 et 13 → plage non-outlier = 1 à 9, outlier potentiel = 27.</p>
+
+<h3>Construction, étape par étape</h3>
+<ol class="steps">
+<li><span class="step-n">1</span><div><strong>La boîte</strong> s'étend de Q1 (3) à Q3 (7).</div></li>
+<li><span class="step-n">2</span><div><strong>Le trait de la médiane</strong> est placé à 5, à l'intérieur de la boîte.</div></li>
+<li><span class="step-n">3</span><div><strong>La moustache gauche</strong> va jusqu'à 1 — la valeur la plus basse encore à l'intérieur de la limite inférieure (−3).</div></li>
+<li><span class="step-n">4</span><div><strong>La moustache droite</strong> va jusqu'à 9 — la valeur la plus haute encore à l'intérieur de la limite supérieure (13).</div></li>
+<li><span class="step-n">5</span><div><strong>27</strong> est au-delà de la limite supérieure (13) : il est tracé <strong>séparément</strong>, comme outlier potentiel.</div></li>
+</ol>
+
 <div class="chart-card">
   <h4>Boxplot de Tukey — dataset de la section 4</h4>
-  <p>Q1 = 3, médiane = 5, Q3 = 7, IQR = 4, limites = −3 et 13. Les moustaches s'arrêtent à 1 et 9 (dernières valeurs encore dans les limites) ; 27 est affiché séparément.</p>
+  <p>Q1 = 3, médiane = 5, Q3 = 7, IQR = 4, limites = −3 et 13. Les moustaches s'arrêtent à 1 et 9 (dernières valeurs encore dans les limites), avec des embouts verticaux bien visibles ; 27 est affiché séparément.</p>
   <svg viewBox="0 0 640 110" width="100%" role="img" aria-label="Boxplot de Tukey avec un outlier">
     <g stroke="var(--text-muted)" stroke-width="1">
       <line x1="20" y1="55" x2="620" y2="55"/>
@@ -267,7 +382,7 @@
     <!-- whiskers: lower 1 -> Q1 3, upper Q3 7 -> 9 (scale: x = 20 + v*21) -->
     <line x1="41" y1="45" x2="83" y2="45" stroke="var(--text-sec)" stroke-width="1.5"/>
     <line x1="41" y1="35" x2="41" y2="55" stroke="var(--text-sec)" stroke-width="1.5"/>
-    <line x1="167" y1="35" x2="167" y2="55" stroke="var(--text-sec)" stroke-width="1.5"/>
+    <line x1="209" y1="35" x2="209" y2="55" stroke="var(--text-sec)" stroke-width="1.5"/>
     <line x1="209" y1="45" x2="167" y2="45" stroke="var(--text-sec)" stroke-width="1.5"/>
     <!-- box Q1(83) to Q3(167) -->
     <rect x="83" y="25" width="84" height="40" rx="2" fill="var(--accent-light)" stroke="var(--accent)" stroke-width="1.5"/>
@@ -280,10 +395,11 @@
       <text x="167" y="20">7</text><text x="209" y="20">9</text><text x="587" y="30" fill="var(--red)">27</text>
     </g>
   </svg>
+  <p style="font-size:.8rem;color:var(--text-muted);margin-top:.5rem">Légende : boîte = Q1–Q3 (bleu) · trait épais = médiane · lignes fines = moustaches · embouts verticaux = extrémités 1 et 9 · cercle = outlier potentiel (27).</p>
 </div>
 
 <div class="box box-note">
-  <p><strong>À ne pas confondre :</strong> le résumé à cinq nombres contient le minimum et le maximum réels (1 et 27 ici). Dans un boxplot de Tukey standard, les moustaches n'atteignent <strong>pas forcément</strong> ces valeurs quand des outliers sont présents. Certains boxplots simplifiés (comme celui de la section 5) tracent les moustaches directement jusqu'au min et au max — une variante à connaître, mais ce n'est pas la convention standard.</p>
+  <p><strong>Résumé à cinq nombres vs boxplot de Tukey :</strong> le résumé à cinq nombres donne le <strong>maximum réel</strong>, ici 27. Mais dans le boxplot de Tukey, la moustache droite s'arrête à <strong>9</strong>, car 27 est signalé comme outlier potentiel et tracé séparément. D'autres variantes de boxplot existent (par exemple des moustaches tracées directement jusqu'au minimum et au maximum), mais ce site utilise l'interprétation de Tukey, qui est la convention standard.</p>
 </div>
 
 <h3>Lire un boxplot</h3>
@@ -296,6 +412,9 @@
 
 <h3>Comparer plusieurs boxplots</h3>
 <p>Les boxplots sont particulièrement utiles pour comparer des groupes, car ils placent centre et dispersion sur la même échelle.</p>
+<p><strong>Groupe A</strong> : 50, 60, 60, 75, 90, 90, 100 (n = 7) → Q1 = 60, médiane = 75, Q3 = 90, IQR = 30<br>
+<strong>Groupe B</strong> : 50, 55, 55, 65, 70, 70, 75 (n = 7) → Q1 = 55, médiane = 65, Q3 = 70, IQR = 15</p>
+<p style="font-size:.85rem;color:var(--text-muted)">Mêmes calculs que plus haut (médiane de chaque moitié) : pour A, la moitié inférieure 50,60,60 donne Q1 = 60 et la moitié supérieure 90,90,100 donne Q3 = 90 ; pour B, 50,55,55 donne Q1 = 55 et 70,70,75 donne Q3 = 70.</p>
 <div class="chart-card">
   <h4>Exemple — scores de deux groupes</h4>
   <p>Groupe A : médiane plus élevée mais IQR large. Groupe B : médiane plus basse mais IQR resserré.</p>
@@ -305,11 +424,11 @@
       <text x="10" y="95">Groupe B</text>
     </g>
     <!-- scale: x = 110 + (v-40) * 8.33, values 40..100 -->
-    <!-- Groupe A : min 50, Q1 60, médiane 75, Q3 90, max 95 -->
+    <!-- Groupe A : min 50, Q1 60, médiane 75, Q3 90, max 100 -->
     <line x1="193" y1="25" x2="277" y2="25" stroke="var(--text-sec)" stroke-width="1.5"/>
     <line x1="193" y1="15" x2="193" y2="35" stroke="var(--text-sec)" stroke-width="1.5"/>
-    <line x1="527" y1="25" x2="568" y2="25" stroke="var(--text-sec)" stroke-width="1.5"/>
-    <line x1="568" y1="15" x2="568" y2="35" stroke="var(--text-sec)" stroke-width="1.5"/>
+    <line x1="527" y1="25" x2="610" y2="25" stroke="var(--text-sec)" stroke-width="1.5"/>
+    <line x1="610" y1="15" x2="610" y2="35" stroke="var(--text-sec)" stroke-width="1.5"/>
     <rect x="277" y="10" width="250" height="30" rx="2" fill="var(--accent-light)" stroke="var(--accent)" stroke-width="1.5"/>
     <line x1="402" y1="10" x2="402" y2="40" stroke="var(--accent)" stroke-width="2.5"/>
 
@@ -330,64 +449,188 @@
 <p>Interprétation : le groupe A tend à avoir des scores plus élevés, mais aussi plus variables ; le groupe B est plus resserré autour de sa médiane. La comparaison devrait porter sur les médianes, les IQR, l'étalement général, l'asymétrie et les outliers potentiels — un simple recouvrement visuel des boîtes ne permet pas de conclure à une différence statistiquement significative.</p>
 
 <h2>7. Asymétrie (skewness)</h2>
-<p>L'<strong>asymétrie</strong> décrit le déséquilibre d'une distribution par rapport à son centre. Le nom de l'asymétrie se base sur la <strong>queue</strong> (tail) de la distribution, pas sur l'endroit où se trouve la majorité des observations.</p>
+<p>L'<strong>asymétrie</strong> décrit une distribution qui n'est pas équilibrée de la même manière à gauche et à droite de son centre. Pour nommer l'asymétrie, on regarde surtout la <strong>queue</strong> : la partie plus longue et plus étirée de la distribution.</p>
+<p>Le point clé est le suivant : <strong>la moyenne est sensible aux valeurs extrêmes</strong>. Quelques valeurs très grandes la tirent vers la droite ; quelques valeurs très petites la tirent vers la gauche. La médiane, fondée sur la position centrale des données triées, bouge généralement moins.</p>
+
+<div class="box box-note"><p><strong>Illustrations schématiques</strong> — les trois courbes ci-dessous servent à comprendre la forme générale. Elles ne représentent pas un dataset réel.</p></div>
 
 <div class="grid-3">
   <div class="chart-card" style="margin:0">
-    <h4 style="text-align:center">Symétrique</h4>
-    <svg viewBox="0 0 200 100" width="100%" role="img" aria-label="Distribution symétrique">
-      <path d="M15,85 C55,85 65,15 100,15 C135,15 145,85 185,85" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
-      <line x1="100" y1="10" x2="100" y2="88" stroke="var(--text-muted)" stroke-dasharray="3,3"/>
+    <h4 style="text-align:center">Distribution symétrique</h4>
+    <svg viewBox="0 0 220 135" width="100%" role="img" aria-label="Illustration schématique d'une distribution symétrique avec moyenne et médiane au même endroit">
+      <line x1="12" y1="100" x2="208" y2="100" stroke="var(--border-strong)" stroke-width="1"/>
+      <path d="M15,100 C48,100 60,24 110,24 C160,24 172,100 205,100" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+      <line x1="110" y1="18" x2="110" y2="103" stroke="var(--text-sec)" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="110" y="116" font-size="10.5" fill="var(--text-sec)" text-anchor="middle">moyenne ≈ médiane</text>
     </svg>
-    <p style="text-align:center;font-size:.8rem">moyenne ≈ médiane</p>
+    <p style="text-align:center;font-size:.8rem;color:var(--text-muted)">Les deux côtés sont équilibrés : la moyenne et la médiane sont souvent très proches.</p>
   </div>
+
   <div class="chart-card" style="margin:0">
-    <h4 style="text-align:center">Asymétrie positive</h4>
-    <svg viewBox="0 0 200 100" width="100%" role="img" aria-label="Distribution asymétrique à droite, longue queue vers la droite">
-      <path d="M15,85 C35,85 45,15 75,15 C110,15 130,60 185,80" fill="none" stroke="var(--orange)" stroke-width="2.5"/>
-      <text x="150" y="45" font-size="11" fill="var(--orange)" text-anchor="middle">queue →</text>
+    <h4 style="text-align:center">Asymétrie positive (droite)</h4>
+    <svg viewBox="0 0 220 135" width="100%" role="img" aria-label="Illustration schématique d'une distribution asymétrique à droite avec médiane à gauche de la moyenne">
+      <line x1="12" y1="100" x2="208" y2="100" stroke="var(--border-strong)" stroke-width="1"/>
+      <path d="M15,100 C30,98 37,43 61,27 C79,15 96,27 108,47 C125,72 150,91 205,99" fill="none" stroke="var(--orange)" stroke-width="2.5"/>
+      <line x1="75" y1="28" x2="75" y2="103" stroke="var(--green)" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <line x1="105" y1="42" x2="105" y2="103" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="75" y="116" font-size="10" fill="var(--green)" text-anchor="middle">médiane</text>
+      <text x="110" y="129" font-size="10" fill="var(--accent)" text-anchor="middle">moyenne</text>
+      <text x="169" y="63" font-size="10.5" fill="var(--orange)" text-anchor="middle">queue →</text>
     </svg>
-    <p style="text-align:center;font-size:.8rem">moyenne &gt; médiane</p>
+    <p style="text-align:center;font-size:.8rem;color:var(--text-muted)">Quelques grandes valeurs tirent la moyenne vers la droite : typiquement, <strong>moyenne &gt; médiane</strong>.</p>
   </div>
+
   <div class="chart-card" style="margin:0">
-    <h4 style="text-align:center">Asymétrie négative</h4>
-    <svg viewBox="0 0 200 100" width="100%" role="img" aria-label="Distribution asymétrique à gauche, longue queue vers la gauche">
-      <path d="M15,80 C70,60 90,15 125,15 C155,15 165,85 185,85" fill="none" stroke="var(--purple)" stroke-width="2.5"/>
-      <text x="50" y="45" font-size="11" fill="var(--purple)" text-anchor="middle">← queue</text>
+    <h4 style="text-align:center">Asymétrie négative (gauche)</h4>
+    <svg viewBox="0 0 220 135" width="100%" role="img" aria-label="Illustration schématique d'une distribution asymétrique à gauche avec moyenne à gauche de la médiane">
+      <line x1="12" y1="100" x2="208" y2="100" stroke="var(--border-strong)" stroke-width="1"/>
+      <path d="M15,99 C70,91 95,72 112,47 C124,27 141,15 159,27 C183,43 190,98 205,100" fill="none" stroke="var(--purple)" stroke-width="2.5"/>
+      <line x1="115" y1="42" x2="115" y2="103" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <line x1="145" y1="28" x2="145" y2="103" stroke="var(--green)" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="110" y="129" font-size="10" fill="var(--accent)" text-anchor="middle">moyenne</text>
+      <text x="145" y="116" font-size="10" fill="var(--green)" text-anchor="middle">médiane</text>
+      <text x="51" y="63" font-size="10.5" fill="var(--purple)" text-anchor="middle">← queue</text>
     </svg>
-    <p style="text-align:center;font-size:.8rem">moyenne &lt; médiane</p>
+    <p style="text-align:center;font-size:.8rem;color:var(--text-muted)">Quelques petites valeurs tirent la moyenne vers la gauche : typiquement, <strong>moyenne &lt; médiane</strong>.</p>
   </div>
 </div>
 
-<p>Dans une distribution <strong>symétrique</strong> et unimodale, les deux côtés sont à peu près équilibrés : moyenne ≈ médiane (et le mode est souvent proche de la même position).</p>
-<p>Une <strong>asymétrie positive</strong> (queue longue vers les <strong>grandes</strong> valeurs — typiquement les revenus) : quelques valeurs très élevées tirent la moyenne vers le haut, d'où généralement moyenne &gt; médiane.</p>
-<p>Une <strong>asymétrie négative</strong> (queue longue vers les <strong>petites</strong> valeurs) : quelques valeurs très basses tirent la moyenne vers le bas, d'où généralement moyenne &lt; médiane.</p>
-
-<div class="box box-note">
-  <p>Une règle pratique courante — asymétrie positive : mode &lt; médiane &lt; moyenne ; asymétrie négative : moyenne &lt; médiane &lt; mode (détaillée au <a href="ch07.html">chapitre 07</a>). Ce n'est <strong>pas une loi universelle</strong> : des distributions multimodales ou irrégulières peuvent ne pas suivre cet ordre. L'intuition la plus fiable pour un débutant reste : les valeurs extrêmes élevées tirent la moyenne vers le haut, les valeurs extrêmes basses la tirent vers le bas, et la <strong>médiane résiste mieux</strong> aux observations extrêmes.</p>
-</div>
-
-<h2>8. Coefficient de variation (CV)</h2>
-<p>Écart-type exprimé en % de la moyenne. Il permet de <strong>comparer des dispersions relatives</strong>, surtout pour des variables avec un zéro significatif (échelles de ratio). Il devient peu utile si la moyenne est proche de 0.</p>
-<div class="formula">CV = (s / x̄) × 100</div>
-<div class="grid-2">
-  <div class="box box-note"><p>Durées : x̄ = 14 min, s = 3.16 min<br>CV = (3.16/14) × 100 = <strong>22.6 %</strong></p></div>
-  <div class="box box-green"><p>Revenus : x̄ = 6 000 CHF, s = 1 200<br>CV = (1200/6000) × 100 = <strong>20 %</strong></p></div>
-</div>
-<p>Malgré des unités complètement différentes, les deux datasets ont une dispersion relative similaire.</p>
-
-<h2>Quelle mesure choisir ?</h2>
+<h3>Exemple numérique — une grande valeur tire la moyenne vers la droite</h3>
+<p>Dataset : <strong>2, 3, 3, 3, 4, 5, 12</strong> (n = 7). La plupart des valeurs sont regroupées entre 2 et 5, mais une valeur, 12, est beaucoup plus élevée.</p>
 <div class="table-wrap">
-<table>
-  <thead><tr><th>Situation</th><th>Mesure recommandée</th></tr></thead>
+<table class="table-calc">
+  <thead><tr><th>Mesure</th><th>Calcul</th><th>Résultat</th></tr></thead>
   <tbody>
-    <tr><td>Distribution symétrique, sans outliers</td><td>Écart-type (s)</td></tr>
-    <tr><td>Distribution asymétrique ou outliers</td><td>IQR</td></tr>
-    <tr><td>Comparer des dispersions relatives sur des échelles de ratio</td><td>CV</td></tr>
-    <tr><td>Calcul intermédiaire (régression, tests)</td><td>Variance (s²)</td></tr>
-    <tr><td>Vue rapide, ordre de grandeur</td><td>Étendue</td></tr>
+    <tr><td>Médiane</td><td>4ᵉ valeur de la série triée</td><td class="hi-accent"><strong>3</strong></td></tr>
+    <tr><td>Moyenne</td><td>(2 + 3 + 3 + 3 + 4 + 5 + 12) / 7 = 32 / 7</td><td class="hi-orange"><strong>≈ 4.57</strong></td></tr>
   </tbody>
 </table>
+</div>
+<p>Le 12 ne change pas la position de la valeur centrale : la médiane reste 3. En revanche, il augmente fortement la somme utilisée dans la moyenne, qui monte à environ 4.57. <strong>La moyenne se déplace donc vers la queue droite.</strong></p>
+
+<div class="box box-note">
+  <p><strong>Règle pratique, pas loi universelle.</strong> Pour une distribution simple, unimodale et asymétrique, on rencontre souvent :</p>
+  <p style="margin-top:.45rem"><strong>asymétrie positive :</strong> mode &lt; médiane &lt; moyenne<br>
+  <strong>asymétrie négative :</strong> moyenne &lt; médiane &lt; mode</p>
+  <p style="margin-top:.45rem">Mais ce classement peut ne pas fonctionner pour une distribution irrégulière ou multimodale. L'intuition la plus fiable est : <strong>les valeurs extrêmes attirent la moyenne vers elles, alors que la médiane y résiste davantage.</strong></p>
+</div>
+
+<h3>Et si la distribution est bimodale ?</h3>
+<p><strong>Bimodale</strong> signifie qu'une distribution présente <strong>deux concentrations ou deux pics</strong> plutôt qu'un seul. Dans ce cas, une moyenne ou une médiane peut se situer entre les deux groupes et ne représenter correctement aucun d'eux.</p>
+<p>Dataset : <strong>2, 2, 2, 3, 4, 7, 8, 9, 9, 9</strong>. Les deux valeurs les plus fréquentes sont <strong>2</strong> et <strong>9</strong> : il y a donc bien deux modes.</p>
+<div class="grid-2">
+  <div class="box box-note">
+    <p><strong>Moyenne</strong><br>(2 + 2 + 2 + 3 + 4 + 7 + 8 + 9 + 9 + 9) / 10 = 55 / 10 = <strong>5.5</strong></p>
+    <p style="margin-top:.55rem"><strong>Médiane</strong><br>(4 + 7) / 2 = <strong>5.5</strong></p>
+    <p style="margin-top:.55rem"><strong>Modes</strong><br><strong>2 et 9</strong> (3 occurrences chacun)</p>
+  </div>
+  <div class="chart-card" style="margin:0">
+    <h4>Mini-histogramme du dataset</h4>
+    <p>Deux groupes apparaissent clairement : 2–3 et 8–9.</p>
+    <svg viewBox="0 0 360 170" width="100%" role="img" aria-label="Histogramme bimodal avec un groupe de valeurs autour de 2 à 3 et un autre autour de 8 à 9">
+      <line x1="38" y1="132" x2="335" y2="132" stroke="var(--border-strong)" stroke-width="1.2"/>
+      <line x1="38" y1="22" x2="38" y2="132" stroke="var(--border-strong)" stroke-width="1.2"/>
+      <!-- bins [2,4), [4,6), [6,8), [8,10) : frequencies 4,1,1,4 -->
+      <rect x="45" y="36" width="70" height="96" fill="var(--accent-light)" stroke="var(--accent)" stroke-width="1.5"/>
+      <rect x="115" y="108" width="70" height="24" fill="var(--accent-light)" stroke="var(--accent)" stroke-width="1.5"/>
+      <rect x="185" y="108" width="70" height="24" fill="var(--accent-light)" stroke="var(--accent)" stroke-width="1.5"/>
+      <rect x="255" y="36" width="70" height="96" fill="var(--accent-light)" stroke="var(--accent)" stroke-width="1.5"/>
+      <g font-size="10.5" fill="var(--text-sec)" text-anchor="middle">
+        <text x="80" y="151">2–&lt;4</text><text x="150" y="151">4–&lt;6</text><text x="220" y="151">6–&lt;8</text><text x="290" y="151">8–&lt;10</text>
+        <text x="80" y="30">4</text><text x="150" y="103">1</text><text x="220" y="103">1</text><text x="290" y="30">4</text>
+      </g>
+      <text x="18" y="84" font-size="10" fill="var(--text-muted)" text-anchor="middle" transform="rotate(-90 18 84)">fréquence</text>
+    </svg>
+  </div>
+</div>
+<p>La moyenne et la médiane valent toutes deux <strong>5.5</strong>, mais aucune observation n'est proche de 5.5 : les réponses se trouvent dans deux groupes séparés. Cela montre pourquoi il faut <strong>regarder la forme de la distribution</strong> et ne pas se fier uniquement à une statistique centrale.</p>
+<div class="box box-purple"><p><strong>Exemple en sciences sociales — opinions polarisées.</strong> Une enquête peut contenir un groupe très favorable et un groupe très défavorable à une proposition. Une moyenne située au milieu pourrait donner l'impression d'une opinion modérée, alors que les réponses réelles sont surtout concentrées aux deux extrêmes.</p></div>
+
+<h2>8. Coefficient de variation (CV)</h2>
+<p>L'écart-type est exprimé dans la <strong>même unité que les données</strong>. C'est très pratique à l'intérieur d'un même dataset, mais cela pose un problème lorsqu'on veut comparer l'éparpillement de variables ayant des unités ou des niveaux moyens très différents.</p>
+<div class="box box-orange"><p><strong>Le problème :</strong> un écart-type de <strong>3 minutes</strong> et un écart-type de <strong>1 200 CHF</strong> ne peuvent pas être comparés directement. Les nombres n'utilisent ni la même unité ni la même échelle.</p></div>
+
+<h3>L'idée du CV : rapporter l'écart-type à la moyenne</h3>
+<p>Le <strong>coefficient de variation</strong> compare la taille de l'écart-type à la taille de la moyenne du même dataset.</p>
+<div class="formula">CV = (s / x̄) × 100</div>
+<ul style="margin:.5rem 0 .9rem 1.2rem;color:var(--text-sec);font-size:.9rem;line-height:1.8">
+<li><strong>s</strong> = écart-type de l'échantillon ;</li>
+<li><strong>x̄</strong> = moyenne ;</li>
+<li><strong>s / x̄</strong> demande : « quelle est la taille de l'écart-type par rapport à la moyenne ? » ;</li>
+<li><strong>× 100</strong> transforme ce rapport en pourcentage.</li>
+</ul>
+<p>On appelle cela la <strong>dispersion relative</strong> : l'éparpillement des valeurs <em>par rapport à la taille moyenne des valeurs</em>, plutôt qu'en unités brutes.</p>
+
+<h3>Exemple 1 — durées</h3>
+<p>Dataset : <strong>10, 12, 14, 16, 18 minutes</strong></p>
+<div class="table-wrap">
+<table class="table-calc">
+  <thead><tr><th>Moyenne</th><th>Écart-type (échantillon)</th><th>CV</th></tr></thead>
+  <tbody><tr><td>14 min</td><td>≈ 3.16 min</td><td class="hi-accent"><strong>≈ 22.6 %</strong></td></tr></tbody>
+</table>
+</div>
+<div class="formula">CV = (3.16 / 14) × 100 ≈ <strong>22.6 %</strong></div>
+<p>Interprétation : l'écart-type représente environ <strong>22.6 % de la moyenne</strong>. En langage courant, l'éparpillement est d'une taille équivalente à un peu plus d'un cinquième de la durée moyenne de 14 minutes.</p>
+
+<h3>Exemple 2 — salaires mensuels</h3>
+<p>Dataset : <strong>4 500, 5 250, 6 000, 6 750, 7 500 CHF</strong></p>
+<div class="table-wrap">
+<table class="table-calc">
+  <thead><tr><th>Moyenne</th><th>Écart-type (échantillon)</th><th>CV</th></tr></thead>
+  <tbody><tr><td>6 000 CHF</td><td>≈ 1 185.85 CHF</td><td class="hi-accent"><strong>≈ 19.8 %</strong></td></tr></tbody>
+</table>
+</div>
+<div class="formula">CV = (1 185.85 / 6 000) × 100 ≈ <strong>19.8 %</strong></div>
+<p>On ne peut pas comparer directement <strong>3.16 minutes</strong> à <strong>1 185.85 CHF</strong>. En revanche, les CV de <strong>22.6 %</strong> et <strong>19.8 %</strong> indiquent que, relativement à leur propre moyenne, les deux datasets ont un éparpillement d'un ordre de grandeur assez proche : environ un cinquième de leur moyenne.</p>
+
+<h3>Pourquoi faut-il un zéro qui ait un vrai sens ?</h3>
+<p>Le CV repose sur un <strong>rapport</strong>. Pour que ce rapport soit interprétable, zéro doit représenter l'absence réelle de la quantité mesurée.</p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Variable</th><th>Que signifie 0 ?</th><th>Rapports interprétables ?</th></tr></thead>
+  <tbody>
+    <tr><td>Durée</td><td>0 minute = aucune durée écoulée</td><td>Oui</td></tr>
+    <tr><td>Masse</td><td>0 kg = aucune masse</td><td>Oui</td></tr>
+    <tr><td>Quantité monétaire non négative</td><td>0 CHF = aucune quantité monétaire mesurée</td><td>Oui, en principe</td></tr>
+    <tr><td>Température en °C</td><td>0 °C n'est pas « aucune température »</td><td>Non</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Par exemple, dire « 20 °C est deux fois plus chaud que 10 °C » n'a pas de sens sur l'échelle Celsius. C'est pourquoi le CV est surtout adapté aux variables pour lesquelles les rapports ont un sens — ce qu'on appelle une <strong>échelle de ratio</strong>.</p>
+
+<h3>Pourquoi une moyenne proche de zéro pose problème</h3>
+<p>La moyenne se trouve au dénominateur. Si elle devient très petite, le CV peut devenir énorme même pour un écart-type ordinaire.</p>
+<div class="formula">moyenne = 0.2, s = 1 → CV = (1 / 0.2) × 100 = <strong>500 %</strong></div>
+<p>Si la moyenne vaut exactement 0, la division est impossible. Si elle est très proche de 0 — ou négative — le CV devient souvent instable ou difficile à interpréter. Dans ces situations, il vaut mieux utiliser d'autres descriptions de la dispersion.</p>
+
+<div class="box box-purple">
+  <p><strong>Quelques usages possibles en sciences sociales</strong></p>
+  <ul style="margin:.5rem 0 0 1.2rem;line-height:1.8">
+    <li>comparer la variabilité des <strong>salaires</strong> entre des régions dont les salaires moyens diffèrent ;</li>
+    <li>comparer la variabilité des <strong>dépenses des ménages</strong> entre populations ;</li>
+    <li>comparer la variabilité des <strong>temps de trajet domicile-travail</strong> entre villes.</li>
+  </ul>
+  <p style="margin-top:.55rem">Le CV n'est cependant pas approprié pour toutes les variables : il faut notamment que le rapport à la moyenne ait un sens.</p>
+</div>
+
+<h2>Quelle mesure choisir ?</h2>
+<p>Il n'existe pas une seule « meilleure » mesure de dispersion ou de position : le bon choix dépend de la question posée et de la forme des données.</p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Question</th><th>Mesure utile</th><th>Ce qu'elle apporte</th></tr></thead>
+  <tbody>
+    <tr><td>Quelle distance sépare le minimum du maximum ?</td><td><strong>Étendue</strong></td><td>Vue très rapide de l'amplitude totale.</td></tr>
+    <tr><td>À quel point les observations varient-elles typiquement autour de la moyenne ?</td><td><strong>Écart-type</strong></td><td>Dispersion dans la même unité que les données.</td></tr>
+    <tr><td>Ai-je besoin de la dispersion au carré pour un calcul statistique ?</td><td><strong>Variance</strong></td><td>Mesure utilisée dans de nombreuses méthodes statistiques.</td></tr>
+    <tr><td>Où se situe une valeur par rapport aux autres ?</td><td><strong>Percentile</strong></td><td>Position relative dans la distribution.</td></tr>
+    <tr><td>Quelle est la largeur de la moitié centrale des données ?</td><td><strong>IQR</strong></td><td>Dispersion robuste aux valeurs extrêmes.</td></tr>
+    <tr><td>Je veux visualiser médiane, IQR et outliers potentiels.</td><td><strong>Boxplot</strong></td><td>Résumé graphique compact d'une distribution.</td></tr>
+    <tr><td>Je veux comparer l'éparpillement par rapport à des moyennes/échelles différentes.</td><td><strong>CV</strong></td><td>Dispersion relative, si le rapport à la moyenne est interprétable.</td></tr>
+  </tbody>
+</table>
+</div>
+<div class="box box-note">
+  <p><strong>Repères pratiques :</strong> pour des données quantitatives à peu près symétriques et sans valeurs extrêmes importantes, <strong>moyenne + écart-type</strong> forment souvent un bon résumé. Pour des données très asymétriques ou riches en outliers, <strong>médiane + IQR</strong> sont souvent plus robustes. Dans tous les cas, regardez aussi la <strong>forme de la distribution</strong> : un seul nombre peut masquer une asymétrie, des valeurs extrêmes ou plusieurs groupes.</p>
 </div>
 
 <div class="page-nav">
@@ -410,13 +653,13 @@ new Chart(document.getElementById('disp-comp'), {
   data: {
     labels: ['5','9','11','12','13','14','15','17','21'],
     datasets: [
-      { label:'Classe A', data:[0,0,1,3,5,3,1,0,0], backgroundColor:'#2B52A0', borderColor: isDark?'#141413':'#fff', borderWidth:1.5, categoryPercentage:.45, barPercentage:.9, borderRadius:2, borderSkipped:false },
+      { label:'Classe A', data:[0,0,1,1,1,1,1,0,0], backgroundColor:'#2B52A0', borderColor: isDark?'#141413':'#fff', borderWidth:1.5, categoryPercentage:.45, barPercentage:.9, borderRadius:2, borderSkipped:false },
       { label:'Classe B', data:[1,1,0,0,1,0,0,1,1], backgroundColor:'#C05A20', borderColor: isDark?'#141413':'#fff', borderWidth:1.5, categoryPercentage:.45, barPercentage:.9, borderRadius:2, borderSkipped:false }
     ]
   },
   options: { responsive:true, maintainAspectRatio:false,
-    plugins:{ legend:{display:false} },
-    scales:{ x:{ grid:{display:false}, ticks:{color:tick,font:{size:11}} }, y:{ grid:{color:gridC}, ticks:{color:tick,font:{size:11},stepSize:1}, beginAtZero:true, max:6 } }
+    plugins:{ legend:{display:false}, tooltip:{callbacks:{label:t=>`${t.dataset.label} : f = ${t.raw}`}} },
+    scales:{ x:{ grid:{display:false}, ticks:{color:tick,font:{size:11}} }, y:{ grid:{color:gridC}, ticks:{color:tick,font:{size:11},stepSize:1}, beginAtZero:true, max:2 } }
   }
 });
 
@@ -431,22 +674,6 @@ new Chart(document.getElementById('ecarts'), {
   options: { responsive:true, maintainAspectRatio:false,
     plugins:{ legend:{display:false}, tooltip:{callbacks:{label:t=>`Écart : ${t.raw>0?'+':''}${t.raw}`}} },
     scales:{ x:{grid:{display:false},ticks:{color:tick,font:{size:11}}}, y:{grid:{color:gridC},ticks:{color:tick,font:{size:11}},min:-5,max:5} }
-  }
-});
-
-new Chart(document.getElementById('iqr-chart'), {
-  type: 'bar',
-  data: { labels:[''],
-    datasets:[
-      {label:'Min→Q1', data:[[10,11]], backgroundColor:'rgba(122,120,117,.2)', borderColor:'rgba(122,120,117,.4)', borderWidth:1, borderRadius:0, borderSkipped:false},
-      {label:'Q1→Méd', data:[[11,14]], backgroundColor:'rgba(43,82,160,.3)', borderColor:'#2B52A0', borderWidth:1.5, borderRadius:0, borderSkipped:false},
-      {label:'Méd→Q3', data:[[14,17]], backgroundColor:'rgba(43,82,160,.3)', borderColor:'#2B52A0', borderWidth:1.5, borderRadius:0, borderSkipped:false},
-      {label:'Q3→Max', data:[[17,18]], backgroundColor:'rgba(122,120,117,.2)', borderColor:'rgba(122,120,117,.4)', borderWidth:1, borderRadius:0, borderSkipped:false},
-    ]
-  },
-  options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
-    scales:{ x:{grid:{color:gridC},ticks:{color:tick,font:{size:11}},min:8,max:20}, y:{grid:{display:false},ticks:{display:false}} }
   }
 });
 </script>

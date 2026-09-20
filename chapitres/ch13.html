@@ -9,20 +9,16 @@
 <style>
 .compact-list { margin:.75rem 0 1rem 1.2rem; color:var(--text-sec); }
 .compact-list li { margin:.35rem 0; }
-
-.wrap{padding:.5rem 0 1rem;font-family:var(--font-sans);}
-.section{margin:1.2rem 0 .4rem;font-size:10px;font-weight:500;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;}
-.chart-box{background:var(--surface-1);border:.5px solid var(--border);border-radius:12px;padding:16px;margin:8px 0;}
-.chart-title{font-size:12px;font-weight:500;color:var(--text-primary);margin-bottom:4px;}
-.chart-sub{font-size:11px;color:var(--text-secondary);margin-bottom:10px;}
-.note-box{background:var(--surface-1);border-left:3px solid #7F77DD;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--text-secondary);line-height:1.6;margin:10px 0;}
-.note-box b{color:var(--text-primary);}
-.warn-box{background:var(--bg-warning);border-left:3px solid #BA7517;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--text-warning);line-height:1.6;margin:10px 0;}
-.stat-row{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0;}
-.stat-card{flex:1;min-width:0;background:var(--surface-1);border:.5px solid var(--border);border-radius:8px;padding:10px;text-align:center;}
-.stat-card .lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;}
-.stat-card .val{font-size:20px;font-weight:500;}
-
+.mini-kicker { font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-muted); font-weight:600; margin-bottom:.35rem; }
+.concept-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:1rem; }
+.concept-card h4 { margin:0 0 .4rem; font-size:.9rem; color:var(--text-pri); }
+.concept-card p { margin:.25rem 0 0; font-size:.86rem; color:var(--text-sec); }
+.arrow-seq { display:flex; gap:.35rem; flex-wrap:wrap; align-items:center; font-family:'JetBrains Mono',monospace; font-size:.82rem; margin:.7rem 0; color:var(--text-pri); }
+.arrow-seq .v { background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:.35rem .5rem; }
+.arrow-seq .a { color:var(--text-muted); }
+.sim-buttons { display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
+.sim-buttons button { flex:1; min-width:90px; padding:7px 8px; border-radius:6px; border:1px solid var(--border); cursor:pointer; font-size:12px; background:var(--surface); color:var(--text-pri); }
+.sim-buttons button:hover { border-color:var(--border-strong); }
 </style>
 </head>
 <body>
@@ -33,44 +29,188 @@
 <div class="ch-header">
   <div class="ch-eyebrow">Chapitre 13 · Distribution & probabilités</div>
   <h1 class="ch-title">Loi des grands nombres</h1>
-  <p class="ch-desc">Voir la fréquence observée converger vers la probabilité théorique quand le nombre d’essais augmente.</p>
+  <p class="ch-desc">Comprendre pourquoi les fréquences et certaines moyennes deviennent plus stables quand le nombre d'observations augmente.</p>
 </div>
 
-<h2>L'idée centrale</h2>
-<p>La <strong>loi des grands nombres</strong> dit que plus on répète une expérience aléatoire, plus la <strong>fréquence observée</strong> se rapproche de la <strong>probabilité théorique</strong>.</p>
-<blockquote><p>Quand n → ∞, fréquence observée → probabilité théorique</p></blockquote>
-<p><strong>Exemple :</strong> lancer une pièce 10 fois peut donner 7 piles (70 %) — loin des 50 % théoriques. Avec 10 000 lancers, la fréquence a de fortes chances d'être <strong>beaucoup plus proche de 50 %</strong>. La variabilité relative se réduit avec le nombre d'essais.</p>
+<h2>1. Probabilité théorique et fréquence observée</h2>
+<p>Avant la loi des grands nombres, il faut distinguer deux choses.</p>
+<div class="grid-2">
+  <div class="concept-card">
+    <div class="mini-kicker">Probabilité théorique</div>
+    <h4>Ce que le modèle prévoit</h4>
+    <p>Pour une pièce équilibrée, la probabilité de pile vaut <strong>0,5 = 50&nbsp;%</strong>. Cette valeur ne change pas d'un lancer à l'autre.</p>
+  </div>
+  <div class="concept-card">
+    <div class="mini-kicker">Fréquence observée</div>
+    <h4>Ce qu'on obtient réellement</h4>
+    <p>Si 7 piles apparaissent en 10 lancers, la fréquence observée est <strong>7/10 = 70&nbsp;%</strong>. Elle peut être assez loin de 50&nbsp;% lorsque l'échantillon est petit.</p>
+  </div>
+</div>
 
-<h2>Ce que ça implique concrètement</h2>
-<p>Ce n'est <strong>pas</strong> la loi du retard — erreur classique au casino : « ça fait 10 fois que c'est rouge, donc le noir est dû ». Non. Chaque lancer est indépendant. La pièce n'a pas de mémoire. La loi des grands nombres dit que la <strong>fréquence relative</strong> se stabilise autour de la probabilité théorique, pas que le prochain lancer doit compenser les précédents.</p>
+<div class="formula">fréquence observée = nombre de fois où l'événement apparaît / nombre total d'essais</div>
 
-<h2>Lien avec les statistiques</h2>
-<p>La loi des grands nombres aide à comprendre pourquoi un <strong>grand échantillon</strong> donne souvent des estimations plus stables de la population. Par exemple, sous les bonnes conditions, la moyenne de l'échantillon x̄ se rapproche de la moyenne de population μ lorsque n augmente.</p>
+<p>La fréquence observée varie d'une série d'essais à l'autre. La probabilité théorique, elle, décrit le mécanisme supposé produire les résultats.</p>
 
-<h2>Simulation interactive</h2>
-<div class="wrap"><div class="section">Simulation — lancers de pièce</div>
-<div class="chart-box">
-  <div class="chart-title">Fréquence de "pile" selon le nombre de lancers</div>
-  <div class="chart-sub">Plus n augmente, plus on converge vers 50 %. Clique sur "Relancer" pour voir une nouvelle simulation.</div>
-  <div class="stat-row">
+<h2>2. L'idée centrale de la loi des grands nombres</h2>
+<p>La <strong>loi des grands nombres</strong> dit que, sous des conditions appropriées, lorsqu'on répète un très grand nombre de fois la même expérience aléatoire, la <strong>fréquence relative</strong> d'un événement tend à se rapprocher de sa probabilité théorique.</p>
+
+<div class="box box-note">
+  <p><strong>Version intuitive :</strong> avec peu d'essais, le hasard peut produire de fortes fluctuations. Avec beaucoup d'essais, ces fluctuations pèsent généralement moins dans la proportion totale.</p>
+</div>
+
+<div class="formula">quand n devient très grand : fréquence observée → probabilité théorique</div>
+
+<p>Pour une pièce équilibrée, cela signifie que la proportion de piles tend vers <strong>50&nbsp;%</strong>. Cela ne signifie pas qu'elle sera exactement égale à 50&nbsp;% après un nombre précis de lancers.</p>
+
+<h3>Exemple simple</h3>
+<p>Après seulement 10 lancers, obtenir 7 piles donne <strong>70&nbsp;%</strong>. Ce résultat n'a rien d'anormal : dix observations laissent beaucoup de place au hasard.</p>
+<p>Après des milliers de lancers, une fréquence comme 50,4&nbsp;% ou 49,7&nbsp;% devient beaucoup plus plausible que 70&nbsp;%. La proportion se stabilise autour de 50&nbsp;%.</p>
+
+<h2>3. « Se rapprocher » ne veut pas dire avancer en ligne droite</h2>
+<p>La convergence n'est pas régulière. La fréquence peut passer au-dessus et au-dessous de la valeur théorique plusieurs fois.</p>
+
+<div class="box box-purple">
+  <p><strong>Exemple purement illustratif :</strong> une même série cumulée pourrait passer par 70&nbsp;%, puis 48&nbsp;%, puis 54&nbsp;%, puis 49,2&nbsp;%, puis 50,7&nbsp;%. Elle ne descend pas mécaniquement vers 50&nbsp;%. Elle <em>fluctue</em> autour de cette valeur avec une amplitude relative qui tend à devenir moins importante.</p>
+</div>
+
+<div class="arrow-seq" aria-label="Exemple de fréquences fluctuantes autour de 50 pour cent">
+  <span class="v">70 %</span><span class="a">→</span>
+  <span class="v">48 %</span><span class="a">→</span>
+  <span class="v">54 %</span><span class="a">→</span>
+  <span class="v">49,2 %</span><span class="a">→</span>
+  <span class="v">50,7 %</span>
+</div>
+
+<p>Il n'existe donc pas de règle disant qu'à chaque augmentation de <em>n</em>, la fréquence doit être plus proche de la probabilité théorique que précédemment.</p>
+
+<h2>4. La proportion peut se rapprocher même si l'écart en nombre augmente</h2>
+<p>C'est un point contre-intuitif mais important. La loi concerne surtout la <strong>proportion</strong>, pas l'égalité parfaite entre les nombres bruts.</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th>Lancers</th><th>Piles</th><th>Faces</th><th>Fréquence de pile</th><th>Écart à 50 %</th><th>Écart piles − faces</th></tr>
+</thead>
+<tbody>
+<tr><td>100</td><td>55</td><td>45</td><td>55,0 %</td><td>5 points de %</td><td>10</td></tr>
+<tr><td>10 000</td><td>5 080</td><td>4 920</td><td>50,8 %</td><td>0,8 point de %</td><td>160</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Dans la deuxième ligne, il y a <strong>160 piles de plus que de faces</strong>, contre seulement 10 dans la première. Pourtant, proportionnellement, <strong>50,8&nbsp;% est beaucoup plus proche de 50&nbsp;% que 55&nbsp;%</strong>.</p>
+
+<h2>5. Ce que la loi ne dit pas : la « loi du retard »</h2>
+<div class="box box-orange">
+  <p><strong>Erreur classique :</strong> « ça fait 10 fois que c'est rouge, donc le noir est maintenant dû ». Non. Si les tours sont indépendants, les résultats précédents ne rendent pas le prochain résultat plus probable.</p>
+</div>
+
+<p>La loi des grands nombres ne dit pas que le hasard doit <strong>compenser immédiatement</strong> une série inhabituelle. Elle dit que, sur un nombre d'essais de plus en plus grand, la <strong>fréquence relative</strong> tend à se stabiliser autour de la probabilité du mécanisme.</p>
+
+<div class="grid-2">
+  <div class="concept-card">
+    <div class="mini-kicker">Faux raisonnement</div>
+    <h4>« Le prochain lancer doit rééquilibrer »</h4>
+    <p>Une série de 10 piles ne rend pas face plus probable au 11e lancer d'une pièce équilibrée.</p>
+  </div>
+  <div class="concept-card">
+    <div class="mini-kicker">Loi des grands nombres</div>
+    <h4>« La proportion se stabilise à long terme »</h4>
+    <p>Sur une très longue série, les 10 premiers lancers finissent par représenter une part minuscule du total.</p>
+  </div>
+</div>
+
+<h2>6. Pourquoi cela compte en statistiques</h2>
+<p>La même intuition s'applique à de nombreuses estimations statistiques. Sous de bonnes conditions d'échantillonnage, une moyenne ou une proportion calculée sur un grand échantillon tend à être plus stable qu'une estimation fondée sur quelques observations.</p>
+
+<h3>Exemple en sciences sociales : usage d'un service numérique</h3>
+<p>Imaginons qu'en réalité <strong>60&nbsp;%</strong> d'une population utilise un certain service numérique.</p>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th>Taille de l'échantillon</th><th>Résultat possible</th><th>Proportion observée</th><th>Lecture</th></tr></thead>
+<tbody>
+<tr><td>10</td><td>7 utilisateurs</td><td>70 %</td><td>Une seule personne change l'estimation de 10 points.</td></tr>
+<tr><td>100</td><td>57 utilisateurs</td><td>57 %</td><td>Les fluctuations individuelles pèsent moins.</td></tr>
+<tr><td>1 000</td><td>603 utilisateurs</td><td>60,3 %</td><td>L'estimation peut devenir très proche de 60 %.</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Ces trois lignes sont des <strong>exemples possibles</strong>, pas une trajectoire garantie. Un échantillon de 100 peut parfois être plus proche de 60&nbsp;% qu'un échantillon de 1 000. La loi décrit un comportement à long terme, pas une garantie pour chaque échantillon particulier.</p>
+
+<h3>Grand échantillon ≠ bon échantillon</h3>
+<div class="box box-orange">
+  <p><strong>Important en sciences sociales :</strong> augmenter la taille d'un échantillon réduit certaines fluctuations dues au hasard, mais ne corrige pas automatiquement un <strong>biais de sélection</strong>. Dix mille personnes mal sélectionnées peuvent produire une estimation très précise… de la mauvaise population.</p>
+</div>
+
+<p>Par exemple, une enquête sur les usages numériques diffusée uniquement sur une plateforme très technophile peut rester biaisée même avec 50 000 réponses. La loi des grands nombres ne remplace donc pas un bon plan d'échantillonnage.</p>
+
+<h2>7. Moyenne d'échantillon : même idée</h2>
+<p>La loi des grands nombres ne concerne pas seulement les proportions. Elle s'applique aussi, sous certaines conditions, aux <strong>moyennes</strong>.</p>
+
+<p>Si l'on prélève de plus en plus d'observations représentatives d'une population ayant une moyenne <strong>μ</strong>, la moyenne de l'échantillon <strong>x̄</strong> tend à se rapprocher de μ.</p>
+
+<div class="formula">quand n devient très grand : x̄ → μ</div>
+
+<p>Exemple : pour estimer le temps moyen de trajet domicile-travail d'une population, une moyenne basée sur 5 personnes peut varier fortement d'un échantillon à l'autre. Avec plusieurs milliers de personnes correctement sélectionnées, la moyenne observée est généralement beaucoup plus stable.</p>
+
+<h2>8. Loi des grands nombres vs théorème central limite</h2>
+<p>Ces deux idées utilisent de grands échantillons et sont donc faciles à confondre, mais elles ne répondent pas à la même question.</p>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th></th><th>Loi des grands nombres</th><th>Théorème central limite</th></tr></thead>
+<tbody>
+<tr><td>Question</td><td>Vers quelle valeur une estimation tend-elle ?</td><td>Quelle forme prend la distribution de nombreuses moyennes d'échantillons ?</td></tr>
+<tr><td>Idée principale</td><td>Une fréquence ou une moyenne devient proche du paramètre correspondant.</td><td>Sous certaines conditions, les moyennes d'échantillons ont une distribution approximativement normale quand n est suffisamment grand.</td></tr>
+<tr><td>Exemple</td><td>La proportion de piles tend vers 50 %.</td><td>Les moyennes obtenues à partir de nombreux échantillons se distribuent autour de μ avec une forme souvent proche d'une cloche.</td></tr>
+<tr><td>Ne dit pas</td><td>Que la trajectoire est régulière ou que le prochain essai compense les précédents.</td><td>Que les observations individuelles deviennent elles-mêmes normales.</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box box-note">
+  <p><strong>À retenir :</strong> la loi des grands nombres parle surtout de <em>stabilisation vers une valeur</em>. Le théorème central limite parle surtout de la <em>forme de la distribution des moyennes d'échantillons</em>.</p>
+</div>
+
+<h2>9. Simulation interactive</h2>
+<div class="chart-card">
+  <h4>Fréquence cumulée de pile selon le nombre de lancers</h4>
+  <p>La ligne bleue peut monter et descendre. La ligne orange représente les 50&nbsp;% théoriques. Relance plusieurs fois : la trajectoire change à chaque simulation.</p>
+  <div class="stat-cards">
     <div class="stat-card"><div class="lbl">Lancers</div><div class="val" id="n-val" style="color:#2a78d6">—</div></div>
     <div class="stat-card"><div class="lbl">Piles obtenus</div><div class="val" id="heads-val" style="color:#1baf7a">—</div></div>
     <div class="stat-card"><div class="lbl">Fréquence finale</div><div class="val" id="freq-val" style="color:#D85A30">—</div></div>
   </div>
-  <div style="position:relative;height:200px;"><canvas id="lgn-chart" role="img" aria-label="Convergence de la fréquence de pile vers 50%">Fréquence de pile convergent vers 50%.</canvas></div>
-  <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;">
-    <button onclick="simulate(100)"  style="flex:1;min-width:0;padding:6px;border-radius:6px;border:.5px solid var(--border);cursor:pointer;font-size:12px;background:var(--surface-1);color:var(--text-primary);">n = 100</button>
-    <button onclick="simulate(500)"  style="flex:1;min-width:0;padding:6px;border-radius:6px;border:.5px solid var(--border);cursor:pointer;font-size:12px;background:var(--surface-1);color:var(--text-primary);">n = 500</button>
-    <button onclick="simulate(2000)" id="btn-2000" style="flex:1;min-width:0;padding:6px;border-radius:6px;border:.5px solid var(--border-strong);cursor:pointer;font-size:12px;background:var(--bg-accent);color:var(--text-accent);">n = 2 000</button>
-    <button onclick="simulate(10000)" style="flex:1;min-width:0;padding:6px;border-radius:6px;border:.5px solid var(--border);cursor:pointer;font-size:12px;background:var(--surface-1);color:var(--text-primary);">n = 10 000</button>
+  <div class="chart-wrap" style="height:230px;"><canvas id="lgn-chart" role="img" aria-label="Simulation de la convergence de la fréquence de pile vers 50 pour cent">Simulation de la fréquence de pile.</canvas></div>
+  <div class="sim-buttons">
+    <button onclick="simulate(100)">n = 100</button>
+    <button onclick="simulate(500)">n = 500</button>
+    <button onclick="simulate(2000)">n = 2 000</button>
+    <button onclick="simulate(10000)">n = 10 000</button>
   </div>
 </div>
-<div class="warn-box">
-  <b>Erreur classique — la loi du retard :</b> "ça fait 10 fois que c'est rouge au casino, donc le noir est dû." Faux. Chaque lancer est indépendant. La pièce n'a pas de mémoire. La loi des grands nombres dit que la fréquence relative se rapproche de la probabilité théorique sur un grand nombre d'essais — elle ne dit pas que le prochain résultat compensera les précédents.
+
+<div class="box box-green">
+  <p><strong>Comment lire la simulation :</strong> ce n'est pas grave si la courbe s'éloigne momentanément de 50&nbsp;%. Ce qu'il faut observer est que, lorsque le nombre d'essais devient grand, les fluctuations de la fréquence deviennent généralement plus petites relativement à l'ensemble de la série.</p>
 </div>
-<div class="note-box">
-  <b>Lien avec l'inférence statistique :</b> plus l'échantillon est grand, plus certaines estimations usuelles peuvent devenir stables et proches des paramètres de la population, sous les conditions appropriées. La règle 68/95/99.7, elle, vient de la distribution normale et non de la loi des grands nombres.
-</div></div>
+
+<h2>10. Résumé</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Idée</th><th>À retenir</th></tr></thead>
+<tbody>
+<tr><td>Petits échantillons</td><td>Les fréquences et moyennes peuvent beaucoup fluctuer à cause du hasard.</td></tr>
+<tr><td>Grands échantillons</td><td>Sous de bonnes conditions, les estimations deviennent généralement plus stables autour du paramètre visé.</td></tr>
+<tr><td>Convergence</td><td>Elle n'est pas monotone : une estimation peut se rapprocher puis s'éloigner temporairement.</td></tr>
+<tr><td>Compensation</td><td>La loi ne dit pas que le prochain essai doit corriger les précédents.</td></tr>
+<tr><td>Écart absolu</td><td>Il peut augmenter même si l'écart proportionnel diminue.</td></tr>
+<tr><td>Biais</td><td>Une grande taille d'échantillon ne corrige pas un mauvais échantillonnage.</td></tr>
+<tr><td>LLN vs TCL</td><td>LLN = stabilisation vers une valeur ; TCL = forme de la distribution des moyennes d'échantillons.</td></tr>
+</tbody>
+</table>
+</div>
 
 <div class="page-nav">
   <a href="ch12.html">← Chapitre 12</a>
@@ -85,32 +225,34 @@ const tick=isDark?'#A7A59D':'#6B6963';
 let lgnChart;
 
 function simulate(n){
-  ['btn-2000'].forEach(id=>{
-    const b=document.getElementById(id);
-    if(b){b.style.background='var(--surface-1)';b.style.color='var(--text-primary)';b.style.borderColor='var(--border)';}
-  });
   let heads=0;
-  const step=Math.max(1,Math.floor(n/200));
+  const step=Math.max(1,Math.floor(n/250));
   const labels=[],data=[];
   for(let i=1;i<=n;i++){
     if(Math.random()<0.5)heads++;
-    if(i%step===0||i===n){labels.push(i);data.push(parseFloat((heads/i*100).toFixed(2)));}
+    if(i%step===0||i===n){
+      labels.push(i);
+      data.push(parseFloat((heads/i*100).toFixed(2)));
+    }
   }
-  document.getElementById('n-val').textContent=n.toLocaleString();
-  document.getElementById('heads-val').textContent=heads.toLocaleString();
-  document.getElementById('freq-val').textContent=(heads/n*100).toFixed(1)+'%';
+  document.getElementById('n-val').textContent=n.toLocaleString('fr-CH');
+  document.getElementById('heads-val').textContent=heads.toLocaleString('fr-CH');
+  document.getElementById('freq-val').textContent=(heads/n*100).toFixed(1).replace('.',',')+'%';
   if(lgnChart)lgnChart.destroy();
-  lgnChart=new Chart(document.getElementById('lgn-chart'),{type:'line',
+  lgnChart=new Chart(document.getElementById('lgn-chart'),{
+    type:'line',
     data:{labels,datasets:[
-      {label:'Fréquence pile',data,borderColor:'#2a78d6',borderWidth:1.5,pointRadius:0,fill:false,tension:.2},
-      {label:'50 % théorique',data:labels.map(()=>50),borderColor:'#D85A30',borderWidth:1.5,pointRadius:0,fill:false,borderDash:[5,4]},
+      {label:'Fréquence de pile',data,borderColor:'#2a78d6',borderWidth:1.5,pointRadius:0,fill:false,tension:.15},
+      {label:'50 % théorique',data:labels.map(()=>50),borderColor:'#D85A30',borderWidth:1.5,pointRadius:0,fill:false,borderDash:[5,4]}
     ]},
-    options:{responsive:true,maintainAspectRatio:false,
+    options:{
+      responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:true,labels:{color:tick,font:{size:10},boxWidth:14,boxHeight:2}}},
       scales:{
         x:{grid:{display:false},ticks:{color:tick,font:{size:10},maxTicksLimit:8},title:{display:true,text:'Nombre de lancers',color:tick,font:{size:10}}},
-        y:{grid:{color:gridC},ticks:{color:tick,font:{size:10},callback:v=>v+'%'},min:20,max:80}
-      }}
+        y:{grid:{color:gridC},ticks:{color:tick,font:{size:10},callback:v=>v+'%'},suggestedMin:20,suggestedMax:80,title:{display:true,text:'Fréquence cumulée de pile',color:tick,font:{size:10}}}
+      }
+    }
   });
 }
 simulate(2000);

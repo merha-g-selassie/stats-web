@@ -7,9 +7,8 @@
 <script src="../assets/theme.js"></script>
 <link rel="stylesheet" href="../assets/style.css">
 <style>
-.compact-list { margin:.75rem 0 1rem 1.2rem; color:var(--text-sec); }
-.compact-list li { margin:.35rem 0; }
-
+.compact-list{margin:.75rem 0 1rem 1.2rem;color:var(--text-sec);}
+.compact-list li{margin:.35rem 0;}
 .wrap{padding:.5rem 0 1rem;font-family:var(--font-sans);}
 .section{margin:1.2rem 0 .4rem;font-size:10px;font-weight:500;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;}
 .chart-box{background:var(--surface-1);border:.5px solid var(--border);border-radius:12px;padding:16px;margin:8px 0;}
@@ -18,12 +17,22 @@
 .note-box{background:var(--surface-1);border-left:3px solid #7F77DD;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--text-secondary);line-height:1.6;margin:10px 0;}
 .note-box b{color:var(--text-primary);}
 .warn-box{background:var(--bg-warning);border-left:3px solid #BA7517;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--text-warning);line-height:1.6;margin:10px 0;}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
 .stat-row{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0;}
-.stat-card{flex:1;min-width:0;background:var(--surface-1);border:.5px solid var(--border);border-radius:8px;padding:10px;text-align:center;}
+.stat-card{flex:1 1 150px;min-width:0;background:var(--surface-1);border:.5px solid var(--border);border-radius:8px;padding:10px;text-align:center;}
 .stat-card .lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;}
 .stat-card .val{font-size:16px;font-weight:500;}
-
+.step-row{display:flex;gap:12px;align-items:flex-start;margin:8px 0;font-size:12px;color:var(--text-secondary);line-height:1.6;}
+.step-num{min-width:24px;height:24px;border-radius:50%;background:#7F77DD;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;margin-top:1px;}
+.compare-card{background:var(--surface-1);border:.5px solid var(--border);border-radius:10px;padding:14px;min-width:0;}
+.compare-card h3{margin-top:0;}
+.resid-pos{border-left:3px solid #1baf7a;padding:8px 12px;background:rgba(29,158,117,.08);border-radius:0 8px 8px 0;}
+.resid-neg{border-left:3px solid #e34948;padding:8px 12px;background:rgba(227,73,72,.08);border-radius:0 8px 8px 0;}
+.mini-svg{width:100%;height:auto;display:block;}
+@media(max-width:700px){
+  .grid2,.grid3{grid-template-columns:1fr;}
+}
 </style>
 </head>
 <body>
@@ -31,98 +40,366 @@
 <div class="layout">
 <nav class="nav"></nav>
 <main class="content"><div class="content-inner">
+
 <div class="ch-header">
   <div class="ch-eyebrow">Chapitre 18 · Corrélation & inférence</div>
   <h1 class="ch-title">Régression linéaire</h1>
-  <p class="ch-desc">Construire une droite de prédiction, interpréter sa pente et analyser ses résidus.</p>
+  <p class="ch-desc">Résumer une relation par une droite, produire des valeurs prédites et comprendre les erreurs du modèle.</p>
 </div>
 
-<h2>L'idée centrale</h2>
-<p>La corrélation de Pearson résume la force d'une relation linéaire. La régression linéaire va plus loin : elle permet de <strong>prédire</strong> Y à partir de X et de quantifier la variation moyenne de Y <strong>associée</strong> à une unité supplémentaire de X.</p>
+<h2>1. La question centrale</h2>
+<p>Un scatter plot permet de voir si deux variables semblent liées. La régression linéaire ajoute une question pratique :</p>
 
-<h2>La droite de régression</h2>
-<div class="formula">ŷ = a + bx</div>
-<ul class="compact-list"><li><strong>b</strong> = pente = combien y change pour chaque augmentation d'une unité de x.</li><li><strong>a</strong> = ordonnée à l'origine = valeur de y quand x = 0.</li></ul>
-<p>La droite est calculée par la méthode des <strong>moindres carrés</strong> — elle minimise la somme des carrés des résidus.</p>
-
-<h2>Calcul étape par étape</h2>
-<p><strong>Dataset âge/revenu</strong> — x̄ = 47.5, ȳ = 58 500, r = 0.94.</p>
-<h3>Étape 1 — Calculer b (pente)</h3>
-<div class="formula">b = Σ(xᵢ−x̄)(yᵢ−ȳ) / Σ(xᵢ−x̄)²<br>b = 1 727 500 / 2 062.5 ≈ <strong>837.58 CHF par année d'âge</strong></div>
-
-<h3>Lien avec la corrélation : b = r × (s_y / s_x)</h3>
-<p>Pour une régression linéaire simple <strong>avec une constante</strong>, la pente peut aussi s'obtenir directement à partir du r de Pearson (chapitre 15) et des écarts-types de x et de y :</p>
-<div class="formula">b = r × (s_y / s_x)</div>
-<p>r est <strong>sans unité</strong> (toujours entre −1 et +1), alors que la pente b s'exprime en <em>unités de y par unité de x</em> (ici : CHF par année). Le rapport s_y / s_x sert à <strong>reconvertir</strong> la force/direction standardisée de la relation (r) dans l'échelle réelle des deux variables.</p>
-
-<p>Les écarts-types (échantillon) se calculent à partir des sommes déjà obtenues au chapitre 15 : Σ(x−x̄)² = 2 062.5 et Σ(y−ȳ)² = 1 636 500 000.</p>
-<div class="formula">s_x = √(2 062.5 / 9) ≈ <strong>15.14 ans</strong><br>s_y = √(1 636 500 000 / 9) ≈ <strong>13 484.56 CHF</strong></div>
-<div class="formula">s_y / s_x ≈ 13 484.5591 / 15.1383 ≈ <strong>890.7607</strong><br>b = r × (s_y / s_x) ≈ 0.9402927 × 890.7607 ≈ <strong>837.5758</strong></div>
-<p>Arrondi : b ≈ <strong>837.58 CHF par année d'âge</strong> — exactement la même pente qu'à l'étape 1 (aux arrondis près).</p>
-
-<div class="table-wrap"><table><thead><tr><th>Méthode</th><th>Pente</th></tr></thead><tbody>
-<tr><td>OLS avec écarts à la moyenne</td><td>837.58</td></tr>
-<tr><td>r × (s_y / s_x)</td><td>837.58</td></tr>
-</tbody></table></div>
-<div class="note-box"><b>Deux méthodes, même pente.</b> Les deux calculs sont mathématiquement équivalents pour une régression linéaire simple avec une constante.</div>
-
-<p style="font-size:.85rem;color:var(--text-sec)">Comme un écart-type est toujours ≥ 0, le signe de b suit toujours celui de r : si r &gt; 0 alors b &gt; 0, si r &lt; 0 alors b &lt; 0, et si r = 0 alors b = 0.</p>
-
-<div class="note-box">
-  <b>Intuition standardisée :</b> si x et y sont tous deux convertis en z-scores, la pente de la régression devient exactement r (chapitre 10 — z-scores). Multiplier par s_y / s_x reconvertit cette pente standardisée dans les unités d'origine de x et y.
+<div class="box box-note">
+  <p><strong>Peut-on tracer une droite qui résume la tendance générale et utiliser cette droite pour estimer Y à partir de X ?</strong></p>
 </div>
 
-<p style="font-size:.85rem;color:var(--text-muted)">Cette égalité vaut pour une <strong>régression linéaire simple avec une constante</strong> (un seul prédicteur). Ce n'est pas la formule générale de la pente en régression multiple, sans constante, ou pour un modèle non linéaire.</p>
+<p>Dans notre exemple, on cherche à utiliser l'<strong>âge</strong> pour estimer le <strong>revenu annuel</strong>.</p>
 
-<h3>Étape 2 — Calculer a (ordonnée à l'origine)</h3>
-<div class="formula">a = ȳ − b × x̄ = 58 500 − 837.58 × 47.5 ≈ <strong>18 715 CHF</strong></div>
-<h3>Étape 3 — Équation de régression</h3>
-<div class="formula">Ŷ ≈ <strong>18 715 + 837.58 × X</strong></div>
-<p><strong>Interprétation :</strong> dans ce modèle, une année d'âge supplémentaire est associée à environ <strong>838 CHF</strong> de revenu annuel prédit en plus. La valeur à X = 0 est seulement l'ancrage mathématique de la droite ; elle n'a pas de sens pratique ici.</p>
+<p>La régression ne prétend pas que chaque personne se trouve exactement sur une droite. Elle construit plutôt la droite qui résume au mieux la tendance linéaire du dataset.</p>
 
-<h2>Prédictions</h2>
-<div class="formula">35 ans : Ŷ ≈ <strong>48 030 CHF</strong><br>55 ans : Ŷ ≈ <strong>64 782 CHF</strong></div>
+<h2>2. Dataset âge–revenu</h2>
+<p>On reprend les mêmes 10 observations que dans les chapitres 14 à 16.</p>
 
-<h2>Les résidus</h2>
-<p>Un <strong>résidu</strong> = différence entre la valeur observée et la valeur prédite par la droite :</p>
-<div class="formula">résidu = Y − Ŷ</div>
-<p>Les résidus représentent tout ce que la droite n'explique pas — d'autres variables, du hasard, des facteurs non mesurés. La méthode des moindres carrés minimise Σ(résidu²).</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Personne</th><th>Âge x</th><th>Revenu observé y</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>25</td><td>35 000 CHF</td></tr>
+<tr><td>2</td><td>30</td><td>42 000 CHF</td></tr>
+<tr><td>3</td><td>35</td><td>48 000 CHF</td></tr>
+<tr><td>4</td><td>40</td><td>55 000 CHF</td></tr>
+<tr><td>5</td><td>45</td><td>62 000 CHF</td></tr>
+<tr><td>6</td><td>50</td><td>58 000 CHF</td></tr>
+<tr><td>7</td><td>55</td><td>70 000 CHF</td></tr>
+<tr><td>8</td><td>60</td><td>75 000 CHF</td></tr>
+<tr><td>9</td><td>65</td><td>68 000 CHF</td></tr>
+<tr><td>10</td><td>70</td><td>72 000 CHF</td></tr>
+</tbody>
+</table></div>
 
-<h2>R² — coefficient de détermination</h2>
-<div class="formula">R² = r² = 0.94² = <strong>0.88</strong></div>
-<p>Environ 88 % de la variance du revenu est expliquée par ce <strong>modèle linéaire</strong>. Les 12 % restants sont la variation non expliquée par ce modèle : autres variables, bruit, erreurs de mesure ou forme imparfaite du modèle.</p>
+<div class="stat-row">
+  <div class="stat-card"><div class="lbl">n</div><div class="val">10</div></div>
+  <div class="stat-card"><div class="lbl">Âge moyen x̄</div><div class="val">47,5 ans</div></div>
+  <div class="stat-card"><div class="lbl">Revenu moyen ȳ</div><div class="val">58 500 CHF</div></div>
+  <div class="stat-card"><div class="lbl">Pearson r</div><div class="val">≈ 0,94</div></div>
+</div>
 
-<h2>Limites importantes</h2>
-<div class="box box-orange"><p><strong>Ne pas extrapoler :</strong> la droite est valide uniquement dans la plage des données observées (25–70 ans ici).</p></div>
-<p><strong>Causalité :</strong> la régression modélise une relation — elle ne prouve pas que X cause Y.</p>
-<p><strong>Linéarité :</strong> si la relation réelle est courbée, une droite la décrit mal. Toujours vérifier le scatter plot et les résidus. Dans une analyse plus avancée, on vérifie aussi notamment l'indépendance et la stabilité de la variance des résidus.</p>
+<h2>3. Valeur observée y vs valeur prédite ŷ</h2>
+<p>C'est la distinction la plus importante du chapitre.</p>
 
-<h2>Visualisations et prédiction interactive</h2>
-<div class="wrap"><div class="section">La droite de régression — Ŷ ≈ 18 715 + 837.58 × X</div>
-<div class="chart-box">
-  <div class="chart-title">Les résidus = écarts verticaux entre points et droite</div>
-  <div class="chart-sub">La droite minimise la somme des carrés de ces résidus (méthode des moindres carrés).</div>
-  <div style="position:relative;height:230px;"><canvas id="reg-main" role="img" aria-label="Droite de régression avec résidus">Scatter plot avec droite de régression et résidus colorés.</canvas></div>
-  <div style="display:flex;gap:16px;margin-top:8px;font-size:11px;color:var(--text-secondary);justify-content:center;">
-    <span><span style="display:inline-block;width:12px;height:2px;background:#D85A30;vertical-align:middle;margin-right:4px;"></span>Droite Ŷ = a + bX</span>
-    <span><span style="display:inline-block;width:12px;height:12px;background:rgba(29,158,117,.5);border-radius:1px;vertical-align:middle;margin-right:4px;"></span>Résidu positif (Y > Ŷ)</span>
-    <span><span style="display:inline-block;width:12px;height:12px;background:rgba(227,73,72,.5);border-radius:1px;vertical-align:middle;margin-right:4px;"></span>Résidu négatif (Y < Ŷ)</span>
+<div class="grid2">
+  <div class="compare-card">
+    <h3>y — valeur observée</h3>
+    <p>C'est la valeur réellement présente dans le dataset.</p>
+    <p>Exemple : pour la personne de 35 ans, <strong>y = 48 000 CHF</strong>.</p>
+  </div>
+  <div class="compare-card">
+    <h3>ŷ — valeur prédite</h3>
+    <p>C'est la valeur donnée par la droite de régression.</p>
+    <p>Pour 35 ans, le modèle donnera environ <strong>ŷ = 48 030 CHF</strong>.</p>
   </div>
 </div>
 
-<div class="section">Paramètres de la droite</div>
+<p>La différence entre les deux s'appelle un <strong>résidu</strong>. Nous y revenons plus loin.</p>
+
+<h2>4. L'équation de la droite</h2>
+<div class="formula">ŷ = a + bx</div>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Symbole</th><th>Signification</th></tr></thead>
+<tbody>
+<tr><td><strong>ŷ</strong></td><td>Valeur de Y prédite par le modèle</td></tr>
+<tr><td><strong>x</strong></td><td>Valeur du prédicteur</td></tr>
+<tr><td><strong>b</strong></td><td>Pente : variation prédite de Y quand X augmente d'une unité</td></tr>
+<tr><td><strong>a</strong></td><td>Ordonnée à l'origine : valeur prédite lorsque x = 0</td></tr>
+</tbody>
+</table></div>
+
+<h2>5. Comprendre la pente avant de la calculer</h2>
+<p>La pente dit de combien la valeur prédite de Y change lorsque X augmente d'une unité.</p>
+
+<p>Dans notre modèle, nous allons trouver :</p>
+
+<div class="formula">b ≈ 837,58 CHF par année d'âge</div>
+
+<p>Interprétation :</p>
+
+<div class="box box-green">
+  <p>Dans ce dataset et selon cette droite, <strong>une année d'âge supplémentaire est associée à environ 838 CHF de revenu annuel prédit en plus</strong>.</p>
+</div>
+
+<p>Cela ne signifie pas :</p>
+<ul class="compact-list">
+  <li>que chaque personne gagne exactement 838 CHF de plus à chaque anniversaire ;</li>
+  <li>que l'âge cause cette hausse ;</li>
+  <li>que la relation continue nécessairement au-delà de la plage observée.</li>
+</ul>
+
+<h2>6. Calcul de la pente b</h2>
+<p>La pente des moindres carrés peut être calculée avec :</p>
+
+<div class="formula">b = Σ(xᵢ−x̄)(yᵢ−ȳ) / Σ(xᵢ−x̄)²</div>
+
+<p>Les sommes calculées dans le chapitre 15 sont :</p>
+
+<div class="formula">Σ(x−x̄)(y−ȳ) = 1 727 500<br>Σ(x−x̄)² = 2 062,5</div>
+
+<p>Donc :</p>
+
+<div class="formula">b = 1 727 500 / 2 062,5 ≈ <strong>837,58</strong></div>
+
+<p>Unité :</p>
+<div class="formula">CHF / année d'âge</div>
+
+<p>Contrairement à Pearson r, la pente a donc une <strong>unité concrète</strong>.</p>
+
+<h2>7. Calcul de l'ordonnée à l'origine a</h2>
+<p>Une fois b connu :</p>
+
+<div class="formula">a = ȳ − b × x̄</div>
+
+<div class="formula">a = 58 500 − 837,58 × 47,5 ≈ <strong>18 715,15 CHF</strong></div>
+
+<p>La droite complète est donc :</p>
+
+<div class="formula">ŷ ≈ <strong>18 715,15 + 837,58x</strong></div>
+
+<div class="warn-box">
+  <b>Attention à l'interprétation de a :</b> mathématiquement, a est la valeur prédite quand x = 0. Mais notre dataset contient seulement des âges de 25 à 70 ans. Le revenu prédit à 0 an n'a ici aucun intérêt substantiel : l'intercept sert surtout à positionner correctement la droite.
+</div>
+
+<h2>8. Faire une prédiction pas à pas</h2>
+<p>Prenons une personne de <strong>35 ans</strong>.</p>
+
+<div class="step-row"><div class="step-num">1</div><div>Remplacer x par 35.<div class="formula">ŷ = 18 715,15 + 837,58 × 35</div></div></div>
+
+<div class="step-row"><div class="step-num">2</div><div>Calculer la valeur prédite.<div class="formula">ŷ ≈ <strong>48 030,30 CHF</strong></div></div></div>
+
+<div class="step-row"><div class="step-num">3</div><div>Comparer avec la valeur réellement observée dans le dataset.<div class="formula">y = 48 000 CHF</div></div></div>
+
+<p>La prédiction est donc très proche de l'observation pour cette personne.</p>
+
+<h2>9. Les résidus : l'erreur de prédiction</h2>
+<p>Un résidu est la différence entre la valeur réellement observée et la valeur prédite :</p>
+
+<div class="formula">résidu = y − ŷ</div>
+
+<h3>Exemple à 35 ans</h3>
+<div class="formula">48 000 − 48 030,30 ≈ <strong>−30,30 CHF</strong></div>
+
+<div class="resid-neg">
+  <strong>Résidu négatif :</strong> l'observation se trouve sous la droite. Le modèle a légèrement <strong>surestimé</strong> le revenu.
+</div>
+
+<h3>Exemple à 45 ans</h3>
+<p>Le modèle prédit :</p>
+<div class="formula">ŷ ≈ 56 406,06 CHF</div>
+<p>mais l'observation vaut :</p>
+<div class="formula">y = 62 000 CHF</div>
+<p>donc :</p>
+<div class="formula">résidu ≈ 62 000 − 56 406,06 = <strong>+5 593,94 CHF</strong></div>
+
+<div class="resid-pos">
+  <strong>Résidu positif :</strong> l'observation se trouve au-dessus de la droite. Le modèle a <strong>sous-estimé</strong> le revenu.
+</div>
+
+<h2>10. Pourquoi les « moindres carrés » ?</h2>
+<p>Il existe une infinité de droites possibles. La méthode des <strong>moindres carrés ordinaires</strong> choisit celle qui minimise :</p>
+
+<div class="formula">Σ(y − ŷ)²</div>
+
+<p>Autrement dit :</p>
+
+<div class="step-row"><div class="step-num">1</div><div>Pour chaque observation, calculer l'erreur <strong>y − ŷ</strong>.</div></div>
+<div class="step-row"><div class="step-num">2</div><div>Mettre chaque erreur au carré.</div></div>
+<div class="step-row"><div class="step-num">3</div><div>Additionner tous les carrés.</div></div>
+<div class="step-row"><div class="step-num">4</div><div>Choisir la droite pour laquelle cette somme est la plus petite possible.</div></div>
+
+<p>Pourquoi les carrés ? Pour deux raisons similaires à celles vues avec la variance :</p>
+
+<ul class="compact-list">
+  <li>les erreurs positives et négatives ne s'annulent pas ;</li>
+  <li>les grandes erreurs sont davantage pénalisées.</li>
+</ul>
+
+<h2>11. Lien entre Pearson et la pente</h2>
+<p>Une fois l'idée de régression comprise, on peut relier la pente à la corrélation.</p>
+
+<p>Pour une <strong>régression linéaire simple avec intercept</strong> :</p>
+
+<div class="formula">b = r × (sᵧ / sₓ)</div>
+
+<p>Dans notre dataset :</p>
+
+<div class="formula">sₓ ≈ 15,14 ans<br>sᵧ ≈ 13 484,56 CHF</div>
+
+<div class="formula">sᵧ / sₓ ≈ 890,76</div>
+
+<div class="formula">b ≈ 0,9402927 × 890,7607 ≈ <strong>837,58</strong></div>
+
+<p>On retrouve exactement la même pente.</p>
+
+<div class="note-box">
+  <b>Intuition :</b> r décrit la direction et la force de la relation sur une échelle sans unité. Le rapport sᵧ/sₓ remet cette relation dans les unités réelles de Y par unité de X.
+</div>
+
+<p>Si X et Y étaient tous deux convertis en z-scores, leurs écarts-types vaudraient 1 et la pente deviendrait simplement :</p>
+
+<div class="formula">b = r</div>
+
+<div class="box box-note">
+  <p>Cette identité ne vaut pas comme formule générale de toute régression. Elle concerne la <strong>régression linéaire simple avec une constante</strong>.</p>
+</div>
+
+<h2>12. R² : quelle part de la variation le modèle reproduit-il ?</h2>
+<p>Dans une régression linéaire simple avec intercept :</p>
+
+<div class="formula">R² = r²</div>
+
+<div class="formula">R² = 0,9403² ≈ <strong>0,884</strong> = <strong>88,4 %</strong></div>
+
+<p>Les revenus diffèrent d'une personne à l'autre. Le modèle utilisant l'âge reproduit ici environ <strong>88,4 % de cette variation observée</strong>.</p>
+
+<p>Les <strong>11,6 % restants</strong> correspondent à la variation que cette droite ne reproduit pas.</p>
+
+<div class="grid2">
+  <div class="compare-card">
+    <h3>88,4 %</h3>
+    <p>Part de la variation de Y rendue compte par le modèle linéaire basé sur X dans cet échantillon.</p>
+  </div>
+  <div class="compare-card">
+    <h3>11,6 %</h3>
+    <p>Part restante dans les résidus : autres variables, bruit, erreurs de mesure, forme imparfaite du modèle, etc.</p>
+  </div>
+</div>
+
+<div class="warn-box">
+  <b>« Expliqué par le modèle » ne veut pas dire « causé par X ».</b> Un R² élevé ne démontre pas que l'âge est la cause du revenu.
+</div>
+
+<h2>13. Lire un graphique de résidus</h2>
+<p>Un bon modèle linéaire doit laisser des résidus sans structure évidente autour de zéro.</p>
+
+<div class="grid3">
+  <div class="compare-card">
+    <h3>Bon signe</h3>
+    <svg class="mini-svg" viewBox="0 0 220 100" role="img" aria-label="Résidus dispersés sans motif autour de zéro">
+      <line x1="20" y1="50" x2="205" y2="50" stroke="var(--text-muted)" stroke-dasharray="4 3"/>
+      <g fill="#378ADD">
+        <circle cx="35" cy="38" r="4"/><circle cx="55" cy="62" r="4"/><circle cx="78" cy="44" r="4"/>
+        <circle cx="100" cy="57" r="4"/><circle cx="126" cy="34" r="4"/><circle cx="148" cy="66" r="4"/>
+        <circle cx="174" cy="46" r="4"/><circle cx="194" cy="56" r="4"/>
+      </g>
+    </svg>
+    <p>Pas de motif clair : la droite semble raisonnable.</p>
+  </div>
+
+  <div class="compare-card">
+    <h3>Courbure</h3>
+    <svg class="mini-svg" viewBox="0 0 220 100" role="img" aria-label="Résidus formant une courbe">
+      <line x1="20" y1="50" x2="205" y2="50" stroke="var(--text-muted)" stroke-dasharray="4 3"/>
+      <g fill="#D85A30">
+        <circle cx="35" cy="70" r="4"/><circle cx="58" cy="59" r="4"/><circle cx="82" cy="42" r="4"/>
+        <circle cx="108" cy="31" r="4"/><circle cx="134" cy="42" r="4"/><circle cx="160" cy="58" r="4"/>
+        <circle cx="190" cy="71" r="4"/>
+      </g>
+    </svg>
+    <p>Une courbe visible suggère qu'une droite décrit mal la relation.</p>
+  </div>
+
+  <div class="compare-card">
+    <h3>Entonnoir</h3>
+    <svg class="mini-svg" viewBox="0 0 220 100" role="img" aria-label="Résidus dont la dispersion augmente">
+      <line x1="20" y1="50" x2="205" y2="50" stroke="var(--text-muted)" stroke-dasharray="4 3"/>
+      <g fill="#BA7517">
+        <circle cx="35" cy="47" r="4"/><circle cx="55" cy="54" r="4"/><circle cx="78" cy="42" r="4"/>
+        <circle cx="102" cy="61" r="4"/><circle cx="128" cy="30" r="4"/><circle cx="150" cy="73" r="4"/>
+        <circle cx="178" cy="20" r="4"/><circle cx="195" cy="82" r="4"/>
+      </g>
+    </svg>
+    <p>La dispersion change avec X : la variance des erreurs n'est pas stable.</p>
+  </div>
+</div>
+
+<p>Ces diagnostics ne remplacent pas une analyse complète, mais ils permettent déjà de repérer des problèmes importants.</p>
+
+<h2>14. Interpolation et extrapolation</h2>
+<p>Notre dataset couvre les âges de <strong>25 à 70 ans</strong>.</p>
+
+<div class="grid2">
+  <div class="compare-card">
+    <h3>Interpolation</h3>
+    <p>Prédire à l'intérieur de la plage observée, par exemple à 40 ou 55 ans.</p>
+    <p>C'est généralement plus défendable si le modèle est approprié.</p>
+  </div>
+  <div class="compare-card">
+    <h3>Extrapolation</h3>
+    <p>Prédire hors de la plage observée, par exemple à 15 ou 90 ans.</p>
+    <p>La droite peut ne plus décrire la relation réelle à ces valeurs.</p>
+  </div>
+</div>
+
+<div class="warn-box">
+  <b>Ne pas extrapoler mécaniquement :</b> une droite qui fonctionne entre 25 et 70 ans n'est pas automatiquement valide à 15 ou 90 ans.
+</div>
+
+<h2>15. Régression ≠ causalité</h2>
+<p>Une régression décrit une association conditionnelle à un modèle. Elle ne transforme pas automatiquement X en cause de Y.</p>
+
+<p>Dans notre exemple :</p>
+
+<div class="formula">âge ↑ → revenu prédit ↑</div>
+
+<p>signifie seulement que, dans ce dataset, les personnes plus âgées ont tendance à avoir un revenu plus élevé selon la droite estimée.</p>
+
+<p>Des variables comme :</p>
+<ul class="compact-list">
+  <li>l'expérience professionnelle ;</li>
+  <li>le niveau de formation ;</li>
+  <li>le secteur d'activité ;</li>
+  <li>le temps de travail ;</li>
+  <li>la position hiérarchique ;</li>
+</ul>
+
+<p>peuvent participer à l'association observée.</p>
+
+<p>La question causale est traitée au chapitre 19.</p>
+
+<h2>16. Exemple d'usage en sciences sociales</h2>
+<p>La régression linéaire peut servir à étudier, par exemple, la relation entre :</p>
+
+<ul class="compact-list">
+  <li>nombre d'années d'études et revenu ;</li>
+  <li>temps de trajet et satisfaction au travail ;</li>
+  <li>âge et participation politique ;</li>
+  <li>heures de travail et score de bien-être.</li>
+</ul>
+
+<p>Dans chaque cas, la droite permet de résumer une tendance moyenne. Mais l'interprétation causale dépend du design de recherche, des variables incluses et des hypothèses utilisées.</p>
+
+<h2>17. Visualisations et prédiction interactive</h2>
+<div class="wrap">
+
+<div class="section">Droite de régression et observations</div>
+<div class="chart-box">
+  <div class="chart-title">ŷ ≈ 18 715,15 + 837,58x</div>
+  <div class="chart-sub">Chaque point est une personne. La droite donne le revenu prédit pour chaque âge.</div>
+  <div style="position:relative;height:230px;"><canvas id="reg-main" role="img" aria-label="Scatter plot âge revenu avec droite de régression">Scatter plot avec droite de régression.</canvas></div>
+</div>
+
+<div class="section">Paramètres du modèle</div>
 <div class="stat-row">
-  <div class="stat-card"><div class="lbl">Pente b</div><div class="val" style="color:#2a78d6">+837.58 CHF</div><div style="font-size:10px;color:var(--text-muted);margin-top:4px;">par année d'âge</div></div>
-  <div class="stat-card"><div class="lbl">Ordonnée a</div><div class="val" style="color:var(--text-muted)">18 715 CHF</div><div style="font-size:10px;color:var(--text-muted);margin-top:4px;">ancrage mathématique</div></div>
-  <div class="stat-card"><div class="lbl">R²</div><div class="val" style="color:#1baf7a">0.88</div><div style="font-size:10px;color:var(--text-muted);margin-top:4px;">88 % variance expliquée</div></div>
+  <div class="stat-card"><div class="lbl">Pente b</div><div class="val" style="color:#2a78d6">+837,58 CHF</div><div style="font-size:10px;color:var(--text-muted);margin-top:4px;">par année d'âge</div></div>
+  <div class="stat-card"><div class="lbl">Ordonnée a</div><div class="val" style="color:var(--text-muted)">18 715,15 CHF</div><div style="font-size:10px;color:var(--text-muted);margin-top:4px;">ancrage de la droite</div></div>
+  <div class="stat-card"><div class="lbl">R²</div><div class="val" style="color:#1baf7a">0,884</div><div style="font-size:10px;color:var(--text-muted);margin-top:4px;">88,4 %</div></div>
 </div>
 
 <div class="section">Outil de prédiction interactif</div>
 <div class="chart-box">
-  <div class="chart-title">Ŷ ≈ 18 715 + 837.58 × âge</div>
+  <div class="chart-title">Choisir un âge entre 25 et 70 ans</div>
   <div style="display:flex;align-items:center;gap:14px;margin:10px 0;font-size:13px;color:var(--text-secondary);">
-    <label>Âge :</label>
-    <input type="range" min="25" max="70" value="40" id="age-slider" style="flex:1;">
+    <label for="age-slider">Âge :</label>
+    <input type="range" min="25" max="70" value="40" id="age-slider" style="flex:1;min-width:0;">
     <span id="age-val" style="font-weight:500;color:var(--text-primary);min-width:30px;">40</span>
   </div>
   <div style="text-align:center;padding:14px;background:rgba(55,138,221,.1);border-radius:8px;margin-top:8px;">
@@ -133,21 +410,36 @@
   <div id="pred-formula" style="font-size:12px;color:var(--text-secondary);text-align:center;margin-top:8px;"></div>
 </div>
 
-<div class="section">Analyse des résidus</div>
+<div class="section">Résidus du dataset</div>
 <div class="chart-box">
-  <div class="chart-title">Résidus par âge — doivent être aléatoires autour de 0</div>
-  <div class="chart-sub">Si les résidus montrent une tendance → la relation n'est pas linéaire → le modèle est mal spécifié.</div>
-  <div style="position:relative;height:150px;"><canvas id="resid-chart" role="img" aria-label="Graphique des résidus">Résidus distribués aléatoirement autour de zéro.</canvas></div>
+  <div class="chart-title">Résidu = y − ŷ</div>
+  <div class="chart-sub">Au-dessus de 0 : le modèle sous-estime. En dessous de 0 : le modèle surestime.</div>
+  <div style="position:relative;height:170px;"><canvas id="resid-chart" role="img" aria-label="Graphique des résidus du modèle âge revenu">Résidus autour de zéro.</canvas></div>
 </div>
-<div class="warn-box">
-  <b>Ne pas extrapoler :</b> la droite est valide uniquement entre 25 et 70 ans (plage des données). Prédire le revenu à 15 ou 90 ans avec cette équation serait une erreur méthodologique.
-</div></div>
+
+</div>
+
+<h2>18. À retenir</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Concept</th><th>Question</th><th>Ici</th></tr></thead>
+<tbody>
+<tr><td><strong>ŷ</strong></td><td>Que prédit le modèle ?</td><td>Revenu estimé</td></tr>
+<tr><td><strong>b</strong></td><td>Comment ŷ change-t-il quand x augmente de 1 ?</td><td>+837,58 CHF / an d'âge</td></tr>
+<tr><td><strong>a</strong></td><td>Où la droite coupe-t-elle l'axe Y ?</td><td>18 715,15 CHF</td></tr>
+<tr><td><strong>Résidu</strong></td><td>Quelle est l'erreur pour une observation ?</td><td>y − ŷ</td></tr>
+<tr><td><strong>Moindres carrés</strong></td><td>Comment choisit-on la droite ?</td><td>Minimiser Σ(y−ŷ)²</td></tr>
+<tr><td><strong>R²</strong></td><td>Quelle part de la variation le modèle reproduit-il ?</td><td>≈ 88,4 %</td></tr>
+<tr><td><strong>Extrapolation</strong></td><td>Peut-on prédire hors de la plage observée ?</td><td>À éviter sans justification</td></tr>
+</tbody>
+</table></div>
 
 <div class="page-nav">
   <a href="ch17.html">← Chapitre 17</a>
   <a href="ch19.html">Chapitre 19 →</a>
 </div>
+
 </div></main></div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 const isDark=document.documentElement.dataset.mode==='dark'||(!document.documentElement.dataset.mode&&matchMedia('(prefers-color-scheme:dark)').matches);
@@ -158,49 +450,95 @@ const data=[
   {x:25,y:35000},{x:30,y:42000},{x:35,y:48000},{x:40,y:55000},{x:45,y:62000},
   {x:50,y:58000},{x:55,y:70000},{x:60,y:75000},{x:65,y:68000},{x:70,y:72000}
 ];
-const a=18715.151515151516,b=837.5757575757576;
+
+const a=18715.151515151512;
+const b=837.5757575757576;
 const yhat=data.map(p=>a+b*p.x);
 const resids=data.map((p,i)=>p.y-yhat[i]);
 
-// Main regression chart
-const pointColors=resids.map(r=>r>=0?'rgba(29,158,117,.7)':'rgba(227,73,72,.7)');
-const lineData=[{x:22,y:a+b*22},{x:73,y:a+b*73}];
-
-new Chart(document.getElementById('reg-main'),{type:'scatter',
+new Chart(document.getElementById('reg-main'),{
+  type:'scatter',
   data:{datasets:[
-    {label:'Individus',data:data.map(p=>({x:p.x,y:p.y})),backgroundColor:pointColors,borderColor:pointColors.map(c=>c.replace('.7','.9')),borderWidth:1,pointRadius:7,pointHoverRadius:9,type:'scatter'},
-    {label:'Droite',data:lineData,type:'line',borderColor:'#D85A30',borderWidth:2,pointRadius:0,fill:false},
+    {
+      label:'Observations',
+      data:data.map(p=>({x:p.x,y:p.y})),
+      backgroundColor:'#378ADDaa',
+      borderColor:'#378ADD',
+      borderWidth:1,
+      pointRadius:6,
+      pointHoverRadius:8
+    },
+    {
+      label:'Droite de régression',
+      data:[{x:25,y:a+b*25},{x:70,y:a+b*70}],
+      type:'line',
+      borderColor:'#D85A30',
+      borderWidth:2,
+      pointRadius:0,
+      fill:false
+    }
   ]},
-  options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false},tooltip:{callbacks:{label:t=>`Âge: ${t.parsed.x} · Revenu: CHF ${t.parsed.y.toLocaleString()} · Prédit: CHF ${(a+b*t.parsed.x).toLocaleString()}`}}},
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{
+        label:t=>{
+          if(t.dataset.type==='line') return 'Droite de régression';
+          const pred=a+b*t.parsed.x;
+          return `Âge: ${t.parsed.x} · Observé: ${Math.round(t.parsed.y).toLocaleString('fr-CH')} CHF · Prédit: ${Math.round(pred).toLocaleString('fr-CH')} CHF`;
+        }
+      }}
+    },
     scales:{
-      x:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'Âge',color:tick,font:{size:10}},min:20,max:75},
-      y:{grid:{color:gridC},ticks:{color:tick,font:{size:10},callback:v=>(v/1000)+'k'},title:{display:true,text:'Revenu (CHF)',color:tick,font:{size:10}},min:25000,max:85000}
-    }}
+      x:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'Âge',color:tick,font:{size:10}},min:22,max:73},
+      y:{grid:{color:gridC},ticks:{color:tick,font:{size:10},callback:v=>(v/1000)+'k'},title:{display:true,text:'Revenu annuel (CHF)',color:tick,font:{size:10}},min:30000,max:80000}
+    }
+  }
 });
 
-// Predictor
 function updatePred(age){
   const pred=a+b*age;
   document.getElementById('age-val').textContent=age;
   document.getElementById('pred-val').textContent=Math.round(pred).toLocaleString('fr-CH');
-  document.getElementById('pred-formula').textContent=`18 715 + 837.58 × ${age} ≈ ${Math.round(pred).toLocaleString('fr-CH')} CHF`;
+  document.getElementById('pred-formula').textContent=`18 715,15 + 837,58 × ${age} ≈ ${Math.round(pred).toLocaleString('fr-CH')} CHF`;
 }
 document.getElementById('age-slider').addEventListener('input',function(){updatePred(+this.value);});
 updatePred(40);
 
-// Residuals chart
-new Chart(document.getElementById('resid-chart'),{type:'scatter',
+new Chart(document.getElementById('resid-chart'),{
+  type:'scatter',
   data:{datasets:[
-    {data:data.map((p,i)=>({x:p.x,y:resids[i]})),backgroundColor:resids.map(r=>r>=0?'rgba(29,158,117,.7)':'rgba(227,73,72,.7)'),borderColor:resids.map(r=>r>=0?'#1baf7a':'#e34948'),borderWidth:1,pointRadius:6},
-    {data:[{x:20,y:0},{x:75,y:0}],type:'line',borderColor:'#D85A30',borderWidth:1.5,pointRadius:0,fill:false,borderDash:[4,3]},
+    {
+      data:data.map((p,i)=>({x:p.x,y:resids[i]})),
+      backgroundColor:resids.map(r=>r>=0?'rgba(29,158,117,.75)':'rgba(227,73,72,.75)'),
+      borderColor:resids.map(r=>r>=0?'#1baf7a':'#e34948'),
+      borderWidth:1,
+      pointRadius:6
+    },
+    {
+      data:[{x:25,y:0},{x:70,y:0}],
+      type:'line',
+      borderColor:'#D85A30',
+      borderWidth:1.5,
+      pointRadius:0,
+      fill:false,
+      borderDash:[4,3]
+    }
   ]},
-  options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false},tooltip:{callbacks:{label:t=>`Âge: ${t.parsed.x} · Résidu: ${t.parsed.y.toLocaleString()} CHF`}}},
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{label:t=>`Âge: ${t.parsed.x} · Résidu: ${Math.round(t.parsed.y).toLocaleString('fr-CH')} CHF`}}
+    },
     scales:{
-      x:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'Âge',color:tick,font:{size:10}},min:20,max:75},
-      y:{grid:{color:gridC},ticks:{color:tick,font:{size:10},callback:v=>v.toLocaleString()},title:{display:true,text:'Résidu (CHF)',color:tick,font:{size:10}}}
-    }}
+      x:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'Âge',color:tick,font:{size:10}},min:22,max:73},
+      y:{grid:{color:gridC},ticks:{color:tick,font:{size:10},callback:v=>Math.round(v).toLocaleString('fr-CH')},title:{display:true,text:'Résidu (CHF)',color:tick,font:{size:10}}}
+    }
+  }
 });
 </script>
 <script src="../assets/nav-content.js"></script>

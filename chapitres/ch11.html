@@ -8,15 +8,25 @@
 <link rel="stylesheet" href="../assets/style.css">
 <style>
   .prob-svg text { font-family:'Inter',system-ui,sans-serif; font-size:11px; }
-  .rule-card { border:1px solid var(--border); border-radius:var(--radius-md); padding:.9rem 1rem; background:var(--surface); }
-  .rule-card strong { display:block; margin-bottom:.3rem; }
+  .rule-card { border:1px solid var(--border); border-radius:var(--radius-md); padding:.95rem 1rem; background:var(--surface); }
+  .rule-card strong { display:block; margin-bottom:.35rem; }
   .compact-list { margin:.55rem 0 .2rem 1.15rem; color:var(--text-sec); }
-  .compact-list li { margin:.25rem 0; }
+  .compact-list li { margin:.28rem 0; }
   .flow-row { display:flex; flex-wrap:wrap; gap:.6rem; align-items:center; justify-content:center; margin:.75rem 0; }
-  .flow-row .flow-step { flex:1 1 140px; text-align:center; border:1px solid var(--border); border-radius:var(--radius-md); padding:.7rem .6rem; background:var(--surface); }
+  .flow-row .flow-step { flex:1 1 140px; min-width:0; text-align:center; border:1px solid var(--border); border-radius:var(--radius-md); padding:.7rem .6rem; background:var(--surface); }
   .flow-row .flow-step strong { display:block; margin-bottom:.25rem; color:var(--text-pri); }
   .flow-row .flow-step span { font-size:.78rem; color:var(--text-muted); }
   .flow-arrow { font-size:1.2rem; color:var(--text-muted); }
+  .word-card { border:1px solid var(--border); border-radius:var(--radius-md); padding:1rem; background:var(--surface); }
+  .word-card .word { font-size:1.1rem; font-weight:700; color:var(--accent); margin-bottom:.35rem; }
+  .word-card p { margin:0; font-size:.88rem; }
+  .decision { border:1px solid var(--border); border-radius:var(--radius-lg); padding:1rem 1.1rem; margin:1.2rem 0; background:var(--surface); }
+  .decision-step { padding:.7rem 0; border-bottom:1px solid var(--border); }
+  .decision-step:last-child { border-bottom:0; }
+  .decision-step strong { color:var(--text-pri); }
+  .denominator { background:var(--accent-light); border:1px solid var(--accent); border-radius:var(--radius-md); padding:.9rem 1rem; margin:1rem 0; }
+  .denominator p { margin:0; }
+  .subtle { color:var(--text-muted); font-size:.85rem; }
   @media (max-width:520px){ .flow-arrow{ transform:rotate(90deg); } }
 </style>
 </head>
@@ -30,80 +40,81 @@
 <div class="ch-header">
   <div class="ch-eyebrow">Chapitre 11 · Distribution & probabilités</div>
   <h1 class="ch-title">Probabilités</h1>
-  <p class="ch-desc">Espace des possibles, événements, addition, multiplication, indépendance et probabilité conditionnelle.</p>
+  <p class="ch-desc">Comprendre les événements possibles, puis choisir la bonne règle selon que la question dit « ou », « et » ou « sachant que ».</p>
 </div>
 
 <h2>L'idée centrale</h2>
-<p>Une probabilité mesure la <strong>vraisemblance qu'un événement se produise</strong>, sur une échelle de 0 à 1.</p>
+<p>Une <strong>probabilité</strong> exprime à quel point un événement est susceptible de se produire. Elle prend une valeur entre <strong>0</strong> et <strong>1</strong>, que l'on peut aussi écrire entre <strong>0&nbsp;%</strong> et <strong>100&nbsp;%</strong>.</p>
+
 <div class="grid-3">
   <div class="stat-card"><div class="lbl">P = 0</div><div class="val" style="color:var(--red)">Impossible</div></div>
-  <div class="stat-card"><div class="lbl">P = 0.5</div><div class="val" style="color:var(--orange)">50 / 50</div></div>
+  <div class="stat-card"><div class="lbl">P = 0,5</div><div class="val" style="color:var(--orange)">Une chance sur deux</div></div>
   <div class="stat-card"><div class="lbl">P = 1</div><div class="val" style="color:var(--green)">Certain</div></div>
 </div>
-<p>Quand les issues possibles sont <strong>équiprobables</strong> (comme les faces d'un dé équilibré) :</p>
-<div class="formula">P(A) = nombre de cas favorables / nombre de cas totaux possibles</div>
-<p><strong>Exemple</strong> : lancer un dé à 6 faces, probabilité d'obtenir un 4 ?</p>
-<div class="formula">P(4) = 1/6 ≈ <strong>0.167</strong> = 16.7 %</div>
+
+<div class="box box-note">
+  <p><strong>Une façon intuitive de penser une probabilité :</strong> si l'on pouvait répéter un très grand nombre de fois la même expérience dans les mêmes conditions, la proportion de fois où l'événement se produit tendrait à se rapprocher de sa probabilité. Le chapitre 13 reviendra précisément sur cette idée avec la loi des grands nombres.</p>
+</div>
 
 <div class="chart-card">
   <h4>Échelle des probabilités</h4>
-  <p>P va de 0 (impossible) à 1 (certain).</p>
-  <svg class="prob-svg" viewBox="0 0 640 80" width="100%" role="img">
-    <title>Échelle des probabilités de 0 à 1</title>
+  <p>Plus on se rapproche de 1, plus l'événement est probable.</p>
+  <svg class="prob-svg" viewBox="0 0 640 80" width="100%" role="img" aria-label="Échelle des probabilités de zéro à un">
     <line x1="40" y1="40" x2="600" y2="40" stroke="var(--border-strong)" stroke-width="2"/>
     <circle cx="40" cy="40" r="6" fill="#B03030"/><text x="40" y="24" text-anchor="middle" fill="#B03030">0</text><text x="40" y="62" text-anchor="middle" fill="var(--text-muted)">impossible</text>
-    <circle cx="180" cy="40" r="5" fill="#7A7875"/><text x="180" y="24" text-anchor="middle" fill="var(--text-muted)">0.167</text><text x="180" y="62" text-anchor="middle" fill="var(--text-muted)">un 4 sur dé</text>
-    <circle cx="320" cy="40" r="6" fill="#C05A20"/><text x="320" y="24" text-anchor="middle" fill="#C05A20">0.5</text><text x="320" y="62" text-anchor="middle" fill="var(--text-muted)">pile ou face</text>
+    <circle cx="180" cy="40" r="5" fill="#7A7875"/><text x="180" y="24" text-anchor="middle" fill="var(--text-muted)">0,167</text><text x="180" y="62" text-anchor="middle" fill="var(--text-muted)">un 4 sur un dé</text>
+    <circle cx="320" cy="40" r="6" fill="#C05A20"/><text x="320" y="24" text-anchor="middle" fill="#C05A20">0,5</text><text x="320" y="62" text-anchor="middle" fill="var(--text-muted)">pile sur une pièce</text>
     <circle cx="600" cy="40" r="6" fill="#0F6E56"/><text x="600" y="24" text-anchor="middle" fill="#0F6E56">1</text><text x="600" y="62" text-anchor="middle" fill="var(--text-muted)">certain</text>
   </svg>
 </div>
 
-<h2>Expérience aléatoire, issues et espace des possibles</h2>
-<p>Avant d'aller plus loin, il faut trois notions de base sur lesquelles reposent toutes les probabilités.</p>
+<h2>Expérience aléatoire, issue, espace des possibles et événement</h2>
+<p>Avant les règles de calcul, il faut savoir précisément <strong>ce que l'on compte</strong>.</p>
+
 <blockquote><p>Une <strong>expérience aléatoire</strong> est une situation dont on connaît les résultats possibles, mais dont on ne peut pas savoir à l'avance lequel se produira.</p></blockquote>
 <ul class="compact-list">
-<li>lancer une pièce ;</li>
-<li>lancer un dé ;</li>
-<li>tirer une carte ;</li>
-<li>observer si une personne répond « oui » ou « non » à une question.</li>
+  <li>lancer une pièce ;</li>
+  <li>lancer un dé ;</li>
+  <li>tirer une carte ;</li>
+  <li>observer si une personne répond « oui » ou « non » à une question.</li>
 </ul>
 
-<h3>Issue (outcome)</h3>
-<p>Une <strong>issue</strong> est un résultat individuel possible de l'expérience. Pour le lancer d'un dé à 6 faces, les issues possibles sont 1, 2, 3, 4, 5, 6. Si le dé tombe sur 4, alors <strong>4</strong> est l'issue observée.</p>
+<h3>Issue</h3>
+<p>Une <strong>issue</strong> est un résultat individuel possible. Si l'on lance un dé à six faces, les issues possibles sont 1, 2, 3, 4, 5 et 6. Si le dé tombe sur 4, alors <strong>4</strong> est l'issue observée.</p>
 
-<h3>Espace des possibles (Ω)</h3>
-<p>L'<strong>espace des possibles</strong> est l'ensemble de <strong>toutes</strong> les issues possibles de l'expérience. On le note <strong>Ω</strong>.</p>
-<div class="formula">Dé à 6 faces : Ω = {1, 2, 3, 4, 5, 6}<br>Lancer d'une pièce : Ω = {Pile, Face}</div>
-<p>Ω ne dit pas quel résultat va se produire — il liste tous les résultats qui <strong>pourraient</strong> se produire.</p>
-<p style="font-size:.85rem;color:var(--text-muted)">Certains manuels anglophones utilisent la lettre <strong>S</strong> à la place de Ω. Ce site utilise <strong>Ω</strong> de façon cohérente dans la suite du chapitre.</p>
+<h3>Espace des possibles Ω</h3>
+<p>L'<strong>espace des possibles</strong> est l'ensemble de toutes les issues possibles. On le note <strong>Ω</strong> (oméga).</p>
+<div class="formula">Dé à 6 faces : Ω = {1, 2, 3, 4, 5, 6}<br>Pièce : Ω = {Pile, Face}</div>
+<p>Ω ne dit pas ce qui va arriver. Il dit simplement <strong>ce qui peut arriver</strong>.</p>
 
 <div class="chart-card">
   <h4>De l'expérience à l'événement</h4>
-  <p>Quatre notions s'enchaînent pour arriver à une probabilité.</p>
+  <p>Ces notions s'emboîtent les unes dans les autres.</p>
   <div class="flow-row">
-    <div class="flow-step"><strong>Expérience aléatoire</strong><span>ex : lancer un dé</span></div>
+    <div class="flow-step"><strong>Expérience</strong><span>lancer un dé</span></div>
     <div class="flow-arrow">→</div>
-    <div class="flow-step"><strong>Espace des possibles Ω</strong><span>{1,2,3,4,5,6}</span></div>
+    <div class="flow-step"><strong>Ω</strong><span>{1,2,3,4,5,6}</span></div>
     <div class="flow-arrow">→</div>
-    <div class="flow-step"><strong>Issues</strong><span>1, 2, 3, 4, 5 ou 6</span></div>
+    <div class="flow-step"><strong>Issues</strong><span>1, 2, 3, 4, 5, 6</span></div>
     <div class="flow-arrow">→</div>
-    <div class="flow-step"><strong>Événement</strong><span>sous-ensemble de Ω</span></div>
+    <div class="flow-step"><strong>Événement</strong><span>un sous-ensemble de Ω</span></div>
   </div>
 </div>
 
 <div class="box box-note">
-  <p><strong>L'espace des possibles dépend de l'expérience :</strong> si l'expérience est « lancer un dé et noter le numéro », Ω = {1, 2, 3, 4, 5, 6}. Si elle consiste seulement à noter si le résultat est pair ou impair, on peut représenter Ω = {impair, pair}. L'espace des possibles doit donc être défini avant de calculer une probabilité.</p>
+  <p><strong>Ω dépend de ce que l'on observe.</strong> Si l'expérience consiste à noter le numéro du dé, Ω = {1,2,3,4,5,6}. Si elle consiste seulement à noter « pair » ou « impair », Ω peut être représenté par {pair, impair}. Il faut donc définir l'expérience avant de calculer une probabilité.</p>
 </div>
 
-<h2>Événement</h2>
-<p>Un <strong>événement</strong> est un ensemble d'une ou plusieurs issues de l'espace des possibles : <strong>A ⊆ Ω</strong>.</p>
-<p>Exemple avec un dé : Ω = {1, 2, 3, 4, 5, 6}. Soit l'événement A = « obtenir un nombre pair ». Alors <strong>A = {2, 4, 6}</strong>. Si le dé donne 2, 4 ou 6, l'événement A s'est produit.</p>
+<h3>Événement</h3>
+<p>Un <strong>événement</strong> est un ensemble d'une ou plusieurs issues de Ω. On peut écrire <strong>A ⊆ Ω</strong>.</p>
+<p>Avec un dé, prenons A = « obtenir un nombre pair ». Alors :</p>
+<div class="formula">A = {2, 4, 6}</div>
+<p>Si le dé donne 2, 4 ou 6, l'événement A s'est produit.</p>
 
 <div class="chart-card">
-  <h4>Événement A = {2, 4, 6} dans Ω = {1, 2, 3, 4, 5, 6}</h4>
-  <p>Les faces en couleur appartiennent à l'événement A.</p>
-  <svg class="prob-svg" viewBox="0 0 360 70" width="100%" role="img">
-    <title>Dé à six faces avec l'événement A = nombre pair mis en évidence</title>
+  <h4>A = {2, 4, 6} dans Ω = {1, 2, 3, 4, 5, 6}</h4>
+  <p>Les faces colorées appartiennent à l'événement A.</p>
+  <svg class="prob-svg" viewBox="0 0 360 70" width="100%" role="img" aria-label="Dé à six faces avec les nombres pairs mis en évidence">
     <g font-weight="600">
       <rect x="10" y="10" width="50" height="50" rx="8" fill="none" stroke="var(--border-strong)" stroke-width="1.5"/><text x="35" y="42" text-anchor="middle" fill="var(--text-sec)">1</text>
       <rect x="70" y="10" width="50" height="50" rx="8" fill="var(--accent-light)" stroke="var(--accent)" stroke-width="2"/><text x="95" y="42" text-anchor="middle" fill="var(--accent)">2</text>
@@ -115,155 +126,226 @@
   </svg>
 </div>
 
-<p>Distinction à retenir :</p>
 <div class="grid-2">
-  <div class="box box-note"><p><strong>Issue</strong><br>Un seul résultat possible, ex. <strong>4</strong>.</p></div>
-  <div class="box box-green"><p><strong>Événement</strong><br>Un ensemble d'issues, ex. <strong>{2, 4, 6}</strong>.</p></div>
+  <div class="box box-note"><p><strong>Issue</strong><br>Un résultat individuel : par exemple <strong>4</strong>.</p></div>
+  <div class="box box-green"><p><strong>Événement</strong><br>Un ensemble d'issues : par exemple <strong>{2,4,6}</strong>.</p></div>
 </div>
-<p>Un événement peut aussi ne contenir qu'une seule issue : B = {6} représente « obtenir exactement 6 ». Un événement n'a donc pas besoin de contenir plusieurs issues.</p>
+<p>Un événement peut aussi ne contenir qu'une seule issue. Par exemple B = {6} signifie « obtenir exactement 6 ».</p>
 
 <div class="grid-2">
-  <div class="box box-purple"><p><strong>Événement certain</strong><br>P(Ω) = <strong>1</strong> — quelque chose dans Ω doit forcément se produire.</p></div>
-  <div class="box box-orange"><p><strong>Événement impossible</strong><br>P(∅) = <strong>0</strong> — ex. « obtenir 8 » avec un dé à 6 faces est impossible car 8 ∉ Ω.</p></div>
+  <div class="box box-purple"><p><strong>Événement certain</strong><br>P(Ω) = <strong>1</strong>.</p></div>
+  <div class="box box-orange"><p><strong>Événement impossible</strong><br>P(∅) = <strong>0</strong>.</p></div>
 </div>
 
-<h3>Probabilité simple à partir de l'espace des possibles</h3>
-<p>Quand toutes les issues élémentaires de Ω sont <strong>équiprobables</strong>, la formule vue plus haut (cas favorables / cas totaux) s'écrit aussi :</p>
-<div class="formula">P(A) = nombre d'issues dans A / nombre d'issues dans Ω = |A| / |Ω|</div>
-<p><strong>Exemple — dé équilibré</strong> : Ω = {1, 2, 3, 4, 5, 6}, A = {2, 4, 6} (nombre pair).</p>
-<div class="formula">P(A) = 3 / 6 = 1 / 2 = 0.5 = <strong>50 %</strong></div>
-<p style="font-size:.85rem;color:var(--text-muted)">|A| = 3 issues favorables, |Ω| = 6 issues possibles.</p>
+<h2>Probabilité simple : compter les cas favorables</h2>
+<p>Quand toutes les issues élémentaires ont la <strong>même probabilité</strong>, on peut simplement compter :</p>
+<div class="formula">P(A) = nombre de cas favorables / nombre de cas possibles</div>
+<p><strong>Exemple — dé équilibré :</strong> A = « obtenir un nombre pair » = {2,4,6}.</p>
+<div class="formula">P(A) = 3 / 6 = 1 / 2 = 0,5 = <strong>50&nbsp;%</strong></div>
 
 <div class="box box-orange">
-  <p><strong>Limite importante :</strong> le rapport « cas favorables / cas possibles » ne fonctionne directement que si les issues élémentaires sont <strong>équiprobables</strong>. Pour un dé équilibré, chaque face a une probabilité de 1/6, donc compter les issues fonctionne. Mais si le dé est pipé et que certaines faces sont plus probables que d'autres, compter les faces ne suffit plus : il faut alors utiliser les probabilités réellement associées à chaque issue.</p>
+  <p><strong>Attention :</strong> cette formule de comptage direct suppose des issues <strong>équiprobables</strong>. Avec un dé pipé, certaines faces peuvent être plus probables que d'autres : compter les faces ne suffit alors plus.</p>
 </div>
 
-<p><strong>Exemple — deux lancers de pièce</strong> (P = pile, F = face) : Ω = {PP, PF, FP, FF}. Soit A = « obtenir exactement une fois pile », alors A = {PF, FP}.</p>
-<div class="formula">P(A) = 2 / 4 = <strong>1 / 2</strong></div>
-<p style="font-size:.85rem;color:var(--text-muted)">Chaque élément comme PF est une issue ; A regroupe deux issues différentes — cet exemple sépare bien la notion d'issue de celle d'événement.</p>
+<h3>Deux lancers de pièce</h3>
+<p>Avec une pièce équilibrée lancée deux fois, écrivons P = pile et F = face :</p>
+<div class="formula">Ω = {PP, PF, FP, FF}</div>
+<p>Si A = « obtenir exactement une fois pile », alors :</p>
+<div class="formula">A = {PF, FP} &nbsp;&nbsp;→&nbsp;&nbsp; P(A) = 2 / 4 = <strong>1 / 2</strong></div>
+<p class="subtle">Chaque élément comme PF est une issue complète de l'expérience « lancer deux fois ».</p>
 
-<p><strong>Exemple — deux événements sur un même dé</strong> : Ω = {1, 2, 3, 4, 5, 6}, A = {2, 4, 6} (pair), B = {4, 5, 6} (supérieur ou égal à 4).</p>
-<div class="formula">A ∩ B = <strong>{4, 6}</strong></div>
-<p>Cette intersection — les issues communes aux deux événements — est le point de départ des règles qui suivent.</p>
+<h2>Avant les formules : reconnaître les mots de la question</h2>
+<p>Une grande partie des exercices devient plus simple si l'on traduit d'abord la phrase en logique.</p>
+<div class="grid-3">
+  <div class="word-card">
+    <div class="word">OU</div>
+    <p>On cherche les situations où <strong>au moins l'un</strong> des événements se produit. Cela conduit à la <strong>règle d'addition</strong>.</p>
+  </div>
+  <div class="word-card">
+    <div class="word">ET</div>
+    <p>On cherche les situations où <strong>les deux</strong> événements se produisent. Cela conduit à la <strong>règle de multiplication</strong>.</p>
+  </div>
+  <div class="word-card">
+    <div class="word">SACHANT QUE</div>
+    <p>On sait déjà qu'une condition est vraie. On réduit alors le groupe de référence. C'est une <strong>probabilité conditionnelle</strong>.</p>
+  </div>
+</div>
 
-<h2>Événements mutuellement exclusifs</h2>
-<p>Deux événements sont <strong>mutuellement exclusifs</strong> si ils ne peuvent pas se produire en même temps. Obtenir pile ou face sur un même lancer — c'est l'un ou l'autre, jamais les deux.</p>
-<div class="formula">P(pile <strong>et</strong> face en même temps) = <strong>0</strong></div>
-
-<h2>Règle d'addition</h2>
+<h2>Mutuellement exclusifs ≠ indépendants</h2>
+<p>Ces deux expressions sont souvent confondues, mais elles ne veulent pas du tout dire la même chose.</p>
 <div class="grid-2">
   <div class="rule-card">
-    <strong style="color:var(--accent)">Si mutuellement exclusifs</strong>
-    <div class="formula" style="margin:.5rem 0">P(A ou B) = P(A) + P(B)</div>
-    <p style="margin:0;font-size:.88rem">Exemple : P(1 ou 2) = 1/6 + 1/6 = <strong>2/6 ≈ 0.33</strong></p>
+    <strong style="color:var(--orange)">Mutuellement exclusifs</strong>
+    <p>Les deux événements <strong>ne peuvent pas arriver ensemble</strong>.</p>
+    <p><strong>Exemple :</strong> sur un seul lancer de dé, « obtenir 2 » et « obtenir 5 ».</p>
+    <div class="formula" style="margin:.55rem 0 0">P(A et B) = 0</div>
   </div>
   <div class="rule-card">
-    <strong style="color:var(--purple)">Si NON mutuellement exclusifs</strong>
-    <div class="formula" style="margin:.5rem 0">P(A ou B) = P(A) + P(B) − P(A et B)</div>
-    <p style="margin:0;font-size:.88rem">On soustrait l'intersection pour ne pas la compter deux fois.</p>
+    <strong style="color:var(--green)">Indépendants</strong>
+    <p>Le fait que A se produise <strong>ne change pas la probabilité de B</strong>.</p>
+    <p><strong>Exemple :</strong> le résultat du premier lancer d'une pièce équilibrée ne change pas celui du deuxième.</p>
+    <div class="formula" style="margin:.55rem 0 0">P(B|A) = P(B)</div>
   </div>
 </div>
-
-<div class="grid-2">
-  <div class="chart-card" style="margin:0">
-    <h4>Mutuellement exclusifs</h4>
-    <p>Pile ou face — pas de chevauchement.</p>
-    <svg class="prob-svg" viewBox="0 0 300 140" width="100%" role="img">
-      <rect x="10" y="10" width="280" height="120" rx="8" fill="none" stroke="var(--border)"/>
-      <circle cx="100" cy="70" r="45" fill="rgba(55,138,221,.2)" stroke="#2a78d6" stroke-width="1.5"/>
-      <circle cx="200" cy="70" r="45" fill="rgba(235,104,52,.2)" stroke="#eb6834" stroke-width="1.5"/>
-      <text x="100" y="66" text-anchor="middle" fill="#2a78d6">Pile</text><text x="100" y="80" text-anchor="middle" fill="#2a78d6">P=0.5</text>
-      <text x="200" y="66" text-anchor="middle" fill="#eb6834">Face</text><text x="200" y="80" text-anchor="middle" fill="#eb6834">P=0.5</text>
-      <text x="150" y="128" text-anchor="middle" fill="var(--text-muted)">P(A ou B) = 0.5 + 0.5 = 1</text>
-    </svg>
-  </div>
-  <div class="chart-card" style="margin:0">
-    <h4>Non mutuellement exclusifs</h4>
-    <p>Roi ou cœur — le roi de cœur existe.</p>
-    <svg class="prob-svg" viewBox="0 0 300 140" width="100%" role="img">
-      <rect x="10" y="10" width="280" height="120" rx="8" fill="none" stroke="var(--border)"/>
-      <circle cx="120" cy="65" r="48" fill="rgba(55,138,221,.2)" stroke="#2a78d6" stroke-width="1.5"/>
-      <circle cx="185" cy="65" r="48" fill="rgba(235,104,52,.2)" stroke="#eb6834" stroke-width="1.5"/>
-      <ellipse cx="152" cy="65" rx="18" ry="30" fill="rgba(127,119,221,.5)" stroke="#7F77DD"/>
-      <text x="100" y="58" text-anchor="middle" fill="#2a78d6">Rois seuls</text><text x="100" y="72" text-anchor="middle" fill="#2a78d6">3/52</text>
-      <text x="205" y="58" text-anchor="middle" fill="#eb6834">Cœurs seuls</text><text x="205" y="72" text-anchor="middle" fill="#eb6834">12/52</text>
-      <text x="152" y="60" text-anchor="middle" fill="#534AB7">♥K</text><text x="152" y="74" text-anchor="middle" fill="#534AB7">1/52</text>
-      <text x="150" y="128" text-anchor="middle" fill="var(--text-muted)">P = 4/52 + 13/52 − 1/52 = 16/52</text>
-    </svg>
-  </div>
-</div>
-
-<h3>Exemple — roi ou cœur</h3>
-<ul class="compact-list">
-  <li>P(roi) = 4/52</li>
-  <li>P(cœur) = 13/52</li>
-  <li>P(roi de cœur) = 1/52 → existe ! Donc pas mutuellement exclusifs.</li>
-</ul>
-<div class="formula">P(roi ou cœur) = 4/52 + 13/52 − 1/52 = <strong>16/52 ≈ 0.31</strong></div>
-<p>Sans la soustraction, on aurait compté le roi de cœur deux fois.</p>
-
-<h2>Règle de multiplication</h2>
-<p>La règle générale est :</p>
-<div class="formula">P(A et B) = P(A) × P(B|A)</div>
-<p>Si A et B sont <strong>indépendants</strong>, savoir que A s'est produit ne change pas B : P(B|A) = P(B). La formule devient alors :</p>
-<div class="formula">P(A et B) = P(A) × P(B)</div>
-<p><strong>Exemple</strong> : probabilité d'obtenir pile deux fois de suite ?</p>
-<div class="formula">P(pile et pile) = 0.5 × 0.5 = <strong>0.25</strong></div>
-
-<p>Quand les événements sont <strong>dépendants</strong>, on garde la formule générale avec P(B|A), la « probabilité de B <strong>sachant que</strong> A s'est produit ».</p>
-
-<div class="grid-2">
-  <div class="chart-card" style="margin:0">
-    <h4>Indépendants — deux lancers de pièce</h4>
-    <p>Le 1er lancer n'influence pas le 2ème.</p>
-    <svg class="prob-svg" viewBox="0 0 300 130" width="100%" role="img">
-      <circle cx="40" cy="65" r="12" fill="rgba(136,135,128,.2)" stroke="var(--border-strong)"/><text x="40" y="69" text-anchor="middle" fill="var(--text-sec)">start</text>
-      <line x1="52" y1="55" x2="110" y2="35" stroke="var(--border-strong)"/><line x1="52" y1="75" x2="110" y2="95" stroke="var(--border-strong)"/>
-      <text x="82" y="38" text-anchor="middle" fill="#2a78d6">P 0.5</text><text x="82" y="92" text-anchor="middle" fill="#eb6834">F 0.5</text>
-      <circle cx="125" cy="30" r="10" fill="rgba(55,138,221,.2)" stroke="#2a78d6"/><circle cx="125" cy="100" r="10" fill="rgba(235,104,52,.2)" stroke="#eb6834"/>
-      <line x1="135" y1="25" x2="185" y2="15" stroke="var(--border-strong)"/><line x1="135" y1="35" x2="185" y2="45" stroke="var(--border-strong)"/><line x1="135" y1="93" x2="185" y2="83" stroke="var(--border-strong)"/><line x1="135" y1="107" x2="185" y2="117" stroke="var(--border-strong)"/>
-      <text x="200" y="16" fill="var(--text-sec)">PP = 0.25</text><text x="200" y="46" fill="var(--text-sec)">PF = 0.25</text><text x="200" y="84" fill="var(--text-sec)">FP = 0.25</text><text x="200" y="118" fill="var(--text-sec)">FF = 0.25</text>
-    </svg>
-  </div>
-  <div class="chart-card" style="margin:0">
-    <h4>Dépendants — 2 cœurs sans remise</h4>
-    <p>Le 1er tirage change les probabilités du 2ème.</p>
-    <svg class="prob-svg" viewBox="0 0 300 130" width="100%" role="img">
-      <circle cx="40" cy="65" r="14" fill="rgba(136,135,128,.2)" stroke="var(--border-strong)"/><text x="40" y="69" text-anchor="middle" fill="var(--text-sec)">52</text>
-      <line x1="54" y1="55" x2="100" y2="35" stroke="var(--border-strong)"/><text x="76" y="37" text-anchor="middle" fill="#eb6834">13/52</text>
-      <circle cx="115" cy="30" r="12" fill="rgba(235,104,52,.2)" stroke="#eb6834"/><text x="115" y="34" text-anchor="middle" fill="#eb6834">♥</text>
-      <line x1="127" y1="25" x2="185" y2="15" stroke="var(--border-strong)"/><text x="158" y="12" text-anchor="middle" fill="#eb6834">12/51</text>
-      <text x="230" y="18" fill="#eb6834">♥♥ = 0.059</text><text x="230" y="32" fill="var(--text-muted)">≈ 6 %</text>
-      <text x="150" y="90" fill="var(--text-muted)">Après 1er ♥ :</text><text x="150" y="105" fill="var(--text-muted)">51 cartes restantes</text><text x="150" y="120" fill="var(--text-muted)">dont 12 ♥</text>
-    </svg>
-  </div>
-</div>
-
-<h3>Exemple — deux cœurs sans remise</h3>
-<ul class="compact-list">
-  <li>P(1er cœur) = 13/52</li>
-  <li>P(2ème cœur | 1er était cœur) = 12/51 → il reste 12 cœurs sur 51 cartes</li>
-</ul>
-<div class="formula">P(deux cœurs) = 13/52 × 12/51 = <strong>156/2652 ≈ 0.059</strong> soit environ 6 %</div>
-
-<h2>Probabilité conditionnelle P(B|A)</h2>
-<p><strong>P(B|A)</strong> se lit « probabilité de B sachant que A a déjà eu lieu ». Le fait que A se soit produit change l'espace des possibilités.</p>
-<div class="formula">P(B|A) = P(A et B) / P(A)</div>
 <div class="box box-note">
-  <p><strong>Exemple :</strong> probabilité qu'une personne ait suivi une formation supérieure, sachant qu'elle travaille dans le secteur tech ? On ne cherche plus parmi toute la population, mais uniquement parmi les personnes dans le tech.</p>
+  <p><strong>Point important :</strong> deux événements mutuellement exclusifs de probabilité non nulle ne sont pas indépendants. Si A s'est produit et rend B impossible, alors savoir que A a eu lieu change évidemment la probabilité de B.</p>
+</div>
+
+<h2>Règle d'addition : « A ou B »</h2>
+<p>Le mot <strong>ou</strong> signifie ici : A, B, <strong>ou les deux</strong>.</p>
+
+<h3>Cas 1 — événements mutuellement exclusifs</h3>
+<p>Si A et B ne peuvent jamais se produire ensemble, il n'y a aucun chevauchement à corriger.</p>
+<div class="formula">P(A ou B) = P(A) + P(B)</div>
+<p><strong>Exemple :</strong> sur un dé, A = « obtenir 1 » et B = « obtenir 2 ».</p>
+<div class="formula">P(1 ou 2) = 1/6 + 1/6 = 2/6 = <strong>1/3 ≈ 33,3&nbsp;%</strong></div>
+
+<h3>Cas 2 — événements qui peuvent se produire ensemble</h3>
+<p>Si A et B se chevauchent, leur intersection serait comptée deux fois si l'on faisait seulement P(A) + P(B). Il faut donc la retirer une fois.</p>
+<div class="formula">P(A ou B) = P(A) + P(B) − P(A et B)</div>
+
+<div class="chart-card">
+  <h4>Pourquoi soustraire l'intersection ? — roi ou cœur</h4>
+  <p>Illustration schématique. Le roi de cœur appartient à la fois aux rois et aux cœurs.</p>
+  <svg class="prob-svg" viewBox="0 0 430 170" width="100%" role="img" aria-label="Diagramme de Venn montrant les rois, les cœurs et le roi de cœur dans leur intersection">
+    <rect x="10" y="10" width="410" height="145" rx="8" fill="none" stroke="var(--border)"/>
+    <circle cx="175" cy="76" r="58" fill="rgba(55,138,221,.18)" stroke="#2a78d6" stroke-width="1.5"/>
+    <circle cx="255" cy="76" r="58" fill="rgba(235,104,52,.18)" stroke="#eb6834" stroke-width="1.5"/>
+    <text x="143" y="62" text-anchor="middle" fill="#2a78d6">Rois seuls</text><text x="143" y="78" text-anchor="middle" fill="#2a78d6">3 cartes</text>
+    <text x="287" y="62" text-anchor="middle" fill="#eb6834">Cœurs seuls</text><text x="287" y="78" text-anchor="middle" fill="#eb6834">12 cartes</text>
+    <text x="215" y="68" text-anchor="middle" fill="var(--purple)">Roi ♥</text><text x="215" y="84" text-anchor="middle" fill="var(--purple)">1 carte</text>
+    <text x="215" y="137" text-anchor="middle" fill="var(--text-muted)">4 + 13 − 1 = 16 cartes favorables</text>
+  </svg>
+</div>
+
+<ul class="compact-list">
+  <li>Il y a 4 rois.</li>
+  <li>Il y a 13 cœurs.</li>
+  <li>Le roi de cœur appartient aux deux groupes.</li>
+  <li>Faire 4 + 13 compterait donc cette carte deux fois.</li>
+</ul>
+<div class="formula">P(roi ou cœur) = 4/52 + 13/52 − 1/52 = 16/52 = <strong>4/13 ≈ 30,8&nbsp;%</strong></div>
+
+<h2>Règle de multiplication : « A et B »</h2>
+<p>Pour que <strong>A et B</strong> se produisent le long d'une même séquence, on multiplie les probabilités des étapes du chemin.</p>
+<div class="formula">P(A et B) = P(A) × P(B|A)</div>
+<p>Cette formule générale dit : probabilité de A, multipliée par la probabilité de B <strong>une fois que l'on sait que A s'est produit</strong>.</p>
+
+<h3>Si les événements sont indépendants</h3>
+<p>Quand A ne change pas la probabilité de B, alors P(B|A) = P(B), et la formule se simplifie :</p>
+<div class="formula">P(A et B) = P(A) × P(B)</div>
+<p><strong>Exemple — deux piles de suite :</strong></p>
+<ol class="steps">
+  <li><span class="step-n">1</span><div>Premier lancer : P(pile) = 0,5.</div></li>
+  <li><span class="step-n">2</span><div>Deuxième lancer : toujours P(pile) = 0,5, car le premier lancer ne change pas le second.</div></li>
+  <li><span class="step-n">3</span><div>Pour suivre le chemin « pile puis pile », on multiplie : 0,5 × 0,5 = <strong>0,25</strong>.</div></li>
+</ol>
+<div class="formula">P(PP) = 0,5 × 0,5 = <strong>0,25 = 25&nbsp;%</strong></div>
+
+<h3>Si les événements sont dépendants</h3>
+<p>Quand la première étape modifie les possibilités de la deuxième, il faut mettre à jour la deuxième probabilité.</p>
+
+<div class="chart-card">
+  <h4>Deux cœurs sans remise</h4>
+  <p>Le premier cœur retiré du paquet change le deuxième tirage.</p>
+  <svg class="prob-svg" viewBox="0 0 540 155" width="100%" role="img" aria-label="Arbre simplifié de probabilité pour tirer deux cœurs sans remise">
+    <circle cx="55" cy="75" r="23" fill="var(--surface-2)" stroke="var(--border-strong)"/><text x="55" y="79" text-anchor="middle" fill="var(--text-sec)">52 cartes</text>
+    <line x1="78" y1="70" x2="190" y2="42" stroke="var(--border-strong)" stroke-width="1.5"/>
+    <text x="135" y="45" text-anchor="middle" fill="#eb6834">13/52</text>
+    <circle cx="220" cy="35" r="20" fill="rgba(235,104,52,.18)" stroke="#eb6834"/><text x="220" y="39" text-anchor="middle" fill="#eb6834">♥</text>
+    <line x1="240" y1="33" x2="355" y2="33" stroke="var(--border-strong)" stroke-width="1.5"/>
+    <text x="298" y="24" text-anchor="middle" fill="#eb6834">12/51</text>
+    <circle cx="385" cy="33" r="20" fill="rgba(235,104,52,.18)" stroke="#eb6834"/><text x="385" y="37" text-anchor="middle" fill="#eb6834">♥</text>
+    <text x="455" y="31" fill="var(--text-pri)">Deux cœurs</text>
+    <text x="455" y="48" fill="var(--text-muted)">≈ 5,9 %</text>
+    <text x="220" y="91" text-anchor="middle" fill="var(--text-muted)">Après le 1er cœur :</text>
+    <text x="220" y="108" text-anchor="middle" fill="var(--text-muted)">51 cartes restent</text>
+    <text x="220" y="125" text-anchor="middle" fill="var(--text-muted)">dont 12 cœurs</text>
+  </svg>
+</div>
+
+<ol class="steps">
+  <li><span class="step-n">1</span><div>Premier cœur : <strong>13/52</strong>.</div></li>
+  <li><span class="step-n">2</span><div>On ne remet pas la carte dans le paquet : il reste <strong>51 cartes</strong>, dont <strong>12 cœurs</strong>.</div></li>
+  <li><span class="step-n">3</span><div>Deuxième cœur sachant que le premier était un cœur : <strong>12/51</strong>.</div></li>
+  <li><span class="step-n">4</span><div>On suit le chemin complet : <strong>13/52 × 12/51 ≈ 0,0588</strong>.</div></li>
+</ol>
+<div class="formula">P(deux cœurs sans remise) = 13/52 × 12/51 = <strong>1/17 ≈ 0,0588 = 5,88&nbsp;%</strong></div>
+
+<h2>Probabilité conditionnelle : « sachant que »</h2>
+<p><strong>P(B|A)</strong> se lit « probabilité de B <strong>sachant que</strong> A est vrai ». L'idée essentielle n'est pas d'abord la formule : c'est que l'on <strong>change de groupe de référence</strong>.</p>
+
+<h3>Exemple en sciences sociales</h3>
+<p>Imaginons une enquête fictive auprès de <strong>100 personnes</strong>. On observe leur secteur professionnel et si elles ont suivi une formation supérieure.</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Secteur</th><th>Formation supérieure</th><th>Pas de formation supérieure</th><th>Total</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Tech</td><td><strong>40</strong></td><td>10</td><td><strong>50</strong></td></tr>
+    <tr><td>Hors tech</td><td>20</td><td>30</td><td>50</td></tr>
+    <tr><td>Total</td><td><strong>60</strong></td><td>40</td><td><strong>100</strong></td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>Commençons par une probabilité sans condition :</p>
+<div class="formula">P(formation supérieure) = 60 / 100 = <strong>60&nbsp;%</strong></div>
+
+<p>Maintenant, la question devient :</p>
+<blockquote><p>Quelle est la probabilité d'avoir une formation supérieure <strong>sachant que</strong> la personne travaille dans la tech ?</p></blockquote>
+
+<div class="denominator">
+  <p><strong>Le mot « sachant que » change le dénominateur.</strong><br>On ne regarde plus les 100 personnes. On regarde seulement les <strong>50 personnes du secteur tech</strong>.</p>
+</div>
+
+<ol class="steps">
+  <li><span class="step-n">1</span><div>Condition imposée : « travaille dans la tech » → il reste <strong>50 personnes</strong>.</div></li>
+  <li><span class="step-n">2</span><div>Parmi ces 50 personnes, <strong>40</strong> ont une formation supérieure.</div></li>
+  <li><span class="step-n">3</span><div>Donc : 40 / 50 = <strong>0,80 = 80&nbsp;%</strong>.</div></li>
+</ol>
+<div class="formula">P(formation supérieure | tech) = 40/50 = <strong>80&nbsp;%</strong></div>
+
+<p>On voit ainsi que <strong>60&nbsp;%</strong> dans l'ensemble de l'échantillon et <strong>80&nbsp;%</strong> parmi les personnes de la tech répondent à deux questions différentes.</p>
+
+<h3>La formule générale</h3>
+<div class="formula">P(B|A) = P(A et B) / P(A)</div>
+<p>Dans l'exemple :</p>
+<div class="formula">P(formation sup. | tech) = (40/100) / (50/100) = 40/50 = <strong>0,80</strong></div>
+
+<div class="box box-orange">
+  <p><strong>L'ordre compte :</strong> P(B|A) n'est généralement pas égal à P(A|B). Ici, P(formation supérieure | tech) = 40/50 = 80&nbsp;%, tandis que P(tech | formation supérieure) = 40/60 ≈ 66,7&nbsp;%.</p>
+</div>
+
+<div class="box box-note">
+  <p><strong>Association ≠ causalité :</strong> une différence de probabilité conditionnelle entre groupes décrit une association dans les données. Elle ne suffit pas, à elle seule, à montrer que l'appartenance à un groupe cause le résultat observé.</p>
+</div>
+
+<h2>Comment choisir la bonne règle ?</h2>
+<div class="decision">
+  <div class="decision-step"><strong>1. La question dit « A OU B » ?</strong><br>→ Pense à l'<strong>addition</strong>.<br><span class="subtle">S'ils ne peuvent pas arriver ensemble : P(A)+P(B). S'ils peuvent se chevaucher : soustraire P(A et B).</span></div>
+  <div class="decision-step"><strong>2. La question dit « A ET B » ?</strong><br>→ Pense à la <strong>multiplication</strong>.<br><span class="subtle">S'ils sont indépendants : P(A)×P(B). Sinon : P(A)×P(B|A).</span></div>
+  <div class="decision-step"><strong>3. La question dit « B SACHANT QUE A » ?</strong><br>→ Pense à une <strong>probabilité conditionnelle</strong>.<br><span class="subtle">Réduis d'abord le groupe de référence aux cas où A est vrai.</span></div>
 </div>
 
 <h2>Résumé des règles</h2>
 <div class="table-wrap">
 <table>
-  <thead><tr><th>Règle</th><th>Formule</th><th>Condition</th></tr></thead>
+  <thead><tr><th>Question</th><th>Règle</th><th>Formule</th><th>Idée</th></tr></thead>
   <tbody>
-    <tr><td>Addition simple</td><td>P(A ou B) = P(A) + P(B)</td><td>Mutuellement exclusifs</td></tr>
-    <tr><td>Addition générale</td><td>P(A ou B) = P(A) + P(B) − P(A et B)</td><td>Non mutuellement exclusifs</td></tr>
-    <tr><td>Multiplication simple</td><td>P(A et B) = P(A) × P(B)</td><td>Indépendants</td></tr>
-    <tr><td>Multiplication générale</td><td>P(A et B) = P(A) × P(B|A)</td><td>Toujours valable si P(A) &gt; 0</td></tr>
+    <tr><td>A ou B, sans chevauchement</td><td>Addition simple</td><td>P(A ou B) = P(A) + P(B)</td><td>Les cas ne peuvent pas être comptés deux fois.</td></tr>
+    <tr><td>A ou B, avec chevauchement</td><td>Addition générale</td><td>P(A ou B) = P(A) + P(B) − P(A et B)</td><td>On retire l'intersection comptée deux fois.</td></tr>
+    <tr><td>A et B, indépendants</td><td>Multiplication simple</td><td>P(A et B) = P(A) × P(B)</td><td>A ne change pas la probabilité de B.</td></tr>
+    <tr><td>A et B, cas général</td><td>Multiplication générale</td><td>P(A et B) = P(A) × P(B|A)</td><td>La deuxième probabilité peut dépendre de la première.</td></tr>
+    <tr><td>B sachant A</td><td>Conditionnelle</td><td>P(B|A) = P(A et B) / P(A)</td><td>On change le groupe de référence.</td></tr>
   </tbody>
 </table>
+</div>
+
+<div class="box box-green">
+  <p><strong>À retenir :</strong> avant de choisir une formule, écris en mots ce que tu cherches. « Ou » signifie réunir des possibilités, « et » signifie suivre des conditions simultanées ou successives, et « sachant que » signifie raisonner à l'intérieur d'un sous-groupe déjà défini.</p>
 </div>
 
 <div class="page-nav">
