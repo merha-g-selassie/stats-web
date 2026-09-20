@@ -89,23 +89,75 @@
 <p style="font-size:.85rem;color:var(--text-muted)">Quand les rôles sont définis, on place souvent la variable explicative/prédictrice sur x et la variable de réponse sur y (comme ici : heures d'étude → note) — mais ce n'est qu'une <strong>convention</strong>, pas une règle universelle. Dans une analyse purement corrélationnelle, les deux variables peuvent jouer un rôle symétrique.</p>
 
 <h2>Ce qu'on lit sur un scatter plot</h2>
-<h3>Direction</h3>
-<ul class="compact-list"><li>Positive : quand X augmente, Y <strong>tend à</strong> augmenter.</li><li>Négative : quand X augmente, Y <strong>tend à</strong> diminuer.</li><li>Nulle : pas de tendance visible.</li></ul>
-<h3>Force</h3>
-<ul class="compact-list"><li>Pour une relation <strong>linéaire</strong>, forte : points proches d'une droite.</li><li>Faible : points très dispersés autour de cette tendance.</li></ul>
-<h3>Forme</h3>
-<ul class="compact-list"><li>Linéaire : une droite suffit à décrire la relation.</li><li>Non-linéaire : la relation suit une courbe.</li></ul>
+<p>Avant de calculer un coefficient de corrélation, on regarde le nuage de points. Quatre questions simples permettent déjà de comprendre beaucoup de choses : <strong>dans quelle direction va la relation ?</strong>, <strong>à quel point les points suivent-ils cette tendance ?</strong>, <strong>quelle forme prend-elle ?</strong> et <strong>y a-t-il des observations particulières ?</strong></p>
 
-<h2>Exemples typiques</h2>
-<div class="table-wrap"><table><thead><tr><th>Variable X</th><th>Variable Y</th><th>Relation attendue</th></tr></thead><tbody>
-<tr><td>Âge</td><td>Revenu annuel</td><td>Positive, modérée</td></tr>
-<tr><td>Heures de révision</td><td>Note à l'examen</td><td>Positive, forte</td></tr>
-<tr><td>Taille de la ville</td><td>Coût du logement</td><td>Positive, modérée</td></tr>
-<tr><td>Heures de sommeil</td><td>Erreurs au travail</td><td>Négative</td></tr>
+<h3>1. Direction</h3>
+<ul class="compact-list">
+  <li><strong>Positive</strong> : quand X augmente, Y <strong>tend à</strong> augmenter.</li>
+  <li><strong>Négative</strong> : quand X augmente, Y <strong>tend à</strong> diminuer.</li>
+  <li><strong>Pas de tendance linéaire claire</strong> : les points ne montrent pas de mouvement général vers le haut ou vers le bas.</li>
+</ul>
+<p>Le mot <strong>tend</strong> est important : une relation positive n'implique pas que chaque augmentation de X soit systématiquement suivie d'une augmentation de Y. On décrit une tendance d'ensemble.</p>
+
+<h3>2. Force</h3>
+<p>Pour une relation linéaire, la force décrit à quel point les points sont <strong>serrés autour d'une droite imaginaire</strong>.</p>
+<ul class="compact-list">
+  <li><strong>Relation forte</strong> : les points restent proches d'une même droite.</li>
+  <li><strong>Relation faible</strong> : les points sont davantage dispersés autour de la tendance.</li>
+</ul>
+<div class="note-box"><b>Force ≠ pente.</b> Une droite peut monter très fortement tout en ayant des points très dispersés : sa pente est grande, mais la relation peut être faible. À l'inverse, une droite presque plate peut être suivie très précisément par les points : la relation peut alors être forte.</div>
+
+<h3>3. Forme</h3>
+<ul class="compact-list">
+  <li><strong>Linéaire</strong> : une droite décrit raisonnablement la tendance.</li>
+  <li><strong>Non linéaire</strong> : la relation suit plutôt une courbe, un U, un plateau ou une autre forme.</li>
+</ul>
+<p>Cette distinction est essentielle : une relation peut être très nette sans être linéaire. Dans ce cas, un coefficient conçu pour mesurer uniquement une tendance linéaire peut être faible même si le graphique montre clairement une structure.</p>
+
+<h3>4. Observations particulières</h3>
+<p>Un scatter plot permet aussi de repérer des caractéristiques qu'un seul nombre résumerait mal :</p>
+<div class="grid3">
+  <div class="chart-box">
+    <div class="chart-title">Outlier</div>
+    <div class="chart-sub">Un point très éloigné du reste peut influencer fortement une corrélation ou une régression.</div>
+    <svg viewBox="0 0 180 120" width="100%" role="img" aria-label="Illustration schématique d'un nuage de points avec un outlier">
+      <line x1="20" y1="100" x2="165" y2="100" stroke="var(--border-strong)"/><line x1="20" y1="100" x2="20" y2="15" stroke="var(--border-strong)"/>
+      <g fill="var(--accent)"><circle cx="40" cy="85" r="4"/><circle cx="55" cy="78" r="4"/><circle cx="72" cy="70" r="4"/><circle cx="88" cy="62" r="4"/><circle cx="104" cy="55" r="4"/><circle cx="120" cy="47" r="4"/></g>
+      <circle cx="145" cy="92" r="5" fill="var(--orange)"/><text x="143" y="82" fill="var(--orange)" font-size="10" text-anchor="middle">outlier</text>
+    </svg>
+  </div>
+  <div class="chart-box">
+    <div class="chart-title">Clusters</div>
+    <div class="chart-sub">Deux groupes distincts peuvent suggérer des sous-populations différentes.</div>
+    <svg viewBox="0 0 180 120" width="100%" role="img" aria-label="Illustration schématique de deux clusters dans un scatter plot">
+      <line x1="20" y1="100" x2="165" y2="100" stroke="var(--border-strong)"/><line x1="20" y1="100" x2="20" y2="15" stroke="var(--border-strong)"/>
+      <g fill="var(--accent)"><circle cx="48" cy="78" r="4"/><circle cx="58" cy="70" r="4"/><circle cx="64" cy="82" r="4"/><circle cx="52" cy="88" r="4"/></g>
+      <g fill="var(--green)"><circle cx="118" cy="42" r="4"/><circle cx="128" cy="50" r="4"/><circle cx="136" cy="38" r="4"/><circle cx="143" cy="47" r="4"/></g>
+    </svg>
+  </div>
+  <div class="chart-box">
+    <div class="chart-title">Relation non linéaire</div>
+    <div class="chart-sub">Une forme en U est structurée, même sans tendance linéaire globale.</div>
+    <svg viewBox="0 0 180 120" width="100%" role="img" aria-label="Illustration schématique d'une relation en U">
+      <line x1="20" y1="100" x2="165" y2="100" stroke="var(--border-strong)"/><line x1="20" y1="100" x2="20" y2="15" stroke="var(--border-strong)"/>
+      <g fill="var(--purple)"><circle cx="35" cy="38" r="4"/><circle cx="50" cy="57" r="4"/><circle cx="67" cy="74" r="4"/><circle cx="86" cy="83" r="4"/><circle cx="105" cy="75" r="4"/><circle cx="123" cy="58" r="4"/><circle cx="143" cy="36" r="4"/></g>
+    </svg>
+  </div>
+</div>
+<p style="font-size:.85rem;color:var(--text-muted)">Illustrations schématiques : elles servent à montrer ce qu'il faut chercher visuellement, pas à représenter un dataset particulier.</p>
+
+<h2>Exemples hypothétiques de relations</h2>
+<p>Les directions ci-dessous sont des <strong>exemples possibles</strong>, pas des lois générales. La forme et la force réelles dépendent de la population, de la période étudiée et de la manière dont les variables sont mesurées.</p>
+<div class="table-wrap"><table><thead><tr><th>Variable X</th><th>Variable Y</th><th>Relation que l'on pourrait observer</th></tr></thead><tbody>
+<tr><td>Âge</td><td>Revenu annuel</td><td>Souvent positive sur une partie de la vie active, mais possiblement non linéaire</td></tr>
+<tr><td>Heures de révision</td><td>Note à l'examen</td><td>Possiblement positive</td></tr>
+<tr><td>Taille de la ville</td><td>Coût du logement</td><td>Possiblement positive</td></tr>
+<tr><td>Heures de sommeil</td><td>Erreurs au travail</td><td>Possiblement négative</td></tr>
 </tbody></table></div>
 
 <h2>Lien avec Pearson's r</h2>
-<p>Le scatter plot est <strong>visuel</strong> : il montre la tendance, les éventuels outliers et la forme de la relation. Pearson's r (chapitre 15) quantifie seulement la <strong>force et la direction de la tendance linéaire</strong>. Il est donc utile de regarder le scatter plot avant de calculer r.</p>
+<p>Le scatter plot est <strong>visuel</strong> : il montre la direction, la dispersion, la forme, les éventuels outliers et les sous-groupes. Pearson's r (chapitre 15) transforme seulement la <strong>force et la direction de la tendance linéaire</strong> en un nombre compris entre −1 et +1.</p>
+<p>C'est pourquoi on regarde le scatter plot <strong>avant</strong> d'interpréter r. Une relation en U peut être très nette tout en produisant un r proche de 0, parce que les tendances descendante et montante se compensent lorsqu'on cherche une seule tendance linéaire.</p>
 
 <h2>Visualisations</h2>
 <div class="wrap"><div class="section">Les quatre types de relations</div>
@@ -126,18 +178,32 @@
     <div style="position:relative;height:160px;"><canvas id="sc-neg" role="img" aria-label="Scatter plot corrélation négative">Points descendant vers la droite.</canvas></div>
   </div>
   <div class="chart-box">
-    <div class="chart-title">Pas de corrélation</div>
-    <div class="chart-sub">Ex : pointure → QI</div>
-    <div style="position:relative;height:160px;"><canvas id="sc-none" role="img" aria-label="Scatter plot sans corrélation">Points éparpillés sans tendance.</canvas></div>
+    <div class="chart-title">Pas de tendance linéaire claire</div>
+    <div class="chart-sub">Exemple schématique</div>
+    <div style="position:relative;height:160px;"><canvas id="sc-none" role="img" aria-label="Scatter plot sans tendance linéaire claire">Points éparpillés sans tendance linéaire claire.</canvas></div>
   </div>
 </div>
 
 <div class="section">Exemple complet — âge et revenu (n=10)</div>
+<p>Voici les données utilisées dans le graphique. Chaque ligne correspond à une personne : le même individu fournit une valeur de X (âge) et une valeur de Y (revenu annuel).</p>
+<div class="table-wrap"><table><thead><tr><th>Personne</th><th>Âge (ans)</th><th>Revenu annuel (CHF)</th></tr></thead><tbody>
+<tr><td>A</td><td>25</td><td>35 000</td></tr>
+<tr><td>B</td><td>30</td><td>42 000</td></tr>
+<tr><td>C</td><td>35</td><td>48 000</td></tr>
+<tr><td>D</td><td>40</td><td>55 000</td></tr>
+<tr><td>E</td><td>45</td><td>62 000</td></tr>
+<tr><td>F</td><td>50</td><td>58 000</td></tr>
+<tr><td>G</td><td>55</td><td>70 000</td></tr>
+<tr><td>H</td><td>60</td><td>75 000</td></tr>
+<tr><td>I</td><td>65</td><td>68 000</td></tr>
+<tr><td>J</td><td>70</td><td>72 000</td></tr>
+</tbody></table></div>
 <div class="chart-box">
   <div class="chart-title">Dataset : âge vs revenu annuel (CHF)</div>
-  <div class="chart-sub">On voit une tendance positive — mais est-elle significative ? → Pearson's r répondra au chapitre 15.</div>
+  <div class="chart-sub">Visuellement, les points suivent une tendance linéaire positive assez nette. Le chapitre 15 quantifiera sa force avec Pearson's r ; le chapitre 16 expliquera comment tester statistiquement la corrélation.</div>
   <div style="position:relative;height:220px;"><canvas id="sc-main" role="img" aria-label="Scatter plot âge vs revenu pour 10 individus">Données âge revenu : 25→35000, 30→42000, 35→48000, 40→55000, 45→62000, 50→58000, 55→70000, 60→75000, 65→68000, 70→72000.</canvas></div>
 </div>
+<p><strong>Comment le lire :</strong> quand on se déplace globalement vers la droite (âge plus élevé), les points ont tendance à se trouver plus haut (revenu plus élevé). Mais la relation n'est pas parfaite : par exemple, le revenu à 50 ans est inférieur à celui observé à 45 ans, et celui à 65 ans est inférieur à celui observé à 60 ans. Une tendance ne signifie donc pas que chaque observation suit exactement la même progression.</p>
 <div class="note-box">
   <b>Toujours regarder le scatter plot avant d'interpréter r.</b> Une relation non linéaire peut donner un r faible ou trompeur selon sa forme — parce que Pearson ne mesure que la composante <b>linéaire</b>.
 </div></div>

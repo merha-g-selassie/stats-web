@@ -8,13 +8,41 @@
 <link rel="stylesheet" href="../assets/style.css">
 <style>
   .clean-list { margin:.75rem 0 1rem 1.2rem; color:var(--text-sec); }
-  .clean-list li { margin:.35rem 0; }
-  .tool-card { border:1px solid var(--border); border-radius:var(--radius-md); padding:.9rem 1rem; background:var(--surface); }
-  .tool-card strong { display:block; margin-bottom:.3rem; color:var(--text-pri); }
-  .zone-row { display:flex; align-items:center; gap:12px; padding:9px 14px; border-radius:8px; margin-bottom:6px; font-size:.82rem; }
+  .clean-list li { margin:.4rem 0; }
+  .tool-card { border:1px solid var(--border); border-radius:var(--radius-md); padding:1rem; background:var(--surface); }
+  .tool-card strong { display:block; margin-bottom:.35rem; color:var(--text-pri); }
+  .tool-card p, .tool-card span { color:var(--text-sec); font-size:.88rem; line-height:1.55; }
+  .zone-row { display:flex; align-items:flex-start; gap:12px; padding:10px 14px; border-radius:8px; margin-bottom:7px; font-size:.82rem; }
   .zone-pct { font-size:1.2rem; font-weight:600; min-width:62px; }
-  .zone-detail { color:var(--text-sec); line-height:1.5; }
-  .normal-svg text { font-family:'Inter',system-ui,sans-serif; }
+  .zone-detail { color:var(--text-sec); line-height:1.55; }
+  .normal-svg text, .param-svg text, .qq-mini text { font-family:'Inter',system-ui,sans-serif; }
+  .dataset-table td { text-align:center; min-width:42px; }
+  .dataset-table th { white-space:nowrap; }
+  .step-list { counter-reset:step; list-style:none; margin:1rem 0; padding:0; display:grid; gap:.65rem; }
+  .step-list li { counter-increment:step; position:relative; padding:.78rem .9rem .78rem 2.8rem; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--surface); color:var(--text-sec); line-height:1.55; }
+  .step-list li::before { content:counter(step); position:absolute; left:.8rem; top:.72rem; width:1.35rem; height:1.35rem; border-radius:50%; display:grid; place-items:center; background:var(--accent-light); color:var(--accent); font-weight:700; font-size:.76rem; }
+  .concept-pair { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; margin:1rem 0; }
+  .concept-card { border:1px solid var(--border); border-radius:var(--radius-md); padding:1rem; background:var(--surface); min-width:0; }
+  .concept-card h4 { margin:0 0 .35rem; font-size:.9rem; }
+  .concept-card p { margin:0; color:var(--text-sec); font-size:.86rem; line-height:1.55; }
+  .param-card { border:1px solid var(--border); border-radius:var(--radius-md); padding:.8rem; background:var(--surface); min-width:0; }
+  .param-card h4 { font-size:.82rem; margin:0 0 .25rem; text-align:center; }
+  .param-card p { font-size:.76rem; color:var(--text-muted); text-align:center; margin:.2rem 0 0; }
+  .param-svg { width:100%; height:auto; display:block; }
+  .empirical-breakdown { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.6rem; margin:1rem 0; }
+  .empirical-piece { border:1px solid var(--border); border-radius:8px; padding:.7rem; background:var(--surface); text-align:center; }
+  .empirical-piece strong { display:block; font-size:1rem; color:var(--text-pri); }
+  .empirical-piece span { display:block; margin-top:.2rem; font-size:.74rem; color:var(--text-muted); line-height:1.4; }
+  .qq-guide { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; margin:1rem 0; }
+  .qq-mini { width:100%; max-width:320px; margin:.5rem auto 0; display:block; }
+  .good-label { color:var(--green); font-weight:600; }
+  .warn-label { color:var(--orange); font-weight:600; }
+  .mini-kicker { text-transform:uppercase; letter-spacing:.06em; font-size:.7rem; color:var(--text-muted); font-weight:600; }
+  @media(max-width:700px){
+    .concept-pair,.qq-guide { grid-template-columns:1fr; }
+    .empirical-breakdown { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .zone-row { flex-direction:column; gap:3px; }
+  }
 </style>
 </head>
 <body>
@@ -27,113 +55,294 @@
 <div class="ch-header">
   <div class="ch-eyebrow">Chapitre 09 · Distribution & probabilités</div>
   <h1 class="ch-title">Distribution normale</h1>
-  <p class="ch-desc">La courbe en cloche, ses propriétés, la règle 68–95–99,7 et la vérification de la normalité.</p>
+  <p class="ch-desc">Comprendre la courbe en cloche comme modèle théorique, le rôle de la moyenne et de l'écart-type, la règle 68–95–99,7 et les outils qui permettent d'évaluer si ce modèle est raisonnable.</p>
 </div>
 
-<h2>L'idée centrale</h2>
-<p>La distribution normale est l'un des modèles statistiques les plus importants. C'est une courbe en cloche <strong>parfaitement symétrique</strong>. Beaucoup de phénomènes réels sont approximativement normaux, par exemple certaines mesures biologiques ou erreurs de mesure — mais toutes les données ne le sont pas.</p>
+<h2>1. D'abord : qu'est-ce qu'une distribution ?</h2>
+<p>Une <strong>distribution</strong> décrit comment les valeurs d'une variable sont réparties : quelles valeurs sont fréquentes, lesquelles sont rares, où se trouve le centre et à quel point les valeurs sont dispersées.</p>
 
-<h2>Propriétés fondamentales</h2>
+<div class="concept-pair">
+  <div class="concept-card">
+    <div class="mini-kicker">Données observées</div>
+    <h4>Ce que l'on a réellement mesuré</h4>
+    <p>Par exemple, les 30 notes d'une classe. Elles peuvent être représentées par un tableau, un histogramme ou un stem-and-leaf plot.</p>
+    <svg viewBox="0 0 260 90" width="100%" role="img" aria-label="Histogramme schématique de données observées" style="margin-top:.7rem">
+      <line x1="20" y1="70" x2="245" y2="70" stroke="var(--border)" />
+      <rect x="35" y="54" width="24" height="16" rx="2" fill="var(--accent)" opacity=".45"/>
+      <rect x="64" y="39" width="24" height="31" rx="2" fill="var(--accent)" opacity=".55"/>
+      <rect x="93" y="21" width="24" height="49" rx="2" fill="var(--accent)" opacity=".7"/>
+      <rect x="122" y="15" width="24" height="55" rx="2" fill="var(--accent)" opacity=".8"/>
+      <rect x="151" y="28" width="24" height="42" rx="2" fill="var(--accent)" opacity=".65"/>
+      <rect x="180" y="45" width="24" height="25" rx="2" fill="var(--accent)" opacity=".5"/>
+      <rect x="209" y="59" width="24" height="11" rx="2" fill="var(--accent)" opacity=".4"/>
+    </svg>
+  </div>
+  <div class="concept-card">
+    <div class="mini-kicker">Modèle théorique</div>
+    <h4>Une forme mathématique utilisée pour décrire les données</h4>
+    <p>La distribution normale est une courbe mathématique idéale. Les données réelles n'ont pas besoin de suivre parfaitement la courbe : on demande plutôt si la normale constitue une approximation raisonnable.</p>
+    <svg viewBox="0 0 260 90" width="100%" role="img" aria-label="Courbe normale théorique schématique" style="margin-top:.7rem">
+      <line x1="20" y1="70" x2="245" y2="70" stroke="var(--border)" />
+      <path d="M25 69 C55 69,75 61,92 43 C107 27,116 10,132 10 C148 10,157 27,172 43 C189 61,209 69,239 69" fill="none" stroke="var(--accent)" stroke-width="3"/>
+    </svg>
+  </div>
+</div>
+
+<div class="box box-note">
+  <p><strong>Idée essentielle :</strong> une distribution normale n'est pas « le dessin exact des données ». C'est un <strong>modèle</strong> auquel on peut comparer les données observées.</p>
+</div>
+
+<h2>2. À quoi sert la distribution normale ?</h2>
+<p>Si une variable peut être raisonnablement modélisée par une distribution normale, connaître sa <strong>moyenne</strong> et son <strong>écart-type</strong> permet déjà de répondre à beaucoup de questions.</p>
 <ul class="clean-list">
-  <li>Symétrique autour de μ → skewness = 0</li>
-  <li>Mode = Médiane = Moyenne (tous au centre, au sommet de la cloche)</li>
-  <li>Entièrement définie par <strong>deux paramètres seulement</strong> : μ et σ</li>
-  <li>Dans ce cours, on la note <strong>N(μ, σ)</strong> : moyenne μ et écart-type σ</li>
-  <li>L'aire totale sous la courbe = <strong>1</strong> (= 100 % des données)</li>
+  <li>Où se trouve la majorité des observations ?</li>
+  <li>Une valeur est-elle proche du centre ou inhabituellement éloignée ?</li>
+  <li>Quelle proportion du modèle se trouve sous ou au-dessus d'un seuil ?</li>
+  <li>Comment comparer une valeur à une distribution de référence ?</li>
 </ul>
-<blockquote><p>Une fois μ et σ connus, tout le reste est déductible — forme, probabilités, intervalles.</p></blockquote>
+<p>Ces idées serviront directement au chapitre 10 sur les <strong>z-scores</strong>.</p>
 
-<h2>Pourquoi la normale apparaît souvent — Théorème central limite</h2>
-<p>Le théorème central limite explique pourquoi la normale apparaît si souvent quand on travaille avec des <strong>sommes ou des moyennes</strong>.</p>
-<blockquote><p>Quand on additionne ou moyenne beaucoup de contributions indépendantes, sans qu'une seule domine toutes les autres, la distribution du résultat tend souvent vers une forme normale lorsque n devient grand.</p></blockquote>
-<p><strong>Important :</strong> le théorème central limite ne dit pas que chaque variable observée est normale. Il explique surtout pourquoi les sommes et les moyennes deviennent souvent approximativement normales.</p>
+<h2>3. Les propriétés de la distribution normale</h2>
+<ul class="clean-list">
+  <li>La courbe est <strong>symétrique</strong> autour de sa moyenne μ.</li>
+  <li>Dans une distribution normale parfaite, <strong>moyenne = médiane = mode</strong>, tous au centre.</li>
+  <li>Sa position et son étalement sont déterminés par <strong>deux paramètres</strong> : μ et σ.</li>
+  <li>Dans ce site, on écrit <strong>N(μ, σ)</strong> : μ est la moyenne et σ l'écart-type.</li>
+  <li>L'aire totale sous la courbe vaut <strong>1</strong>, soit 100 % de la probabilité du modèle.</li>
+</ul>
 
-<h2>Comment vérifier qu'une distribution est normale</h2>
-<p>On ne peut jamais le prouver avec certitude, mais on utilise trois outils :</p>
-<div class="grid-3">
-  <div class="tool-card"><strong>1. Histogramme</strong><span style="color:var(--text-sec);font-size:.88rem">Visuellement, ressemble-t-il à une cloche symétrique ? Premier signal rapide.</span></div>
-  <div class="tool-card"><strong>2. Test de Shapiro-Wilk</strong><span style="color:var(--text-sec);font-size:.88rem">Test statistique formel souvent utilisé pour les petits et moyens échantillons. Si p &gt; 0.05 → on n'a pas assez d'éléments pour rejeter la normalité.</span></div>
-  <div class="tool-card"><strong>3. Q-Q plot</strong><span style="color:var(--text-sec);font-size:.88rem">On compare les quantiles du dataset à ceux d'une normale théorique. Si les points s'alignent approximativement sur une droite → les données sont compatibles avec une distribution normale.</span></div>
+<div class="box box-purple">
+  <p><strong>Attention :</strong> « moyenne = médiane = mode » est une <strong>propriété</strong> de la distribution normale, pas une définition suffisante. D'autres distributions symétriques peuvent aussi avoir ces trois mesures au même endroit.</p>
 </div>
 
-<h2>La règle empirique 68 – 95 – 99,7</h2>
-<p>La propriété la plus importante de la courbe normale. Ces pourcentages sont des <strong>approximations de probabilités fixes</strong> de la distribution normale. Elles s'appliquent à toute distribution normale, quelles que soient les valeurs de μ et σ.</p>
+<h2>4. Que font μ et σ à la courbe ?</h2>
+<p>La moyenne <strong>μ</strong> détermine le <strong>centre</strong> de la distribution. L'écart-type <strong>σ</strong> détermine son <strong>étalement</strong>.</p>
+
 <div class="grid-3">
-  <div class="stat-card"><div class="lbl">μ ± 1σ</div><div class="val" style="color:var(--accent)">68 %</div></div>
-  <div class="stat-card"><div class="lbl">μ ± 2σ</div><div class="val" style="color:var(--green)">95 %</div></div>
-  <div class="stat-card"><div class="lbl">μ ± 3σ</div><div class="val" style="color:var(--purple)">99,7 %</div></div>
+  <div class="param-card">
+    <h4>μ = 0, σ = 1</h4>
+    <svg class="param-svg" data-mu="0" data-sd="1" viewBox="0 0 220 110" role="img" aria-label="Distribution normale centrée en zéro avec écart-type 1"></svg>
+    <p>Courbe de référence.</p>
+  </div>
+  <div class="param-card">
+    <h4>μ = 2, σ = 1</h4>
+    <svg class="param-svg" data-mu="2" data-sd="1" viewBox="0 0 220 110" role="img" aria-label="Même étalement mais moyenne déplacée vers la droite"></svg>
+    <p>Même σ : la courbe garde sa largeur, mais se déplace.</p>
+  </div>
+  <div class="param-card">
+    <h4>μ = 0, σ = 2</h4>
+    <svg class="param-svg" data-mu="0" data-sd="2" viewBox="0 0 220 110" role="img" aria-label="Même moyenne mais écart-type plus grand"></svg>
+    <p>Même μ : un σ plus grand rend la courbe plus large et plus basse.</p>
+  </div>
+</div>
+
+<p>Autrement dit :</p>
+<ul class="clean-list">
+  <li><strong>changer μ</strong> déplace la courbe vers la gauche ou la droite ;</li>
+  <li><strong>augmenter σ</strong> étale davantage les valeurs autour du centre ;</li>
+  <li><strong>diminuer σ</strong> les concentre davantage autour du centre.</li>
+</ul>
+
+<h2>5. La règle empirique 68 – 95 – 99,7</h2>
+<p>Dans une distribution normale, l'écart-type découpe la courbe en zones dont les proportions sont connues à l'avance.</p>
+<div class="grid-3">
+  <div class="stat-card"><div class="lbl">Entre μ − 1σ et μ + 1σ</div><div class="val" style="color:var(--accent)">≈ 68 %</div></div>
+  <div class="stat-card"><div class="lbl">Entre μ − 2σ et μ + 2σ</div><div class="val" style="color:var(--green)">≈ 95 %</div></div>
+  <div class="stat-card"><div class="lbl">Entre μ − 3σ et μ + 3σ</div><div class="val" style="color:var(--purple)">≈ 99,7 %</div></div>
 </div>
 
 <div class="chart-card">
-  <h4>Règle empirique 68 – 95 – 99,7 sur nos données</h4>
-  <p>Les tirets en bas = les 30 notes réelles projetées sur l'axe.</p>
+  <h4>Comment lire μ ± σ sur une courbe normale</h4>
+  <p>Les zones colorées montrent les intervalles théoriques. Les petits tirets en bas représentent les 30 notes de l'exemple étudié plus bas.</p>
   <svg id="normal-curve" class="normal-svg" viewBox="0 0 640 220" width="100%" role="img">
-    <title>Courbe normale avec zones empiriques</title>
-    <desc>Courbe en cloche avec zones colorées ±1σ, ±2σ, ±3σ et notes réelles projetées.</desc>
+    <title>Courbe normale avec les zones à un, deux et trois écarts-types</title>
+    <desc>Courbe en cloche avec les zones μ plus ou moins un, deux et trois écarts-types, ainsi que les notes observées.</desc>
   </svg>
   <div class="legend" style="justify-content:center">
-    <span class="leg"><span class="leg-sq" style="background:rgba(55,138,221,.55)"></span>±1σ = 68%</span>
-    <span class="leg"><span class="leg-sq" style="background:rgba(29,158,117,.35)"></span>±2σ = 95%</span>
-    <span class="leg"><span class="leg-sq" style="background:rgba(127,119,221,.25)"></span>±3σ = 99.7%</span>
+    <span class="leg"><span class="leg-sq" style="background:rgba(55,138,221,.55)"></span>±1σ ≈ 68 %</span>
+    <span class="leg"><span class="leg-sq" style="background:rgba(29,158,117,.35)"></span>±2σ ≈ 95 %</span>
+    <span class="leg"><span class="leg-sq" style="background:rgba(127,119,221,.25)"></span>±3σ ≈ 99,7 %</span>
     <span class="leg"><span style="display:inline-block;width:16px;height:2px;background:#D85A30"></span>μ</span>
   </div>
 </div>
 
-<h2>Calcul étape par étape avec nos 30 notes</h2>
-<p><strong>Dataset</strong> : 8 9 9 10 10 10 11 11 11 11 12 12 12 12 12 13 13 13 13 14 14 14 15 15 15 16 16 17 17 18</p>
-<div class="box box-note"><p>Pour cet exemple, on considère ces 30 notes comme la <strong>population du groupe étudié</strong>. On utilise donc μ et σ, avec le diviseur n.</p></div>
+<h3>Que représentent les morceaux de la courbe ?</h3>
+<p>Par symétrie, la moitié de chaque zone se trouve à gauche de μ et l'autre moitié à droite.</p>
+<div class="empirical-breakdown">
+  <div class="empirical-piece"><strong>≈ 34,1 %</strong><span>entre μ et 1σ, de chaque côté</span></div>
+  <div class="empirical-piece"><strong>≈ 13,6 %</strong><span>entre 1σ et 2σ, de chaque côté</span></div>
+  <div class="empirical-piece"><strong>≈ 2,1 %</strong><span>entre 2σ et 3σ, de chaque côté</span></div>
+  <div class="empirical-piece"><strong>≈ 0,1 %</strong><span>au-delà de 3σ, dans chaque extrême</span></div>
+</div>
+<p>Ces nombres ne sont pas là pour être appris tous par cœur. L'idée importante est que <strong>plus on s'éloigne de la moyenne en nombre d'écarts-types, plus les valeurs deviennent rares dans le modèle normal</strong>.</p>
 
-<h3>Étape 1 — Calculer μ</h3>
-<div class="formula">μ = Σxᵢ / N = 383 / 30 = <strong>12.77</strong></div>
+<h2>6. Exemple complet avec 30 notes</h2>
+<p>On reprend le même dataset que dans les chapitres précédents. Ici, les 30 notes sont considérées comme la <strong>population du groupe étudié</strong> : on utilise donc μ et σ, avec le diviseur N.</p>
 
-<h3>Étape 2 — Calculer σ</h3>
-<div class="formula">σ² = Σ(xᵢ − μ)² / N = 193.37 / 30 = <strong>6.45</strong><br>σ = √6.45 = <strong>2.54</strong></div>
-
-<h3>Étape 3 — Appliquer la règle empirique</h3>
 <div class="table-wrap">
-<table>
-  <thead><tr><th>Intervalle</th><th>Calcul</th><th>Bornes</th><th>Théorie</th><th>Dataset réel</th></tr></thead>
+<table class="dataset-table">
+  <thead><tr><th colspan="10">Dataset — 30 notes</th></tr></thead>
   <tbody>
-    <tr><td>±1σ</td><td>12.77 ± 2.54</td><td>10.23 → 15.31</td><td>68 %</td><td>19/30 = <strong>63 %</strong></td></tr>
-    <tr><td>±2σ</td><td>12.77 ± 5.08</td><td>7.69 → 17.85</td><td>95 %</td><td>29/30 = <strong>97 %</strong></td></tr>
-    <tr><td>±3σ</td><td>12.77 ± 7.62</td><td>5.15 → 20.39</td><td>99.7 %</td><td>30/30 = <strong>100 %</strong></td></tr>
+    <tr><td>8</td><td>9</td><td>9</td><td>10</td><td>10</td><td>10</td><td>11</td><td>11</td><td>11</td><td>11</td></tr>
+    <tr><td>12</td><td>12</td><td>12</td><td>12</td><td>12</td><td>13</td><td>13</td><td>13</td><td>13</td><td>14</td></tr>
+    <tr><td>14</td><td>14</td><td>15</td><td>15</td><td>15</td><td>16</td><td>16</td><td>17</td><td>17</td><td>18</td></tr>
   </tbody>
 </table>
 </div>
-<p>Les résultats observés ne sont pas exactement 68/95/99.7 % — c'est normal. Les valeurs 68/95/99.7 décrivent la <strong>distribution normale théorique</strong>. Dans un échantillon fini, les proportions observées fluctuent autour de ces valeurs.</p>
 
+<h3>Étape 1 — Calculer la moyenne μ</h3>
+<div class="formula">μ = Σxᵢ / N = 383 / 30 = <strong>12,77</strong></div>
+<p>Le centre des 30 notes se situe donc autour de <strong>12,77</strong>.</p>
+
+<h3>Étape 2 — Calculer l'écart-type σ</h3>
+<div class="formula">σ² = Σ(xᵢ − μ)² / N = 193,37 / 30 ≈ <strong>6,45</strong><br>σ = √6,45 ≈ <strong>2,54</strong></div>
+<p>L'écart-type de 2,54 indique que les notes se trouvent typiquement à quelques points de la moyenne de 12,77.</p>
+
+<h3>Étape 3 — Transformer μ ± σ en vraies bornes</h3>
+<p>Par exemple, « μ ± 1σ » signifie simplement : partir de la moyenne, puis retirer et ajouter un écart-type.</p>
+<div class="formula">12,77 − 2,54 = <strong>10,23</strong><br>12,77 + 2,54 = <strong>15,31</strong></div>
+<p>Si le modèle normal est raisonnable, il prévoit donc qu'environ <strong>68 %</strong> des valeurs se situent entre 10,23 et 15,31.</p>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Intervalle</th><th>Calcul</th><th>Bornes</th><th>Modèle normal</th><th>30 notes observées</th></tr></thead>
+  <tbody>
+    <tr><td>±1σ</td><td>12,77 ± 2,54</td><td>10,23 → 15,31</td><td>≈ 68 %</td><td>19/30 = <strong>63 %</strong></td></tr>
+    <tr><td>±2σ</td><td>12,77 ± 5,08</td><td>7,69 → 17,85</td><td>≈ 95 %</td><td>29/30 = <strong>97 %</strong></td></tr>
+    <tr><td>±3σ</td><td>12,77 ± 7,62</td><td>5,15 → 20,39</td><td>≈ 99,7 %</td><td>30/30 = <strong>100 %</strong></td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>Les proportions observées ne sont pas exactement 68/95/99,7 %. C'est normal : ces pourcentages décrivent une <strong>courbe théorique idéale</strong>. Avec seulement 30 observations réelles, les proportions fluctuent.</p>
 <div id="zones-container" style="margin-top:1rem"></div>
 
-<h2>Symétrie — Mode = Médiane = Moyenne</h2>
+<h2>7. Symétrie : moyenne = médiane = mode dans le modèle normal</h2>
 <div class="chart-card">
-  <h4>Les trois mesures sont confondues au centre de la cloche</h4>
-  <p>C'est la définition même de la distribution normale — contrairement aux distributions asymétriques.</p>
-  <div class="chart-wrap" style="height:150px"><canvas id="sym-chart" role="img" aria-label="Comparaison normale vs asymétrique"></canvas></div>
-  <div class="legend" style="justify-content:center;margin-top:.75rem">
-    <span class="leg"><span style="display:inline-block;width:16px;height:2px;background:#2a78d6"></span>Normale — Mode=Méd=Moy</span>
-    <span class="leg"><span style="display:inline-block;width:16px;height:2px;background:#eb6834"></span>Asymétrie positive — Moy &gt; Méd &gt; Mode</span>
+  <h4>Les trois mesures se trouvent au centre</h4>
+  <p>Dans une distribution normale parfaite, la symétrie place la moyenne, la médiane et le mode au même endroit.</p>
+  <svg viewBox="0 0 640 185" width="100%" role="img" aria-label="Distribution normale avec moyenne médiane et mode au centre">
+    <line x1="45" y1="145" x2="595" y2="145" stroke="var(--border)"/>
+    <path d="M50 144 C135 143,190 132,235 86 C270 50,286 25,320 25 C354 25,370 50,405 86 C450 132,505 143,590 144" fill="none" stroke="var(--accent)" stroke-width="3"/>
+    <line x1="320" y1="24" x2="320" y2="151" stroke="#D85A30" stroke-width="2" stroke-dasharray="5,4"/>
+    <text x="320" y="168" text-anchor="middle" fill="var(--text-pri)" font-size="13" font-weight="600">moyenne = médiane = mode</text>
+  </svg>
+</div>
+<p>Cette égalité vient de la forme parfaitement symétrique de la normale. Elle ne signifie pas que toute distribution ayant une moyenne et une médiane proches est nécessairement normale.</p>
+
+<h2>8. Ce que le modèle N(12,77 ; 2,54) permet d'estimer</h2>
+<p>Si l'on décide que la distribution normale est une approximation raisonnable pour ces notes, on peut traduire des positions en probabilités.</p>
+<ul class="clean-list">
+  <li>environ 68 % du modèle se trouve entre <strong>10,23 et 15,31</strong> ;</li>
+  <li>environ 95 % se trouve entre <strong>7,69 et 17,85</strong> ;</li>
+  <li>la note 18 se trouve à environ <strong>2,06 écarts-types au-dessus de la moyenne</strong> ; sous un modèle normal, il ne reste qu'environ <strong>2 %</strong> de l'aire au-dessus ;</li>
+  <li>le centre théorique du modèle est <strong>12,77</strong>.</li>
+</ul>
+<p>Le chapitre 10 montrera précisément comment passer d'une valeur comme 18 à son <strong>z-score</strong>, puis à une aire sous la courbe.</p>
+
+<h2>9. Comment évaluer si la normale est un modèle raisonnable ?</h2>
+<p>On ne « prouve » généralement pas qu'un dataset est parfaitement normal. On combine plutôt plusieurs indices pour décider si la normale constitue une approximation suffisamment raisonnable pour l'analyse envisagée.</p>
+
+<div class="grid-3">
+  <div class="tool-card">
+    <strong>1. Histogramme</strong>
+    <p>On regarde si la distribution est approximativement symétrique, avec un centre dominant et deux queues. C'est un premier diagnostic visuel, pas une preuve.</p>
+  </div>
+  <div class="tool-card">
+    <strong>2. Test de Shapiro-Wilk</strong>
+    <p>Il teste si les données présentent un écart détectable à la normalité. Si p &gt; 0,05, on <strong>ne rejette pas</strong> la normalité. Cela ne signifie pas que l'on a prouvé que les données sont normales.</p>
+  </div>
+  <div class="tool-card">
+    <strong>3. Q-Q plot</strong>
+    <p>Il compare les positions des valeurs observées aux positions attendues sous une distribution normale. Si les points suivent approximativement une droite, la normale peut être une approximation plausible.</p>
   </div>
 </div>
 
-<h2>Ce que le modèle N(12.77, 2.54) permet de prévoir</h2>
-<p>Si l'on modélise les notes par cette distribution normale :</p>
-<ul class="clean-list">
-  <li>environ 68 % des valeurs se situent entre <strong>10.23 et 15.31</strong></li>
-  <li>environ 95 % se situent entre <strong>7.69 et 17.85</strong></li>
-  <li>une note de 18 correspond à <strong>z ≈ +2.06</strong> → environ les <strong>2 % supérieurs</strong> du modèle normal</li>
-  <li>dans la distribution normale théorique, <strong>moyenne = médiane = mode = 12.77</strong></li>
-</ul>
+<h3>Comment lire un Q-Q plot ?</h3>
+<ol class="step-list">
+  <li>On trie les valeurs observées de la plus petite à la plus grande.</li>
+  <li>Pour chaque position, on calcule où une valeur se trouverait si les données suivaient une normale.</li>
+  <li>On place <strong>position théorique</strong> sur l'axe horizontal et <strong>valeur observée</strong> sur l'axe vertical.</li>
+  <li>Si les observations ressemblent à une normale, les points suivent approximativement une droite. Des courbures ou écarts systématiques indiquent que la forme diffère du modèle normal.</li>
+</ol>
 
-<h2>Vérification de la normalité — Q-Q plot</h2>
+<div class="qq-guide">
+  <div class="concept-card">
+    <h4><span class="good-label">Compatible visuellement</span></h4>
+    <p>Les points restent proches de la droite sans motif systématique marqué.</p>
+    <svg class="qq-mini" viewBox="0 0 260 150" role="img" aria-label="Q-Q plot schématique avec points proches de la droite">
+      <line x1="35" y1="125" x2="225" y2="25" stroke="#D85A30" stroke-width="2" stroke-dasharray="5,4"/>
+      <g fill="var(--accent)">
+        <circle cx="48" cy="117" r="4"/><circle cx="68" cy="104" r="4"/><circle cx="88" cy="96" r="4"/><circle cx="109" cy="83" r="4"/><circle cx="130" cy="74" r="4"/><circle cx="151" cy="63" r="4"/><circle cx="172" cy="50" r="4"/><circle cx="194" cy="42" r="4"/><circle cx="214" cy="29" r="4"/>
+      </g>
+    </svg>
+  </div>
+  <div class="concept-card">
+    <h4><span class="warn-label">Écart évident au modèle</span></h4>
+    <p>Les points forment une courbe systématique au lieu de suivre la droite.</p>
+    <svg class="qq-mini" viewBox="0 0 260 150" role="img" aria-label="Q-Q plot schématique avec forte courbure">
+      <line x1="35" y1="125" x2="225" y2="25" stroke="#D85A30" stroke-width="2" stroke-dasharray="5,4"/>
+      <g fill="var(--purple)">
+        <circle cx="48" cy="128" r="4"/><circle cx="68" cy="119" r="4"/><circle cx="88" cy="108" r="4"/><circle cx="109" cy="92" r="4"/><circle cx="130" cy="74" r="4"/><circle cx="151" cy="55" r="4"/><circle cx="172" cy="39" r="4"/><circle cx="194" cy="28" r="4"/><circle cx="214" cy="21" r="4"/>
+      </g>
+    </svg>
+  </div>
+</div>
+
 <div class="chart-card">
-  <h4>Q-Q plot de nos 30 notes</h4>
-  <p>Si les points suivent approximativement la droite, les données sont compatibles avec une normale. De petits écarts sont fréquents avec n = 30.</p>
-  <div class="chart-wrap" style="height:220px"><canvas id="qq-chart" role="img" aria-label="Q-Q plot des 30 notes"></canvas></div>
+  <h4>Q-Q plot des 30 notes</h4>
+  <p>Les points des données sont comparés à la droite attendue sous le modèle N(12,77 ; 2,54).</p>
+  <div class="chart-wrap" style="height:240px"><canvas id="qq-chart" role="img" aria-label="Q-Q plot des 30 notes"></canvas></div>
 </div>
+
 <div class="box box-purple">
-  <p><strong>Limite importante :</strong> la règle empirique et toutes les déductions sur N(μ, σ) ne fonctionnent que si la distribution est effectivement normale. D'où l'importance de vérifier avant d'appliquer — histogramme, Shapiro-Wilk, ou Q-Q plot.</p>
+  <p><strong>Interprétation :</strong> les points sont globalement proches de la droite, avec quelques écarts aux extrêmes. Visuellement, cela est <strong>compatible</strong> avec une distribution approximativement normale. Cela ne « confirme » pas la normalité à lui seul.</p>
 </div>
-<p>Le Q-Q plot est particulièrement utile ici — les points suivent bien la droite rouge, ce qui confirme visuellement que nos 30 notes suivent approximativement une distribution normale. Les légères déviations aux extrêmes sont attendues avec n = 30.</p>
+
+<h2>10. Pourquoi rencontre-t-on souvent la normale ? — Théorème central limite</h2>
+<p>Le <strong>théorème central limite (TCL)</strong> concerne surtout les <strong>sommes et les moyennes calculées sur des échantillons</strong>. Il ne dit pas que les données individuelles deviennent normales.</p>
+
+<div class="concept-pair">
+  <div class="concept-card">
+    <div class="mini-kicker">Variable individuelle</div>
+    <h4>Les données d'origine peuvent ne pas être normales</h4>
+    <p>Par exemple, les revenus individuels sont souvent asymétriques : beaucoup de revenus sont moyens et quelques-uns sont très élevés.</p>
+  </div>
+  <div class="concept-card">
+    <div class="mini-kicker">Moyennes d'échantillons</div>
+    <h4>Les moyennes répétées tendent souvent vers une forme normale</h4>
+    <p>Si l'on prélève de nombreux échantillons suffisamment grands et que l'on calcule leur revenu moyen, la <strong>distribution de ces moyennes</strong> tend souvent à devenir approximativement normale, sous certaines conditions.</p>
+  </div>
+</div>
+
+<h3>Exemple en sciences sociales</h3>
+<p>Supposons qu'une population possède une distribution d'âge qui n'est pas parfaitement normale.</p>
+<ol class="step-list">
+  <li>On tire un échantillon de 100 personnes et on calcule son âge moyen.</li>
+  <li>On recommence avec un nouvel échantillon de 100 personnes, puis encore et encore.</li>
+  <li>On obtient alors une longue liste de <strong>moyennes d'échantillons</strong>.</li>
+  <li>Sous des conditions appropriées, la distribution de ces moyennes devient de plus en plus proche d'une normale quand la taille des échantillons augmente.</li>
+</ol>
+
+<div class="box box-note">
+  <p><strong>À retenir :</strong> le TCL explique pourquoi la normale apparaît si souvent dans l'inférence statistique. Il concerne la <strong>distribution d'une statistique calculée sur de nombreux échantillons</strong>, pas nécessairement la forme des observations brutes.</p>
+</div>
+
+<h2>À retenir</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Idée</th><th>Interprétation simple</th></tr></thead>
+  <tbody>
+    <tr><td>Distribution normale</td><td>Modèle théorique symétrique en forme de cloche.</td></tr>
+    <tr><td>μ</td><td>Déplace le centre de la courbe.</td></tr>
+    <tr><td>σ</td><td>Contrôle l'étalement de la courbe.</td></tr>
+    <tr><td>68–95–99,7</td><td>Proportions théoriques situées à ±1σ, ±2σ et ±3σ autour de μ.</td></tr>
+    <tr><td>Q-Q plot</td><td>Vérifie visuellement si les positions observées ressemblent à celles attendues sous une normale.</td></tr>
+    <tr><td>Shapiro-Wilk</td><td>Peut détecter un écart à la normalité ; p &gt; 0,05 ne prouve pas la normalité.</td></tr>
+    <tr><td>Théorème central limite</td><td>Explique pourquoi des moyennes/sommes répétées prennent souvent une forme approximativement normale.</td></tr>
+  </tbody>
+</table>
+</div>
 
 <div class="page-nav">
   <a href="ch08.html">← Chapitre 08</a>
@@ -148,13 +357,27 @@
 <script>
 const isDark=document.documentElement.dataset.mode==='dark'||(!document.documentElement.dataset.mode&&matchMedia('(prefers-color-scheme:dark)').matches);
 const gridC=isDark?'rgba(255,255,255,0.12)':'rgba(25,25,24,0.09)';
-const tick='#7A7875';
-const mu=12.77, sd=2.54;
+const tick=isDark?'#AAA7A2':'#7A7875';
+const axisC=isDark?'rgba(255,255,255,.22)':'rgba(0,0,0,.15)';
+const mu=12.7666666667, sd=2.5388098699;
 const notes=[8,9,9,10,10,10,11,11,11,11,12,12,12,12,12,13,13,13,13,14,14,14,15,15,15,16,16,17,17,18];
 function normPDF(x,m,s){return Math.exp(-0.5*((x-m)/s)**2)/(s*Math.sqrt(2*Math.PI));}
 function svgEl(tag,attrs,par){const e=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const[k,v]of Object.entries(attrs))e.setAttribute(k,v);if(par)par.appendChild(e);return e;}
 function svgTx(txt,attrs,par){const e=svgEl('text',attrs,par);e.textContent=txt;return e;}
 
+// Small diagrams: show separately what changing μ or σ does.
+document.querySelectorAll('.param-svg').forEach(s=>{
+  const m=Number(s.dataset.mu), sig=Number(s.dataset.sd), W=220,H=110,L=14,R=10,T=10,B=24;
+  const xMin=-5,xMax=7,toX=x=>L+(x-xMin)/(xMax-xMin)*(W-L-R);
+  const peak=normPDF(m,m,sig),toY=y=>T+(H-T-B)-(y/(peak*1.1))*(H-T-B);
+  svgEl('line',{x1:L,y1:H-B,x2:W-R,y2:H-B,stroke:axisC},s);
+  const pts=[];for(let x=xMin;x<=xMax;x+=(xMax-xMin)/180)pts.push(`${toX(x).toFixed(1)},${toY(normPDF(x,m,sig)).toFixed(1)}`);
+  svgEl('polyline',{points:pts.join(' '),fill:'none',stroke:'#378ADD','stroke-width':'2.4','stroke-linejoin':'round'},s);
+  svgEl('line',{x1:toX(m),y1:12,x2:toX(m),y2:H-B,stroke:'#D85A30','stroke-width':'1.3','stroke-dasharray':'4,3'},s);
+  svgTx('μ',{x:toX(m),y:H-6,'text-anchor':'middle','font-size':'11',fill:'#D85A30','font-weight':'600'},s);
+});
+
+// Main 68–95–99.7 curve.
 const svg=document.getElementById('normal-curve');
 const W=640,H=220,mL=50,mR=20,mT=14,mB=50,pW=W-mL-mR,pH=H-mT-mB;
 const xMin=mu-4*sd,xMax=mu+4*sd,toX=v=>mL+(v-xMin)/(xMax-xMin)*pW;
@@ -166,27 +389,25 @@ const yMax=normPDF(mu,mu,sd)*1.1,toY=y=>mT+pH-(y/yMax)*pH;
 ].forEach(z=>{const lo=mu-z.k*sd,hi=mu+z.k*sd,pts=[];for(let x=lo;x<=hi;x+=(hi-lo)/120)pts.push(`${toX(x).toFixed(1)},${toY(normPDF(x,mu,sd)).toFixed(1)}`);pts.push(`${toX(hi).toFixed(1)},${toY(0).toFixed(1)}`);pts.push(`${toX(lo).toFixed(1)},${toY(0).toFixed(1)}`);svgEl('polygon',{points:pts.join(' '),fill:z.fill},svg);});
 const curvePts=[];for(let x=xMin;x<=xMax;x+=(xMax-xMin)/300)curvePts.push(`${toX(x).toFixed(1)},${toY(normPDF(x,mu,sd)).toFixed(1)}`);
 svgEl('polyline',{points:curvePts.join(' '),fill:'none',stroke:'#2B52A0','stroke-width':'2.2','stroke-linejoin':'round'},svg);
-svgEl('line',{x1:mL,y1:mT+pH,x2:W-mR,y2:mT+pH,stroke:isDark?'rgba(255,255,255,.2)':'rgba(0,0,0,.15)','stroke-width':'1'},svg);
+svgEl('line',{x1:mL,y1:mT+pH,x2:W-mR,y2:mT+pH,stroke:axisC,'stroke-width':'1'},svg);
 svgEl('line',{x1:toX(mu),y1:mT,x2:toX(mu),y2:mT+pH,stroke:'#D85A30','stroke-width':'1.5','stroke-dasharray':'4,3'},svg);
 [-3,-2,-1,0,1,2,3].forEach(k=>{const x=mu+k*sd,sx=toX(x),lbl=k===0?'μ':k>0?`μ+${k}σ`:`μ${k}σ`;svgTx(lbl,{x:sx,y:mT+pH+13,'text-anchor':'middle','font-size':'9.5',fill:k===0?'#D85A30':tick,'font-weight':k===0?'600':'400'},svg);svgTx((mu+k*sd).toFixed(1),{x:sx,y:mT+pH+24,'text-anchor':'middle','font-size':'8.5',fill:tick},svg);});
 const tickY=mT+pH+36;notes.forEach(v=>{const k=Math.abs((v-mu)/sd),col=k<=1?'#378ADD':k<=2?'#1D9E75':'#7F77DD';svgEl('line',{x1:toX(v),y1:tickY-5,x2:toX(v),y2:tickY+5,stroke:col,'stroke-width':'1.5'},svg);});
-svgTx('données réelles',{x:mL,y:tickY+16,'font-size':'9',fill:tick},svg);
+svgTx('30 notes observées',{x:mL,y:tickY+16,'font-size':'9',fill:tick},svg);
 
 const zc=document.getElementById('zones-container');
 [
   {k:1,pct:'68 %',col:'#2B52A0',bg:isDark?'rgba(55,138,221,.12)':'#EBF0FA'},
   {k:2,pct:'95 %',col:'#0F6E56',bg:isDark?'rgba(29,158,117,.12)':'#E4F2EE'},
-  {k:3,pct:'99.7 %',col:'#5B3FA0',bg:isDark?'rgba(127,119,221,.12)':'#F0ECFA'}
-].forEach(z=>{const lo=(mu-z.k*sd).toFixed(2),hi=(mu+z.k*sd).toFixed(2),cnt=notes.filter(v=>v>=mu-z.k*sd&&v<=mu+z.k*sd).length,pctReal=(cnt/notes.length*100).toFixed(0),d=document.createElement('div');d.className='zone-row';d.style.background=z.bg;d.innerHTML=`<div class="zone-pct" style="color:${z.col}">${z.pct}</div><div class="zone-detail"><strong style="color:${z.col}">μ ± ${z.k}σ</strong> → de <strong>${lo}</strong> à <strong>${hi}</strong><br>Dans ce dataset : <strong>${cnt}/30 étudiants (${pctReal} %)</strong> dans cet intervalle</div>`;zc.appendChild(d);});
+  {k:3,pct:'99,7 %',col:'#5B3FA0',bg:isDark?'rgba(127,119,221,.12)':'#F0ECFA'}
+].forEach(z=>{const lo=(mu-z.k*sd).toFixed(2).replace('.',','),hi=(mu+z.k*sd).toFixed(2).replace('.',','),cnt=notes.filter(v=>v>=mu-z.k*sd&&v<=mu+z.k*sd).length,pctReal=(cnt/notes.length*100).toFixed(0),d=document.createElement('div');d.className='zone-row';d.style.background=z.bg;d.innerHTML=`<div class="zone-pct" style="color:${z.col}">${z.pct}</div><div class="zone-detail"><strong style="color:${z.col}">μ ± ${z.k}σ</strong> → de <strong>${lo}</strong> à <strong>${hi}</strong><br>Dans les 30 notes observées : <strong>${cnt}/30 (${pctReal} %)</strong> sont dans cet intervalle.</div>`;zc.appendChild(d);});
 
-const xs2=Array.from({length:80},(_,i)=>6+i*0.2);
-new Chart(document.getElementById('sym-chart'),{type:'line',data:{labels:xs2.map(x=>x.toFixed(1)),datasets:[{label:'Normale',data:xs2.map(x=>normPDF(x,13,2.5)),borderColor:'#2a78d6',borderWidth:2,pointRadius:0,fill:false,tension:.4},{label:'Asymétrie +',data:xs2.map(x=>normPDF(x,11,2)*1.3+normPDF(x,16,4)*.35),borderColor:'#eb6834',borderWidth:2,pointRadius:0,fill:false,tension:.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{display:false},y:{display:false,beginAtZero:true}}}});
-
+// Q-Q plot.
 const sorted=[...notes].sort((a,b)=>a-b),n=sorted.length;
 function normInv(p){const a=[2.515517,0.802853,0.010328],b=[1.432788,0.189269,0.001308];if(p<0.5){const t=Math.sqrt(-2*Math.log(p));return-(t-(a[0]+a[1]*t+a[2]*t*t)/(1+b[0]*t+b[1]*t*t+b[2]*t*t*t));}const t=Math.sqrt(-2*Math.log(1-p));return t-(a[0]+a[1]*t+a[2]*t*t)/(1+b[0]*t+b[1]*t*t+b[2]*t*t*t);}
 const qqPts=sorted.map((v,i)=>({x:parseFloat(normInv((i+0.5)/n).toFixed(3)),y:v}));
 const qqMin=qqPts[0].x,qqMax=qqPts[qqPts.length-1].x,lineData=[{x:qqMin,y:mu+qqMin*sd},{x:qqMax,y:mu+qqMax*sd}];
-new Chart(document.getElementById('qq-chart'),{type:'scatter',data:{datasets:[{label:'Notes',data:qqPts,backgroundColor:'#2a78d6',pointRadius:5,pointHoverRadius:7},{label:'Droite normale',data:lineData,type:'line',borderColor:'#D85A30',borderWidth:1.5,pointRadius:0,fill:false,borderDash:[4,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:t=>`z=${t.parsed.x.toFixed(2)}, note=${t.parsed.y}`}}},scales:{x:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'Quantiles théoriques (z)',color:tick,font:{size:10}}},y:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'Quantiles observés (notes)',color:tick,font:{size:10}}}}}});
+new Chart(document.getElementById('qq-chart'),{type:'scatter',data:{datasets:[{label:'Notes',data:qqPts,backgroundColor:'#2a78d6',pointRadius:5,pointHoverRadius:7},{label:'Droite normale',data:lineData,type:'line',borderColor:'#D85A30',borderWidth:1.5,pointRadius:0,fill:false,borderDash:[4,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:t=>`z=${t.parsed.x.toFixed(2)}, note=${t.parsed.y}`}}},scales:{x:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'Position théorique sous une normale (z)',color:tick,font:{size:10}}},y:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'Valeur observée (note)',color:tick,font:{size:10}}}}}});
 </script>
 <script src="../assets/nav-content.js"></script>
 </body>

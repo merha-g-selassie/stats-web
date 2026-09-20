@@ -65,14 +65,47 @@
 </div>
 
 <h2>Relation typique entre les trois selon la forme</h2>
-<p>Pour des distributions unimodales simples, on observe souvent le schéma suivant. C'est une <strong>règle pratique</strong>, pas une identité valable pour tous les datasets.</p>
+<p>Pour des distributions <strong>unimodales</strong> simples, on observe souvent le schéma suivant. C'est une <strong>règle pratique</strong>, pas une identité valable pour tous les datasets.</p>
 <div class="table-wrap"><table>
 <thead><tr><th>Forme</th><th>Relation typique</th></tr></thead>
 <tbody>
-<tr><td>Normale</td><td>Mode = Médiane = Moyenne</td></tr>
+<tr><td>Symétrique (ex. distribution normale)</td><td>Mode = Médiane = Moyenne</td></tr>
 <tr><td>Asymétrie positive</td><td>Mode &lt; Médiane &lt; Moyenne</td></tr>
 <tr><td>Asymétrie négative</td><td>Moyenne &lt; Médiane &lt; Mode</td></tr>
 </tbody></table></div>
+<p style="font-size:.85rem;color:var(--text-muted)">La distribution normale n'est qu'un <strong>cas particulier</strong> de distribution symétrique — toutes les distributions symétriques ne sont pas normales.</p>
+
+<div class="grid-3">
+  <div class="chart-card" style="margin:0">
+    <h4 style="text-align:center">Symétrique</h4>
+    <p style="text-align:center">Illustration schématique</p>
+    <svg viewBox="0 0 200 100" width="100%" role="img" aria-label="Illustration schématique d'une distribution symétrique">
+      <path d="M15,85 C55,85 65,15 100,15 C135,15 145,85 185,85" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+      <line x1="100" y1="10" x2="100" y2="88" stroke="var(--text-muted)" stroke-dasharray="3,3"/>
+    </svg>
+    <p style="text-align:center;font-size:.8rem">moyenne ≈ médiane</p>
+  </div>
+  <div class="chart-card" style="margin:0">
+    <h4 style="text-align:center">Asymétrie positive</h4>
+    <p style="text-align:center">Illustration schématique</p>
+    <svg viewBox="0 0 200 100" width="100%" role="img" aria-label="Illustration schématique d'une distribution asymétrique à droite, longue queue vers la droite">
+      <path d="M15,85 C35,85 45,15 75,15 C110,15 130,60 185,80" fill="none" stroke="var(--orange)" stroke-width="2.5"/>
+      <text x="150" y="45" font-size="11" fill="var(--orange)" text-anchor="middle">queue →</text>
+    </svg>
+    <p style="text-align:center;font-size:.8rem">mode &lt; médiane &lt; moyenne</p>
+  </div>
+  <div class="chart-card" style="margin:0">
+    <h4 style="text-align:center">Asymétrie négative</h4>
+    <p style="text-align:center">Illustration schématique</p>
+    <svg viewBox="0 0 200 100" width="100%" role="img" aria-label="Illustration schématique d'une distribution asymétrique à gauche, longue queue vers la gauche">
+      <path d="M15,80 C70,60 90,15 125,15 C155,15 165,85 185,85" fill="none" stroke="var(--purple)" stroke-width="2.5"/>
+      <text x="50" y="45" font-size="11" fill="var(--purple)" text-anchor="middle">← queue</text>
+    </svg>
+    <p style="text-align:center;font-size:.8rem">moyenne &lt; médiane &lt; mode</p>
+  </div>
+</div>
+<p style="font-size:.85rem;color:var(--text-muted)">Ces trois schémas sont des <strong>illustrations conceptuelles</strong> de la forme générale, pas des données réelles. Le <a href="ch08.html">chapitre 08</a> montre plus précisément comment la moyenne se déplace par rapport à la médiane lorsqu'une distribution est asymétrique.</p>
+<p>Pour une distribution unimodale <strong>asymétrique</strong> simple, <code>mode &lt; médiane &lt; moyenne</code> (asymétrie positive) ou son inverse <code>moyenne &lt; médiane &lt; mode</code> (asymétrie négative) reste un <strong>repère utile</strong>, mais ce n'est pas une loi mathématique universelle : des distributions multimodales ou irrégulières peuvent ne pas suivre cet ordre.</p>
 
 <h2>Quelle mesure choisir ?</h2>
 <div class="table-wrap"><table>

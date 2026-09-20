@@ -9,16 +9,26 @@
 <style>
 .compact-list { margin:.75rem 0 1rem 1.2rem; color:var(--text-sec); }
 .compact-list li { margin:.35rem 0; }
-
 .wrap{padding:.5rem 0 1rem;font-family:var(--font-sans);}
 .section{margin:1.2rem 0 .4rem;font-size:10px;font-weight:500;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;}
-.chart-box{background:var(--surface-1);border:.5px solid var(--border);border-radius:12px;padding:16px;margin:8px 0;}
+.chart-box{background:var(--surface-1);border:.5px solid var(--border);border-radius:12px;padding:16px;margin:8px 0;min-width:0;}
 .chart-title{font-size:12px;font-weight:500;color:var(--text-primary);margin-bottom:4px;}
-.chart-sub{font-size:11px;color:var(--text-secondary);margin-bottom:10px;}
+.chart-sub{font-size:11px;color:var(--text-secondary);margin-bottom:10px;line-height:1.5;}
 .note-box{background:var(--surface-1);border-left:3px solid #7F77DD;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--text-secondary);line-height:1.6;margin:10px 0;}
 .note-box b{color:var(--text-primary);}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
-
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
+.sign-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0;}
+.sign-card{border:1px solid var(--border);border-radius:10px;padding:12px;background:var(--surface-1);}
+.sign-card .sign{font-size:1.2rem;font-weight:700;margin-bottom:4px;color:var(--text-primary);}
+.sign-card p{margin:.25rem 0;color:var(--text-secondary);font-size:.92rem;line-height:1.5;}
+.data-row{display:flex;flex-wrap:wrap;gap:6px;margin:.6rem 0 1rem;}
+.data-pill{padding:4px 8px;border:1px solid var(--border);border-radius:999px;background:var(--surface-1);font-size:.84rem;color:var(--text-secondary);}
+.mini-charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+.mini-chart{position:relative;height:180px;}
+.callout-big{font-size:1.02rem;line-height:1.65;}
+@media (max-width:700px){
+  .grid3,.sign-grid,.mini-charts{grid-template-columns:1fr;}
+}
 </style>
 </head>
 <body>
@@ -32,53 +42,117 @@
   <p class="ch-desc">Quantifier la force et la direction d’une relation linéaire avec le coefficient r.</p>
 </div>
 
-<h2>L'idée centrale</h2>
-<p>Le <strong>r de Pearson</strong> quantifie la <strong>force et la direction d'une relation linéaire</strong> entre deux variables quantitatives. C'est le chiffre qui résume ce que le scatter plot montre visuellement.</p>
-<blockquote><p>r varie entre −1 et +1</p></blockquote>
-<ul class="compact-list"><li>r = +1 → corrélation positive parfaite.</li><li>r = 0 → aucune corrélation linéaire.</li><li>r = −1 → corrélation négative parfaite.</li></ul>
+<h2>1. Le problème : résumer un scatter plot par un nombre</h2>
+<p>Le chapitre précédent permettait de <strong>voir</strong> une relation entre deux variables sur un scatter plot. Le coefficient de <strong>corrélation de Pearson</strong>, noté <strong>r</strong>, sert à résumer numériquement une question plus précise :</p>
+<blockquote><p>À quel point deux variables quantitatives suivent-elles ensemble une <strong>tendance linéaire</strong>, et dans quelle direction ?</p></blockquote>
+<p>Le mot <strong>linéaire</strong> est essentiel : Pearson mesure à quel point le nuage de points ressemble à une droite, pas à n’importe quelle forme de relation.</p>
 
-<h2>Formule</h2>
-<div class="formula">r = Σ(xᵢ − x̄)(yᵢ − ȳ) / √[Σ(xᵢ − x̄)² · Σ(yᵢ − ȳ)²]</div>
-<p>Pour chaque individu, on multiplie son écart à la moyenne en X par son écart à la moyenne en Y. Si les deux sont positifs ou les deux négatifs en même temps → contribution positive. Si l'un est positif et l'autre négatif → contribution négative.</p>
+<div class="grid3">
+  <div class="box box-green"><p><strong>r &gt; 0</strong><br>Quand X augmente, Y tend aussi à augmenter.</p></div>
+  <div class="box box-orange"><p><strong>r &lt; 0</strong><br>Quand X augmente, Y tend à diminuer.</p></div>
+  <div class="box box-note"><p><strong>r ≈ 0</strong><br>Peu ou pas de tendance <em>linéaire</em> détectée.</p></div>
+</div>
 
-<h2>Calcul étape par étape</h2>
-<p><strong>Dataset — âge et revenu annuel (CHF) pour 10 individus :</strong></p>
-<div class="table-wrap"><table class="table-calc"><thead><tr><th>#</th><th>Âge (x)</th><th>Revenu (y)</th><th>xᵢ−x̄</th><th>yᵢ−ȳ</th><th>(xᵢ−x̄)(yᵢ−ȳ)</th></tr></thead><tbody>
-<tr><td>1</td><td>25</td><td>35 000</td><td>−22.5</td><td>−23 500</td><td>528 750</td></tr>
-<tr><td>2</td><td>30</td><td>42 000</td><td>−17.5</td><td>−16 500</td><td>288 750</td></tr>
-<tr><td>3</td><td>35</td><td>48 000</td><td>−12.5</td><td>−10 500</td><td>131 250</td></tr>
-<tr><td>4</td><td>40</td><td>55 000</td><td>−7.5</td><td>−3 500</td><td>26 250</td></tr>
-<tr><td>5</td><td>45</td><td>62 000</td><td>−2.5</td><td>+3 500</td><td>−8 750</td></tr>
-<tr><td>6</td><td>50</td><td>58 000</td><td>+2.5</td><td>−500</td><td>−1 250</td></tr>
-<tr><td>7</td><td>55</td><td>70 000</td><td>+7.5</td><td>+11 500</td><td>86 250</td></tr>
-<tr><td>8</td><td>60</td><td>75 000</td><td>+12.5</td><td>+16 500</td><td>206 250</td></tr>
-<tr><td>9</td><td>65</td><td>68 000</td><td>+17.5</td><td>+9 500</td><td>166 250</td></tr>
-<tr><td>10</td><td>70</td><td>72 000</td><td>+22.5</td><td>+13 500</td><td>303 750</td></tr>
-<tr class="total"><td>Σ</td><td><strong>x̄ = 47.5</strong></td><td><strong>ȳ = 58 500</strong></td><td></td><td></td><td><strong>1 727 500</strong></td></tr>
+<p>r varie toujours entre <strong>−1 et +1</strong> :</p>
+<ul class="compact-list">
+  <li><strong>+1</strong> : tous les points sont exactement sur une droite montante ;</li>
+  <li><strong>−1</strong> : tous les points sont exactement sur une droite descendante ;</li>
+  <li><strong>0</strong> : pas de tendance linéaire globale.</li>
+</ul>
+
+<div class="box box-note">
+  <p><strong>Force ≠ pente.</strong> Une droite très pentue n’implique pas une corrélation forte. La force dépend surtout de la proximité des points autour d’une tendance linéaire. Une relation peu pentue peut avoir r ≈ 1 si les points sont presque parfaitement alignés.</p>
+</div>
+
+<h2>2. Dataset fil rouge : âge et revenu</h2>
+<p>On reprend les 10 observations utilisées au chapitre précédent. Ici, <strong>X = âge</strong> et <strong>Y = revenu annuel</strong>.</p>
+<div class="table-wrap"><table><thead><tr><th>Personne</th><th>Âge (x)</th><th>Revenu annuel (y)</th></tr></thead><tbody>
+<tr><td>1</td><td>25</td><td>35 000 CHF</td></tr>
+<tr><td>2</td><td>30</td><td>42 000 CHF</td></tr>
+<tr><td>3</td><td>35</td><td>48 000 CHF</td></tr>
+<tr><td>4</td><td>40</td><td>55 000 CHF</td></tr>
+<tr><td>5</td><td>45</td><td>62 000 CHF</td></tr>
+<tr><td>6</td><td>50</td><td>58 000 CHF</td></tr>
+<tr><td>7</td><td>55</td><td>70 000 CHF</td></tr>
+<tr><td>8</td><td>60</td><td>75 000 CHF</td></tr>
+<tr><td>9</td><td>65</td><td>68 000 CHF</td></tr>
+<tr><td>10</td><td>70</td><td>72 000 CHF</td></tr>
 </tbody></table></div>
-<div class="formula">Σ(xᵢ−x̄)² = <strong>2 062.5</strong> &nbsp;|&nbsp; Σ(yᵢ−ȳ)² = <strong>1 636 500 000</strong></div>
-<div class="formula">r = 1 727 500 / √(2 062.5 × 1 636 500 000) ≈ <strong>0.94</strong></div>
-<p>Dans ce dataset, la relation linéaire entre âge et revenu est très forte et positive.</p>
 
-<h2>Formule computationnelle (à partir des sommes brutes)</h2>
-<p>La formule centrée ci-dessus montre <em>ce que</em> r mesure. Il existe une formule équivalente qui calcule exactement le même coefficient directement à partir des sommes des valeurs brutes, sans écrire chaque écart à la moyenne :</p>
+<div class="chart-box">
+  <div class="chart-title">Avant tout calcul : regarder le nuage de points</div>
+  <div class="chart-sub">On voit une tendance globalement montante : les revenus les plus élevés apparaissent plutôt aux âges élevés. Les points ne sont pas parfaitement alignés, mais ils sont assez proches d’une droite.</div>
+  <div style="position:relative;height:240px;"><canvas id="r-main" role="img" aria-label="Scatter plot de l'âge et du revenu annuel">Scatter plot âge-revenu.</canvas></div>
+</div>
+<p>Visuellement, on s’attend donc à un <strong>r positif et assez proche de +1</strong>. Le calcul va quantifier cette impression.</p>
+
+<h2>3. Deux idées à comprendre avant la formule</h2>
+<h3>Le signe de r : est-ce que X et Y vont dans le même sens ?</h3>
+<p>On compare chaque valeur à sa propre moyenne. Dans ce dataset :</p>
+<div class="formula">x̄ = 47,5 ans &nbsp;&nbsp;|&nbsp;&nbsp; ȳ = 58 500 CHF</div>
+<p>Pour une personne donnée, on regarde donc :</p>
+<ul class="compact-list">
+  <li>si son âge est au-dessus ou en dessous de 47,5 ans ;</li>
+  <li>si son revenu est au-dessus ou en dessous de 58 500 CHF.</li>
+</ul>
+
+<div class="sign-grid">
+  <div class="sign-card"><div class="sign">(−) × (−) = +</div><p>Âge sous la moyenne et revenu sous la moyenne : les deux vont dans le même sens → contribution positive.</p></div>
+  <div class="sign-card"><div class="sign">(+) × (+) = +</div><p>Âge au-dessus de la moyenne et revenu au-dessus : même sens → contribution positive.</p></div>
+  <div class="sign-card"><div class="sign">(−) × (+) = −</div><p>Âge sous la moyenne mais revenu au-dessus : directions opposées → contribution négative.</p></div>
+  <div class="sign-card"><div class="sign">(+) × (−) = −</div><p>Âge au-dessus de la moyenne mais revenu sous la moyenne : directions opposées → contribution négative.</p></div>
+</div>
+<p>Si les contributions positives dominent fortement, r sera positif. Si les contributions négatives dominent, r sera négatif.</p>
+
+<h3>Pourquoi normaliser ?</h3>
+<p>La somme des produits d’écarts dépend des unités et de l’échelle des variables. Des revenus en CHF donnent de très grands nombres, alors que des âges en années donnent des nombres beaucoup plus petits.</p>
+<p>Le dénominateur de la formule tient compte de la <strong>variabilité propre de X et de Y</strong>. Cette normalisation transforme le résultat en un coefficient :</p>
+<ul class="compact-list">
+  <li>sans unité ;</li>
+  <li>toujours compris entre −1 et +1 ;</li>
+  <li>comparable d’un dataset à l’autre.</li>
+</ul>
+
+<h2>4. Formule de Pearson</h2>
+<div class="formula">r = Σ(xᵢ − x̄)(yᵢ − ȳ) / √[Σ(xᵢ − x̄)² · Σ(yᵢ − ȳ)²]</div>
+<p>Le <strong>numérateur</strong> indique surtout si X et Y s’écartent de leurs moyennes dans le même sens ou dans des sens opposés. Le <strong>dénominateur</strong> ramène cette quantité à une échelle standardisée.</p>
+
+<h2>5. Calcul étape par étape</h2>
+<div class="table-wrap"><table class="table-calc"><thead><tr><th>#</th><th>Âge (x)</th><th>Revenu (y)</th><th>xᵢ−x̄</th><th>yᵢ−ȳ</th><th>(xᵢ−x̄)(yᵢ−ȳ)</th></tr></thead><tbody>
+<tr><td>1</td><td>25</td><td>35 000</td><td>−22,5</td><td>−23 500</td><td>528 750</td></tr>
+<tr><td>2</td><td>30</td><td>42 000</td><td>−17,5</td><td>−16 500</td><td>288 750</td></tr>
+<tr><td>3</td><td>35</td><td>48 000</td><td>−12,5</td><td>−10 500</td><td>131 250</td></tr>
+<tr><td>4</td><td>40</td><td>55 000</td><td>−7,5</td><td>−3 500</td><td>26 250</td></tr>
+<tr><td>5</td><td>45</td><td>62 000</td><td>−2,5</td><td>+3 500</td><td>−8 750</td></tr>
+<tr><td>6</td><td>50</td><td>58 000</td><td>+2,5</td><td>−500</td><td>−1 250</td></tr>
+<tr><td>7</td><td>55</td><td>70 000</td><td>+7,5</td><td>+11 500</td><td>86 250</td></tr>
+<tr><td>8</td><td>60</td><td>75 000</td><td>+12,5</td><td>+16 500</td><td>206 250</td></tr>
+<tr><td>9</td><td>65</td><td>68 000</td><td>+17,5</td><td>+9 500</td><td>166 250</td></tr>
+<tr><td>10</td><td>70</td><td>72 000</td><td>+22,5</td><td>+13 500</td><td>303 750</td></tr>
+<tr class="total"><td>Σ</td><td><strong>x̄ = 47,5</strong></td><td><strong>ȳ = 58 500</strong></td><td></td><td></td><td><strong>1 727 500</strong></td></tr>
+</tbody></table></div>
+<div class="formula">Σ(xᵢ−x̄)² = <strong>2 062,5</strong> &nbsp;|&nbsp; Σ(yᵢ−ȳ)² = <strong>1 636 500 000</strong></div>
+<div class="formula">r = 1 727 500 / √(2 062,5 × 1 636 500 000) ≈ <strong>0,9403</strong> ≈ <strong>0,94</strong></div>
+<div class="box box-green callout-big"><p><strong>Interprétation :</strong> dans cet échantillon de 10 personnes, l’âge et le revenu présentent une <strong>forte association linéaire positive</strong>. Les personnes plus âgées de ce dataset ont tendance à avoir des revenus plus élevés. Cette phrase décrit une association, pas une causalité.</p></div>
+
+<h2>6. Formule computationnelle à partir des sommes brutes</h2>
+<p>La formule centrée ci-dessus est la meilleure pour comprendre <em>ce que r mesure</em>. Une formule algébriquement équivalente permet aussi de calculer r directement à partir de sommes brutes :</p>
 <div class="formula">r = [n·Σxy − (Σx)(Σy)] / √{ [n·Σx² − (Σx)²] · [n·Σy² − (Σy)²] }</div>
-<p>C'est une <strong>formule de calcul équivalente</strong>, pas une autre définition de la corrélation.</p>
+<p>Ce n’est pas une seconde définition de la corrélation : c’est simplement une autre manière d’obtenir exactement le même r.</p>
 
 <h3>Notation</h3>
 <div class="table-wrap"><table><thead><tr><th>Symbole</th><th>Signification</th></tr></thead><tbody>
 <tr><td>n</td><td>nombre de paires (x, y)</td></tr>
 <tr><td>Σx, Σy</td><td>somme des valeurs de x, somme des valeurs de y</td></tr>
 <tr><td>Σxy</td><td>somme des produits xᵢ · yᵢ</td></tr>
-<tr><td>Σx², Σy²</td><td>somme des carrés des valeurs de x, de y</td></tr>
+<tr><td>Σx², Σy²</td><td>somme des carrés de chaque valeur de x et de y</td></tr>
 </tbody></table></div>
 
 <div class="box box-orange">
-  <p><strong>Σx² ≠ (Σx)² :</strong> Σx² = x₁² + x₂² + ... + xₙ² (on met chaque valeur au carré <em>avant</em> de sommer). (Σx)² = le carré de la somme totale (on somme <em>d'abord</em>, puis on met au carré une seule fois). Confondre les deux est une erreur de calcul fréquente — avec ce dataset, Σx² = 24 625 alors que (Σx)² = 475² = 225 625, deux nombres très différents. Il en va de même pour y.</p>
+  <p><strong>Σx² ≠ (Σx)².</strong> Avec ce dataset, Σx² = 24 625, alors que (Σx)² = 475² = 225 625. Dans le premier cas, on met chaque valeur au carré avant de sommer ; dans le second, on somme d’abord puis on met le total au carré.</p>
 </div>
 
 <h3>Tableau des sommes brutes</h3>
-<p>Mêmes 10 individus (âge/revenu) que ci-dessus, avec les colonnes nécessaires à la formule computationnelle :</p>
 <div class="table-wrap"><table class="table-calc"><thead><tr><th>#</th><th>x</th><th>y</th><th>x²</th><th>y²</th><th>xy</th></tr></thead><tbody>
 <tr><td>1</td><td>25</td><td>35 000</td><td>625</td><td>1 225 000 000</td><td>875 000</td></tr>
 <tr><td>2</td><td>30</td><td>42 000</td><td>900</td><td>1 764 000 000</td><td>1 260 000</td></tr>
@@ -93,72 +167,97 @@
 <tr class="total"><td>Σ</td><td class="hi-accent">475</td><td class="hi-accent">585 000</td><td class="hi-accent">24 625</td><td class="hi-accent">35 859 000 000</td><td class="hi-accent">29 515 000</td></tr>
 </tbody></table></div>
 
-<h3>Substitution dans la formule</h3>
-<div class="formula">Numérateur = n·Σxy − (Σx)(Σy)<br>= 10 × 29 515 000 − 475 × 585 000<br>= 295 150 000 − 277 875 000 = <strong>17 275 000</strong></div>
-<div class="formula">1ᵉʳ terme du dénominateur = n·Σx² − (Σx)²<br>= 10 × 24 625 − 475² = 246 250 − 225 625 = <strong>20 625</strong></div>
-<div class="formula">2ᵉ terme du dénominateur = n·Σy² − (Σy)²<br>= 10 × 35 859 000 000 − 585 000² <br>= 358 590 000 000 − 342 225 000 000 = <strong>16 365 000 000</strong></div>
-<div class="formula">r = 17 275 000 / √(20 625 × 16 365 000 000) ≈ <strong>0.9403</strong> ≈ <strong>0.94</strong></div>
-<p>Ce résultat est identique (aux arrondis près) à celui obtenu plus haut avec la formule centrée : <strong>deux formules, même r.</strong></p>
+<h3>Substitution</h3>
+<div class="formula">Numérateur = 10 × 29 515 000 − 475 × 585 000 = <strong>17 275 000</strong></div>
+<div class="formula">Premier terme = 10 × 24 625 − 475² = <strong>20 625</strong></div>
+<div class="formula">Deuxième terme = 10 × 35 859 000 000 − 585 000² = <strong>16 365 000 000</strong></div>
+<div class="formula">r = 17 275 000 / √(20 625 × 16 365 000 000) ≈ <strong>0,9403</strong></div>
+<p>On retrouve exactement le même résultat qu’avec la formule centrée, aux arrondis près.</p>
 
-<div class="grid-2">
-  <div class="box box-note">
-    <p><strong>Formule centrée</strong><br>Utile pour comprendre <em>ce que</em> r mesure : les écarts à chaque moyenne, si x et y varient ensemble, et la normalisation par leur variabilité.</p>
-  </div>
-  <div class="box box-green">
-    <p><strong>Formule computationnelle</strong><br>Pratique pour calculer à la main à partir d'un tableau de sommes, vérifier un résultat, ou reconnaître une formule dans un manuel.</p>
-  </div>
-</div>
-<p style="font-size:.85rem;color:var(--text-muted)">En pratique, un logiciel statistique calcule r directement. Connaître la formule computationnelle sert surtout à comprendre les manuels et à vérifier de petits exemples à la main — ni l'une ni l'autre formule n'est « meilleure » statistiquement, ce sont deux chemins vers le même résultat.</p>
-
-<h2>Interprétation des valeurs de r</h2>
-<div class="table-wrap"><table><thead><tr><th>Valeur de |r|</th><th>Interprétation</th></tr></thead><tbody>
-<tr><td>0.90 à 1.00</td><td>Corrélation très forte</td></tr><tr><td>0.70 à 0.89</td><td>Corrélation forte</td></tr><tr><td>0.50 à 0.69</td><td>Corrélation modérée</td></tr><tr><td>0.30 à 0.49</td><td>Corrélation faible</td></tr><tr><td>0.00 à 0.29</td><td>Corrélation très faible ou nulle</td></tr>
+<h2>7. Comment interpréter la taille de r ?</h2>
+<p>Le <strong>signe</strong> donne la direction. La <strong>valeur absolue |r|</strong> renseigne sur la force de la relation linéaire.</p>
+<div class="table-wrap"><table><thead><tr><th>|r|</th><th>Repère pédagogique</th></tr></thead><tbody>
+<tr><td>0,90 à 1,00</td><td>Très forte</td></tr>
+<tr><td>0,70 à 0,89</td><td>Forte</td></tr>
+<tr><td>0,50 à 0,69</td><td>Modérée</td></tr>
+<tr><td>0,30 à 0,49</td><td>Faible</td></tr>
+<tr><td>0,00 à 0,29</td><td>Très faible selon ce repère</td></tr>
 </tbody></table></div>
-<p>Ces seuils sont des <strong>repères pédagogiques</strong>, pas des frontières universelles : l'importance d'un r dépend du domaine et du contexte. En valeur absolue, −0.85 et +0.85 ont la même force mais des directions opposées.</p>
+<div class="box box-note"><p><strong>Ce tableau n’est pas une règle universelle.</strong> Un r = 0,30 peut être substantiellement important dans certains domaines, tandis qu’un r plus grand peut être peu intéressant ailleurs. L’interprétation dépend du phénomène étudié, de la qualité des mesures et du contexte scientifique.</p></div>
 
-<h2>Ce que r ne dit pas</h2>
-<p>r mesure uniquement les relations <strong>linéaires</strong>. Une corrélation en U parfaite peut donner r ≈ 0 si elle est parfaitement symétrique — d'où l'importance du scatter plot préalable.</p>
-<p>r ne prouve pas non plus la <strong>causalité</strong> — deux variables peuvent être corrélées sans que l'une cause l'autre.</p>
-
-<h2>Visualisations</h2>
-<div class="wrap"><div class="section">Que représente r ? — de −1 à +1</div>
+<div class="wrap"><div class="section">Visualiser la direction et la force</div>
 <div class="chart-box">
   <div class="chart-title">Cinq valeurs typiques de r</div>
-  <div class="chart-sub">La force = l'alignement des points. La direction = la pente.</div>
+  <div class="chart-sub">La force correspond à l’alignement autour d’une droite ; le signe correspond à la direction. Une valeur négative n’est pas « plus faible » qu’une valeur positive de même taille absolue.</div>
   <div class="corr-mini-grid">
     <div><div style="font-size:11px;font-weight:500;color:#e34948;text-align:center;margin-bottom:4px;">r = −1</div><div style="position:relative;height:90px;"><canvas id="r-m1" role="img" aria-label="r=-1 corrélation négative parfaite">Droite descendante parfaite.</canvas></div></div>
-    <div><div style="font-size:11px;font-weight:500;color:#eb6834;text-align:center;margin-bottom:4px;">r = −0.7</div><div style="position:relative;height:90px;"><canvas id="r-m07" role="img" aria-label="r=-0.7 corrélation négative forte">Points dispersés tendance négative.</canvas></div></div>
-    <div><div style="font-size:11px;font-weight:500;color:var(--text-muted);text-align:center;margin-bottom:4px;">r ≈ 0</div><div style="position:relative;height:90px;"><canvas id="r-0" role="img" aria-label="r=0 aucune corrélation">Points éparpillés sans tendance.</canvas></div></div>
-    <div><div style="font-size:11px;font-weight:500;color:#1baf7a;text-align:center;margin-bottom:4px;">r = +0.7</div><div style="position:relative;height:90px;"><canvas id="r-p07" role="img" aria-label="r=+0.7 corrélation positive forte">Points dispersés tendance positive.</canvas></div></div>
+    <div><div style="font-size:11px;font-weight:500;color:#eb6834;text-align:center;margin-bottom:4px;">r = −0,7</div><div style="position:relative;height:90px;"><canvas id="r-m07" role="img" aria-label="r=-0.7 corrélation négative forte">Points dispersés tendance négative.</canvas></div></div>
+    <div><div style="font-size:11px;font-weight:500;color:var(--text-muted);text-align:center;margin-bottom:4px;">r ≈ 0</div><div style="position:relative;height:90px;"><canvas id="r-0" role="img" aria-label="r=0 aucune tendance linéaire">Points sans tendance linéaire.</canvas></div></div>
+    <div><div style="font-size:11px;font-weight:500;color:#1baf7a;text-align:center;margin-bottom:4px;">r = +0,7</div><div style="position:relative;height:90px;"><canvas id="r-p07" role="img" aria-label="r=+0.7 corrélation positive forte">Points dispersés tendance positive.</canvas></div></div>
     <div><div style="font-size:11px;font-weight:500;color:#2a78d6;text-align:center;margin-bottom:4px;">r = +1</div><div style="position:relative;height:90px;"><canvas id="r-p1" role="img" aria-label="r=+1 corrélation positive parfaite">Droite montante parfaite.</canvas></div></div>
   </div>
-</div>
+</div></div>
 
-<div class="section">Dataset âge / revenu — r = 0.94</div>
+<h2>8. Ce que Pearson peut manquer</h2>
+<h3>Une relation réelle peut avoir r ≈ 0</h3>
+<p>Pearson résume une <strong>tendance linéaire</strong>. Un dataset peut donc avoir une relation parfaitement structurée mais non linéaire et produire r = 0.</p>
+<p><strong>Dataset :</strong></p>
+<div class="data-row" aria-label="Dataset en U"><span class="data-pill">(−3, 9)</span><span class="data-pill">(−2, 4)</span><span class="data-pill">(−1, 1)</span><span class="data-pill">(0, 0)</span><span class="data-pill">(1, 1)</span><span class="data-pill">(2, 4)</span><span class="data-pill">(3, 9)</span></div>
 <div class="chart-box">
-  <div class="chart-title">Scatter plot avec droite de régression et contribution de chaque point</div>
-  <div class="chart-sub">Les couleurs montrent si chaque point contribue positivement (bleu) ou négativement (orange) à r.</div>
-  <div style="position:relative;height:220px;"><canvas id="r-main" role="img" aria-label="Scatter plot âge revenu avec droite de régression">Âge vs revenu avec droite et contributions colorées.</canvas></div>
+  <div class="chart-title">Relation en U : Y = X²</div>
+  <div class="chart-sub">La relation entre X et Y est exacte, mais elle descend puis remonte. Les tendances linéaires négative et positive se compensent : ici, r = 0.</div>
+  <div class="mini-chart"><canvas id="u-chart" role="img" aria-label="Relation en U avec corrélation de Pearson nulle">Relation Y égale X carré.</canvas></div>
 </div>
+<p>C’est pourquoi il faut <strong>toujours regarder le scatter plot</strong> avant de résumer une relation par r.</p>
 
-<div class="section">R² — coefficient de détermination</div>
+<h3>Un point extrême peut fortement modifier r</h3>
+<p>Considérons d’abord :</p>
+<div class="data-row"><span class="data-pill">(1,2)</span><span class="data-pill">(2,4)</span><span class="data-pill">(3,5)</span><span class="data-pill">(4,8)</span><span class="data-pill">(5,9)</span><span class="data-pill">(6,12)</span></div>
+<p>Pour ces six points, <strong>r ≈ 0,99</strong>. Ajoutons ensuite un seul point extrême : <strong>(7,0)</strong>. La corrélation tombe à <strong>r ≈ 0,26</strong>.</p>
+<div class="mini-charts">
+  <div class="chart-box"><div class="chart-title">Sans le point extrême — r ≈ 0,99</div><div class="mini-chart"><canvas id="outlier-before" role="img" aria-label="Corrélation presque parfaite sans outlier">Dataset sans outlier.</canvas></div></div>
+  <div class="chart-box"><div class="chart-title">Avec (7,0) — r ≈ 0,26</div><div class="mini-chart"><canvas id="outlier-after" role="img" aria-label="Corrélation affaiblie par un point extrême">Dataset avec un point extrême.</canvas></div></div>
+</div>
+<p>Ce n’est pas une raison pour supprimer automatiquement le point. Il faut d’abord comprendre s’il s’agit d’une erreur, d’un cas réel inhabituel ou d’un sous-groupe pertinent.</p>
+
+<h2>9. R² : passer de la corrélation à la variation rendue par le modèle linéaire</h2>
+<p>Dans une <strong>régression linéaire simple avec une constante</strong>, on a :</p>
+<div class="formula">R² = r²</div>
+<p>Avec r ≈ 0,9403 :</p>
+<div class="formula">R² ≈ 0,9403² ≈ 0,884 ≈ <strong>88,4 %</strong></div>
+<p>Les revenus diffèrent d’une personne à l’autre. Dans ce dataset, le modèle linéaire utilisant l’âge rend compte d’environ <strong>88,4 % de cette variation observée de Y</strong>. Les <strong>11,6 %</strong> restants correspondent à la variation que cette droite ne reproduit pas.</p>
 <div class="chart-box">
-  <div class="chart-title">R² = r² = part de variance de Y expliquée par le modèle linéaire</div>
-  <div class="chart-sub">Avec r = 0.94 → R² = 0.88 → environ 88 % de la variance du revenu est expliquée par le <strong>modèle linéaire utilisant l'âge</strong> dans ce dataset.</div>
-  <svg viewBox="0 0 640 70" width="100%" role="img">
-    <title>Visualisation R² = 88%</title>
-    <desc>Barre montrant environ 88% expliqué par le modèle linéaire et 12% non expliqué.</desc>
-    <rect x="40" y="20" width="560" height="30" rx="6" fill="var(--border)" stroke="none"/>
-    <rect x="40" y="20" width="493" height="30" rx="6" fill="#2a78d6" opacity=".7"/>
-    <text class="ts" x="315" y="40" text-anchor="middle" fill="white" font-weight="500">88 % expliqué par l'âge (R² = 0.88)</text>
-    <text class="ts" x="595" y="40" text-anchor="middle" fill="var(--text-muted)">12 %</text>
-    <text class="ts" x="40" y="65" fill="var(--text-muted)">0 %</text>
-    <text class="ts" x="600" y="65" text-anchor="end" fill="var(--text-muted)">100 %</text>
+  <div class="chart-title">R² ≈ 88,4 %</div>
+  <div class="chart-sub">« Expliqué par le modèle » est un vocabulaire statistique : cela ne signifie pas « causé par X ».</div>
+  <svg viewBox="0 0 640 76" width="100%" role="img" aria-label="Barre R carré 88,4 pour cent">
+    <title>R² = 88,4 %</title>
+    <desc>Barre montrant 88,4 % de variation rendue par le modèle linéaire et 11,6 % non rendue.</desc>
+    <rect x="40" y="18" width="560" height="30" rx="6" fill="var(--border)"/>
+    <rect x="40" y="18" width="495" height="30" rx="6" fill="#2a78d6" opacity=".75"/>
+    <text class="ts" x="285" y="38" text-anchor="middle" fill="white" font-weight="500">88,4 %</text>
+    <text class="ts" x="566" y="38" text-anchor="middle" fill="var(--text-muted)" font-weight="500">11,6 %</text>
+    <text class="ts" x="40" y="68" fill="var(--text-muted)">0 %</text>
+    <text class="ts" x="600" y="68" text-anchor="end" fill="var(--text-muted)">100 %</text>
   </svg>
 </div>
-<div class="note-box">
-  <b>r ne prouve pas la causalité.</b> Un r = 0.94 entre âge et revenu ne signifie pas que l'âge <i>cause</i> le revenu. D'autres variables (expérience, ancienneté, niveau de diplôme) peuvent aussi être impliquées. La distinction corrélation/causalité sera le chapitre 19.
-</div></div>
+
+<h2>10. Ce que r ne permet pas de conclure</h2>
+<div class="grid-2">
+  <div class="box box-orange"><p><strong>r ≈ 0 ne signifie pas « aucune relation ».</strong><br>Il signifie surtout qu’aucune tendance linéaire globale forte n’a été détectée. Une relation courbe peut exister.</p></div>
+  <div class="box box-orange"><p><strong>Un grand |r| ne prouve pas une causalité.</strong><br>Des variables tierces, la sélection, la temporalité ou d’autres mécanismes peuvent produire une association.</p></div>
+</div>
+<p>Dans notre exemple âge/revenu, des variables telles que l’expérience professionnelle, l’ancienneté, le diplôme, le secteur ou le temps de travail peuvent aussi être liées au revenu. Le chapitre 19 détaillera la différence entre association et causalité.</p>
+
+<h2>À retenir</h2>
+<div class="table-wrap"><table><thead><tr><th>Question</th><th>Réponse</th></tr></thead><tbody>
+<tr><td>Que mesure Pearson ?</td><td>La direction et la force d’une <strong>relation linéaire</strong> entre deux variables quantitatives.</td></tr>
+<tr><td>Que signifie le signe ?</td><td>+ : les variables tendent à évoluer dans le même sens ; − : dans des sens opposés.</td></tr>
+<tr><td>Que signifie |r| ?</td><td>À quel point les points sont alignés autour d’une droite, avec interprétation dépendante du contexte.</td></tr>
+<tr><td>r a-t-il une unité ?</td><td>Non. Il est standardisé et varie de −1 à +1.</td></tr>
+<tr><td>r ≈ 0 signifie-t-il aucune relation ?</td><td>Non. Cela signifie surtout absence de tendance linéaire globale.</td></tr>
+<tr><td>Un outlier peut-il changer r ?</td><td>Oui, parfois fortement.</td></tr>
+<tr><td>r prouve-t-il la causalité ?</td><td>Non.</td></tr>
+</tbody></table></div>
 
 <div class="page-nav">
   <a href="ch14.html">← Chapitre 14</a>
@@ -172,8 +271,6 @@ const gridC=isDark?'rgba(255,255,255,0.12)':'rgba(25,25,24,0.09)';
 const tick=isDark?'#A7A59D':'#6B6963';
 
 function makeCorr(id,targetR,color,n=15){
-  // Construit des points dont la corrélation est exactement targetR :
-  // un axe X centré + un bruit centré et rendu orthogonal à X.
   const x=Array.from({length:n},(_,i)=>i-(n-1)/2);
   let e=Array.from({length:n},(_,i)=>Math.sin((i+1)*2.17)+0.35*Math.cos((i+1)*1.31));
   const meanE=e.reduce((a,b)=>a+b,0)/n;
@@ -185,18 +282,11 @@ function makeCorr(id,targetR,color,n=15){
   const y=x.map((v,i)=>targetR*v+Math.sqrt(Math.max(0,1-targetR*targetR))*e[i]);
   const pts=x.map((v,i)=>({x:v,y:y[i]}));
   const lineData=Math.abs(targetR)>=0.99?[pts[0],pts[pts.length-1]]:[];
-  new Chart(document.getElementById(id),{type:'scatter',
-    data:{datasets:[
-      {data:pts,backgroundColor:color+'99',borderColor:color,borderWidth:1,pointRadius:4},
-      ...(lineData.length?[{data:lineData,type:'line',borderColor:color,borderWidth:1.5,pointRadius:0,fill:false}]:[])
-    ]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{enabled:false}},
-      layout:{padding:{left:5,right:5,top:5,bottom:5}},
-      scales:{x:{display:false,min:-8,max:8},y:{display:false,suggestedMin:-9,suggestedMax:9}}}
-  });
+  new Chart(document.getElementById(id),{type:'scatter',data:{datasets:[
+    {data:pts,backgroundColor:color+'99',borderColor:color,borderWidth:1,pointRadius:4},
+    ...(lineData.length?[{data:lineData,type:'line',borderColor:color,borderWidth:1.5,pointRadius:0,fill:false}]:[])
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},layout:{padding:{left:5,right:5,top:5,bottom:5}},scales:{x:{display:false,min:-8,max:8},y:{display:false,suggestedMin:-9,suggestedMax:9}}}});
 }
-
 makeCorr('r-m1', -1,    '#e34948');
 makeCorr('r-m07',-0.7,  '#eb6834');
 makeCorr('r-0',   0,    '#888780');
@@ -213,25 +303,19 @@ const my=mainData.reduce((a,p)=>a+p.y,0)/n;
 const b=mainData.reduce((a,p)=>a+(p.x-mx)*(p.y-my),0)/mainData.reduce((a,p)=>a+(p.x-mx)**2,0);
 const a_=my-b*mx;
 const lineData=[{x:20,y:a_+b*20},{x:75,y:a_+b*75}];
+const colors=mainData.map(p=>(p.x-mx)*(p.y-my)>=0?'#2a78d6bb':'#eb6834bb');
+new Chart(document.getElementById('r-main'),{type:'scatter',data:{datasets:[
+  {label:'Individus',data:mainData,backgroundColor:colors,borderColor:colors.map(c=>c.slice(0,7)),borderWidth:1,pointRadius:7,pointHoverRadius:9},
+  {label:'Tendance linéaire',data:lineData,type:'line',borderColor:'#D85A30',borderWidth:1.5,pointRadius:0,fill:false,borderDash:[5,4]}
+]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{color:tick,font:{size:10},boxWidth:14,boxHeight:2}},tooltip:{callbacks:{label:t=>`Âge: ${t.parsed.x} · Revenu: CHF ${t.parsed.y.toLocaleString()}`}}},scales:{x:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'Âge (années)',color:tick,font:{size:10}},min:20,max:75},y:{grid:{color:gridC},ticks:{color:tick,font:{size:10},callback:v=>(v/1000)+'k'},title:{display:true,text:'Revenu (CHF)',color:tick,font:{size:10}}}}}});
 
-const colors=mainData.map(p=>{
-  const dx=p.x-mx,dy=p.y-my;
-  return dx*dy>=0?'#2a78d6bb':'#eb6834bb';
-});
+const uData=[{x:-3,y:9},{x:-2,y:4},{x:-1,y:1},{x:0,y:0},{x:1,y:1},{x:2,y:4},{x:3,y:9}];
+new Chart(document.getElementById('u-chart'),{type:'scatter',data:{datasets:[{label:'Y = X²',data:uData,showLine:true,tension:.25,borderColor:'#7F77DD',backgroundColor:'#7F77DDaa',pointRadius:5,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gridC},ticks:{color:tick},title:{display:true,text:'X',color:tick}},y:{grid:{color:gridC},ticks:{color:tick},title:{display:true,text:'Y',color:tick},beginAtZero:true}}}});
 
-new Chart(document.getElementById('r-main'),{type:'scatter',
-  data:{datasets:[
-    {label:'Individus',data:mainData,backgroundColor:colors,borderColor:colors.map(c=>c.slice(0,7)),borderWidth:1,pointRadius:7,pointHoverRadius:9},
-    {label:'Droite r',data:lineData,type:'line',borderColor:'#D85A30',borderWidth:1.5,pointRadius:0,fill:false,borderDash:[5,4]},
-  ]},
-  options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:true,labels:{color:tick,font:{size:10},boxWidth:14,boxHeight:2}},
-      tooltip:{callbacks:{label:t=>`Âge: ${t.parsed.x} · Revenu: CHF ${t.parsed.y.toLocaleString()}`}}},
-    scales:{
-      x:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'Âge (années)',color:tick,font:{size:10}},min:20,max:75},
-      y:{grid:{color:gridC},ticks:{color:tick,font:{size:10},callback:v=>(v/1000)+'k'},title:{display:true,text:'Revenu (CHF)',color:tick,font:{size:10}}}
-    }}
-});
+const baseOut=[{x:1,y:2},{x:2,y:4},{x:3,y:5},{x:4,y:8},{x:5,y:9},{x:6,y:12}];
+function outlierChart(id,data){new Chart(document.getElementById(id),{type:'scatter',data:{datasets:[{data,backgroundColor:data.map((p,i)=>i===data.length-1&&data.length===7?'#e34948':'#2a78d6'),pointRadius:6,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{grid:{color:gridC},ticks:{color:tick},min:0,max:8},y:{grid:{color:gridC},ticks:{color:tick},min:0,max:13}}}});}
+outlierChart('outlier-before',baseOut);
+outlierChart('outlier-after',[...baseOut,{x:7,y:0}]);
 </script>
 <script src="../assets/nav-content.js"></script>
 </body>

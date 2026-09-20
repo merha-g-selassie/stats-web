@@ -7,18 +7,26 @@
 <script src="../assets/theme.js"></script>
 <link rel="stylesheet" href="../assets/style.css">
 <style>
-.compact-list { margin:.75rem 0 1rem 1.2rem; color:var(--text-sec); }
-.compact-list li { margin:.35rem 0; }
-
+.compact-list{margin:.75rem 0 1rem 1.2rem;color:var(--text-sec);}
+.compact-list li{margin:.35rem 0;}
 .wrap{padding:.5rem 0 1rem;font-family:var(--font-sans);}
 .section{margin:1.2rem 0 .4rem;font-size:10px;font-weight:500;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;}
 .chart-box{background:var(--surface-1);border:.5px solid var(--border);border-radius:12px;padding:16px;margin:8px 0;}
 .chart-title{font-size:12px;font-weight:500;color:var(--text-primary);margin-bottom:4px;}
 .chart-sub{font-size:11px;color:var(--text-secondary);margin-bottom:10px;}
-.note-box{background:var(--surface-1);border-left:3px solid #7F77DD;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--text-secondary);line-height:1.6;margin:10px 0;}
-.note-box b{color:var(--text-primary);}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+.compare-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0;}
+.compare-card{background:var(--surface-1);border:.5px solid var(--border);border-radius:10px;padding:14px;min-width:0;}
+.compare-card h3{margin-top:0;}
+.step-row{display:flex;gap:12px;align-items:flex-start;margin:8px 0;font-size:12px;color:var(--text-secondary);line-height:1.6;}
+.step-num{min-width:24px;height:24px;border-radius:50%;background:#7F77DD;color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;margin-top:1px;}
+.rank-strip{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;align-items:center;background:var(--surface-1);border:.5px solid var(--border);border-radius:10px;padding:12px;margin:10px 0;font-size:12px;}
+.rank-strip code{white-space:normal;}
+.warning{border-left:3px solid #D85A30;background:rgba(216,90,48,.08);padding:10px 14px;border-radius:0 8px 8px 0;margin:10px 0;}
+@media(max-width:680px){
+  .grid2,.compare-grid{grid-template-columns:1fr;}
+  .rank-strip{grid-template-columns:1fr;}
+}
 </style>
 </head>
 <body>
@@ -26,168 +34,362 @@
 <div class="layout">
 <nav class="nav"></nav>
 <main class="content"><div class="content-inner">
+
 <div class="ch-header">
   <div class="ch-eyebrow">Chapitre 17 · Corrélation & inférence</div>
   <h1 class="ch-title">Corrélation de Spearman</h1>
-  <p class="ch-desc">Mesurer une relation monotone à partir des rangs, avec une méthode robuste aux outliers.</p>
+  <p class="ch-desc">Mesurer si deux variables évoluent dans le même ordre, même lorsque leur relation n'est pas une droite.</p>
 </div>
 
-<h2>L'idée centrale</h2>
-<p>La corrélation de Spearman (rₛ) est l'<strong>alternative non-paramétrique</strong> à Pearson's r. Au lieu de travailler sur les valeurs brutes, elle travaille sur les <strong>rangs</strong> — la position de chaque valeur une fois les données triées.</p>
+<h2>1. Pourquoi Spearman ?</h2>
+<p>Pearson répond surtout à la question : <strong>« les deux variables suivent-elles une relation linéaire ? »</strong></p>
 
-<h2>Quand utiliser Spearman plutôt que Pearson ?</h2>
-<ul class="compact-list"><li>Les données sont <strong>ordinales</strong> (échelle Likert, classements).</li><li>La relation est <strong>monotone</strong> mais pas forcément linéaire.</li><li>Il y a des <strong>valeurs extrêmes</strong> qui influencent fortement Pearson.</li><li>On préfère travailler sur l'ordre des valeurs plutôt que sur leurs distances exactes.</li></ul>
-<p>Spearman est plus robuste aux valeurs extrêmes et ne demande pas que la relation soit une droite. Une distribution non normale, à elle seule, ne suffit pas automatiquement à imposer Spearman.</p>
+<p>Spearman pose une question légèrement différente :</p>
 
-<h2>Calcul étape par étape</h2>
-<p>L'idée la plus générale est simple : <strong>Spearman = corrélation de Pearson calculée sur les rangs</strong>.</p>
-<div class="formula">rₛ = corr(Rang X, Rang Y)</div>
-<div class="box box-note"><p>Quand il n'y a <strong>aucun ex aequo</strong>, on peut aussi utiliser le raccourci : rₛ = 1 − [6 × Σd²] / [n(n²−1)]. Avec des ex aequo, comme ici, on utilise directement la corrélation des rangs moyens.</p></div>
+<div class="box box-note">
+  <p><strong>Quand X augmente, Y a-t-il tendance à augmenter ou à diminuer de manière régulière, même si la relation est courbée ?</strong></p>
+</div>
+
+<p>Pour répondre à cette question, Spearman ne travaille pas directement sur les distances entre les valeurs. Il remplace chaque valeur par son <strong>rang</strong> : sa position une fois les observations triées.</p>
+
+<div class="formula">rₛ = corrélation de Pearson calculée sur les rangs</div>
+
+<p>Le coefficient de Spearman, noté <strong>rₛ</strong> ou parfois <strong>ρₛ</strong>, varie lui aussi entre −1 et +1.</p>
+
+<ul class="compact-list">
+  <li><strong>rₛ proche de +1</strong> : quand X augmente, Y tend presque toujours à augmenter.</li>
+  <li><strong>rₛ proche de −1</strong> : quand X augmente, Y tend presque toujours à diminuer.</li>
+  <li><strong>rₛ proche de 0</strong> : pas de tendance monotone claire.</li>
+</ul>
+
+<h2>2. Qu'est-ce qu'une relation monotone ?</h2>
+<p>Le mot <strong>monotone</strong> est essentiel pour comprendre Spearman.</p>
+
+<div class="compare-grid">
+  <div class="compare-card">
+    <h3>Monotone croissante</h3>
+    <p>Quand X augmente, Y tend à augmenter aussi.</p>
+    <p>La relation peut être une droite ou une courbe : l'important est que la direction générale ne s'inverse pas.</p>
+  </div>
+  <div class="compare-card">
+    <h3>Monotone décroissante</h3>
+    <p>Quand X augmente, Y tend à diminuer.</p>
+    <p>Là encore, la forme peut être courbée.</p>
+  </div>
+</div>
+
+<div class="box box-orange">
+  <p><strong>Attention :</strong> Spearman ne détecte pas automatiquement toute relation non linéaire. Une relation en U, par exemple, diminue puis augmente : elle n'est pas monotone.</p>
+</div>
+
+<h2>3. Comprendre les rangs avant le calcul</h2>
+<p>Un rang indique simplement la position d'une valeur dans une liste triée.</p>
+
+<div class="rank-strip">
+  <strong>Valeurs</strong>
+  <code>50 &nbsp; 65 &nbsp; 70 &nbsp; 72 &nbsp; 80 &nbsp; 85 &nbsp; 88 &nbsp; 90</code>
+  <strong>Rangs</strong>
+  <code>1 &nbsp;&nbsp;&nbsp; 2 &nbsp;&nbsp;&nbsp; 3 &nbsp;&nbsp;&nbsp; 4 &nbsp;&nbsp;&nbsp; 5 &nbsp;&nbsp;&nbsp; 6 &nbsp;&nbsp;&nbsp; 7 &nbsp;&nbsp;&nbsp; 8</code>
+</div>
+
+<p>Spearman conserve donc <strong>l'ordre</strong> des observations, mais pas les distances exactes entre elles.</p>
+
+<p>Par exemple, passer de 50 à 65 représente +15 points, tandis que passer de 88 à 90 représente seulement +2. Pour Spearman, ces écarts précis ne sont pas l'information principale : ce qui compte est que 50 vient avant 65, qui vient avant 70, etc.</p>
+
+<h2>4. Exemple : satisfaction et performance</h2>
+<p>On étudie huit employés. La satisfaction est mesurée sur une échelle ordinale de 1 à 5, tandis que la performance est un score numérique.</p>
+
 <h3>Étape 1 — Données brutes</h3>
-<div class="table-wrap"><table><thead><tr><th>Employé</th><th>Satisfaction (x)</th><th>Performance (y)</th></tr></thead><tbody>
-<tr><td>A</td><td>5</td><td>88</td></tr><tr><td>B</td><td>3</td><td>72</td></tr><tr><td>C</td><td>4</td><td>85</td></tr><tr><td>D</td><td>1</td><td>50</td></tr><tr><td>E</td><td>2</td><td>65</td></tr><tr><td>F</td><td>4</td><td>80</td></tr><tr><td>G</td><td>3</td><td>70</td></tr><tr><td>H</td><td>5</td><td>90</td></tr>
-</tbody></table></div>
-<h3>Étape 2 — Attribuer les rangs (1 = plus petit)</h3>
-<div class="table-wrap"><table class="table-calc"><thead><tr><th>Employé</th><th>x</th><th>Rang x</th><th>y</th><th>Rang y</th></tr></thead><tbody>
-<tr><td>A</td><td>5</td><td>7.5</td><td>88</td><td>7</td></tr><tr><td>B</td><td>3</td><td>3.5</td><td>72</td><td>4</td></tr><tr><td>C</td><td>4</td><td>5.5</td><td>85</td><td>6</td></tr><tr><td>D</td><td>1</td><td>1</td><td>50</td><td>1</td></tr><tr><td>E</td><td>2</td><td>2</td><td>65</td><td>2</td></tr><tr><td>F</td><td>4</td><td>5.5</td><td>80</td><td>5</td></tr><tr><td>G</td><td>3</td><td>3.5</td><td>70</td><td>3</td></tr><tr><td>H</td><td>5</td><td>7.5</td><td>90</td><td>8</td></tr>
-</tbody></table></div>
-<p><strong>Rangs ex aequo :</strong> quand deux valeurs sont identiques, on leur attribue le rang moyen.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Employé</th><th>Satisfaction (x)</th><th>Performance (y)</th></tr></thead>
+<tbody>
+<tr><td>A</td><td>5</td><td>88</td></tr>
+<tr><td>B</td><td>3</td><td>72</td></tr>
+<tr><td>C</td><td>4</td><td>85</td></tr>
+<tr><td>D</td><td>1</td><td>50</td></tr>
+<tr><td>E</td><td>2</td><td>65</td></tr>
+<tr><td>F</td><td>4</td><td>80</td></tr>
+<tr><td>G</td><td>3</td><td>70</td></tr>
+<tr><td>H</td><td>5</td><td>90</td></tr>
+</tbody>
+</table></div>
+
+<h3>Étape 2 — Transformer les valeurs en rangs</h3>
+<p>Pour la performance, toutes les valeurs sont différentes. Il suffit donc de classer les scores du plus petit au plus grand :</p>
+
+<div class="formula">50 → 1 &nbsp; · &nbsp; 65 → 2 &nbsp; · &nbsp; 70 → 3 &nbsp; · &nbsp; 72 → 4 &nbsp; · &nbsp; 80 → 5 &nbsp; · &nbsp; 85 → 6 &nbsp; · &nbsp; 88 → 7 &nbsp; · &nbsp; 90 → 8</div>
+
+<h3>Que faire en cas d'ex aequo ?</h3>
+<p>La satisfaction contient plusieurs valeurs identiques. On attribue alors à chaque valeur ex aequo la <strong>moyenne des rangs qu'elle aurait occupés</strong>.</p>
+
+<div class="step-row"><div class="step-num">1</div><div>La valeur <strong>3</strong> apparaît deux fois. Elle occuperait les rangs 3 et 4.<br><strong>Rang moyen = (3 + 4) / 2 = 3,5.</strong></div></div>
+<div class="step-row"><div class="step-num">2</div><div>La valeur <strong>4</strong> occuperait les rangs 5 et 6.<br><strong>Rang moyen = (5 + 6) / 2 = 5,5.</strong></div></div>
+<div class="step-row"><div class="step-num">3</div><div>La valeur <strong>5</strong> occuperait les rangs 7 et 8.<br><strong>Rang moyen = (7 + 8) / 2 = 7,5.</strong></div></div>
+
+<div class="table-wrap"><table class="table-calc">
+<thead><tr><th>Employé</th><th>x</th><th>Rang x</th><th>y</th><th>Rang y</th></tr></thead>
+<tbody>
+<tr><td>A</td><td>5</td><td>7,5</td><td>88</td><td>7</td></tr>
+<tr><td>B</td><td>3</td><td>3,5</td><td>72</td><td>4</td></tr>
+<tr><td>C</td><td>4</td><td>5,5</td><td>85</td><td>6</td></tr>
+<tr><td>D</td><td>1</td><td>1</td><td>50</td><td>1</td></tr>
+<tr><td>E</td><td>2</td><td>2</td><td>65</td><td>2</td></tr>
+<tr><td>F</td><td>4</td><td>5,5</td><td>80</td><td>5</td></tr>
+<tr><td>G</td><td>3</td><td>3,5</td><td>70</td><td>3</td></tr>
+<tr><td>H</td><td>5</td><td>7,5</td><td>90</td><td>8</td></tr>
+</tbody>
+</table></div>
+
 <h3>Étape 3 — Corréler les rangs</h3>
-<div class="formula">rₛ = corr(Rang satisfaction, Rang performance) ≈ <strong>0.982</strong></div>
-<p>Corrélation monotone très forte — les employés plus satisfaits tendent à avoir de meilleures performances dans cet exemple.</p>
+<p>On calcule maintenant Pearson, mais sur les deux colonnes de rangs plutôt que sur les valeurs brutes.</p>
 
-<h2>Pearson vs Spearman</h2>
-<div class="table-wrap"><table><thead><tr><th></th><th>Pearson (r)</th><th>Spearman (rₛ)</th></tr></thead><tbody>
-<tr><td>Type de données</td><td>Quantitatives</td><td>Quantitatives ou ordinales</td></tr><tr><td>Forme de relation</td><td>Linéaire</td><td>Monotone</td></tr><tr><td>Valeurs extrêmes</td><td>Plus sensible</td><td>Moins sensible</td></tr><tr><td>Normalité</td><td>Pas nécessaire pour calculer r ; l'inférence classique ajoute des hypothèses</td><td>Pas requise pour le coefficient</td></tr><tr><td>Calcul</td><td>Sur les valeurs</td><td>Sur les rangs</td></tr>
-</tbody></table></div>
+<div class="formula">rₛ = corr(Rang satisfaction, Rang performance) ≈ <strong>0,982</strong></div>
 
-<h2>Visualisations</h2>
-<div class="wrap"><div class="section">L'idée des rangs</div>
+<p>Interprétation :</p>
+<div class="box box-green">
+  <p>Dans cet exemple, l'ordre des niveaux de satisfaction correspond presque parfaitement à l'ordre des performances : les employés les plus satisfaits tendent aussi à être parmi les plus performants.</p>
+</div>
+
+<p>Comme toujours, il s'agit d'une <strong>association</strong>. Ce coefficient ne permet pas, à lui seul, de conclure que la satisfaction cause la performance.</p>
+
+<h2>5. La formule courte avec d²</h2>
+<p>Lorsque les deux variables ne contiennent <strong>aucun ex aequo</strong>, Spearman peut aussi être calculé avec :</p>
+
+<div class="formula">rₛ = 1 − [6 × Σd²] / [n(n² − 1)]</div>
+
+<p>où <strong>d</strong> est la différence entre le rang X et le rang Y pour une observation.</p>
+
+<div class="box box-note">
+  <p><strong>À retenir :</strong> cette formule est un raccourci pratique dans le cas sans ex aequo. Avec des ex aequo comme dans notre exemple, la définition la plus sûre est : <strong>calculer Pearson sur les rangs moyens</strong>.</p>
+</div>
+
+<h2>6. Pearson ou Spearman ?</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Question</th><th>Pearson</th><th>Spearman</th></tr></thead>
+<tbody>
+<tr><td>Que mesure-t-il ?</td><td>Association linéaire</td><td>Association monotone</td></tr>
+<tr><td>Données</td><td>Principalement quantitatives</td><td>Quantitatives ou ordinales</td></tr>
+<tr><td>Travaille sur…</td><td>Valeurs brutes</td><td>Rangs</td></tr>
+<tr><td>Valeurs extrêmes</td><td>Peut être fortement influencé</td><td>Généralement moins sensible</td></tr>
+<tr><td>Relation courbée mais toujours croissante/décroissante</td><td>Peut sous-estimer la force</td><td>Peut rester proche de ±1</td></tr>
+<tr><td>Relation en U</td><td>Peut être proche de 0</td><td>Peut aussi être proche de 0</td></tr>
+<tr><td>Normalité</td><td>Pas nécessaire pour calculer r ; l'inférence classique ajoute des hypothèses</td><td>Pas nécessaire pour calculer rₛ</td></tr>
+</tbody>
+</table></div>
+
+<div class="box box-orange">
+  <p><strong>Une distribution non normale ne suffit pas, à elle seule, pour décider automatiquement d'utiliser Spearman.</strong> Le choix dépend surtout du type de variable, de la forme de la relation, des valeurs extrêmes et de la question de recherche.</p>
+</div>
+
+<h2>7. Pourquoi les rangs sont moins sensibles à un outlier</h2>
+<p>Considérons ce dataset :</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Observation</th><th>X</th><th>Y</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>1</td><td>2</td></tr>
+<tr><td>2</td><td>2</td><td>4</td></tr>
+<tr><td>3</td><td>3</td><td>5</td></tr>
+<tr><td>4</td><td>4</td><td>7</td></tr>
+<tr><td>5</td><td>5</td><td>8</td></tr>
+<tr><td>6</td><td>6</td><td>9</td></tr>
+<tr><td>7</td><td>7</td><td>11</td></tr>
+<tr><td>8</td><td>8</td><td>12</td></tr>
+<tr><td>9</td><td>9</td><td>14</td></tr>
+<tr><td>10</td><td>30</td><td>15</td></tr>
+</tbody>
+</table></div>
+
+<p>La dernière observation, <strong>X = 30</strong>, est très éloignée des autres valeurs de X. Pourtant son ordre reste simplement le dernier rang.</p>
+
+<div class="wrap">
 <div class="chart-box">
-  <div class="chart-title">Spearman travaille sur les rangs, pas les valeurs</div>
-  <div class="chart-sub">Même relation — mais Spearman est <strong>moins sensible</strong> à l'outlier à droite.</div>
+  <div class="chart-title">Valeurs brutes vs rangs</div>
+  <div class="chart-sub">Même dataset. La distance 9 → 30 influence fortement l'échelle brute, mais elle devient seulement rang 9 → rang 10 après transformation.</div>
   <div class="grid2">
     <div>
       <div style="font-size:11px;font-weight:500;color:#2a78d6;margin-bottom:6px;">Valeurs brutes — Pearson</div>
-      <div style="position:relative;height:160px;"><canvas id="sp-raw" role="img" aria-label="Scatter plot valeurs brutes avec outlier">Données brutes avec outlier.</canvas></div>
+      <div style="position:relative;height:180px;"><canvas id="sp-raw" role="img" aria-label="Scatter plot valeurs brutes avec une valeur extrême en X">Données brutes avec X=30.</canvas></div>
     </div>
     <div>
       <div style="font-size:11px;font-weight:500;color:#1baf7a;margin-bottom:6px;">Rangs — Spearman</div>
-      <div style="position:relative;height:160px;"><canvas id="sp-rank" role="img" aria-label="Scatter plot des rangs Spearman">Rangs : l'outlier a beaucoup moins d'influence.</canvas></div>
+      <div style="position:relative;height:180px;"><canvas id="sp-rank" role="img" aria-label="Scatter plot des rangs du même dataset">Même dataset transformé en rangs.</canvas></div>
     </div>
   </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+  <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px;">
     <div style="text-align:center;padding:8px;background:rgba(55,138,221,.1);border-radius:8px;font-size:12px;">
-      Pearson r = <b style="color:#2a78d6" id="r-pearson">—</b>
+      Pearson r ≈ <b style="color:#2a78d6">0,75</b>
     </div>
     <div style="text-align:center;padding:8px;background:rgba(29,158,117,.1);border-radius:8px;font-size:12px;">
-      Spearman rₛ = <b style="color:#1baf7a" id="r-spearman">—</b>
+      Spearman rₛ = <b style="color:#1baf7a">1,00</b>
     </div>
   </div>
 </div>
-
-<div class="section">Satisfaction → performance — visualisation des rangs</div>
-<div class="chart-box">
-  <div class="chart-title">Chaque point = un employé. Axe X = rang satisfaction, axe Y = rang performance.</div>
-  <div class="chart-sub">rₛ = 0.982 — relation quasi parfaite en termes de rangs.</div>
-  <div style="position:relative;height:200px;"><canvas id="sp-main" role="img" aria-label="Scatter plot des rangs satisfaction performance">Rangs satisfaction vs performance pour 8 employés.</canvas></div>
 </div>
 
-<div class="section">Relation monotone non linéaire — avantage de Spearman</div>
+<p>Spearman est donc <strong>moins sensible</strong> à la taille extrême de X = 30, parce qu'il remplace 30 par son rang 10. Il n'est toutefois pas « immunisé » contre tous les outliers : un point extrême qui change aussi fortement l'ordre des observations peut modifier rₛ.</p>
+
+<h2>8. Relation monotone mais non linéaire</h2>
+<p>Voici maintenant une relation parfaitement croissante mais très courbée :</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th>X</th><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td></tr></thead>
+<tbody><tr><th>Y = X⁴</th><td>1</td><td>16</td><td>81</td><td>256</td><td>625</td><td>1 296</td><td>2 401</td><td>4 096</td></tr></tbody>
+</table></div>
+
+<p>Chaque fois que X augmente, Y augmente aussi. L'ordre est donc parfaitement conservé.</p>
+
 <div class="chart-box">
-  <div class="chart-title">Une relation monotone peut être mieux résumée par Spearman</div>
-  <div class="chart-sub">Ici Y = X⁴ : l'ordre est parfaitement conservé. Pearson r ≈ 0.88, Spearman rₛ = 1.00.</div>
-  <div style="position:relative;height:160px;"><canvas id="sp-mono" role="img" aria-label="Relation monotone non linéaire">Relation en courbe détectable par Spearman mais pas parfaitement par Pearson.</canvas></div>
-</div></div>
+  <div class="chart-title">Y = X⁴ — monotone, mais pas linéaire</div>
+  <div class="chart-sub">Pour ces 8 observations : Pearson r ≈ 0,887 ; Spearman rₛ = 1,000.</div>
+  <div style="position:relative;height:210px;"><canvas id="sp-mono" role="img" aria-label="Scatter plot de Y égal X puissance quatre pour X de un à huit">Relation monotone croissante et courbée.</canvas></div>
+</div>
+
+<p>Pearson reste positif et assez élevé, mais il n'atteint pas 1 parce que les points ne suivent pas une droite. Spearman vaut 1 parce que le classement de X et celui de Y sont exactement les mêmes.</p>
+
+<h2>9. Spearman ne détecte pas toute relation non linéaire</h2>
+<p>Considérons une relation en U :</p>
+
+<div class="formula">X : 1, 2, 3, 4, 5, 6, 7<br>Y : 9, 4, 1, 0, 1, 4, 9</div>
+
+<p>Quand X passe de 1 à 4, Y diminue. Puis, de 4 à 7, Y augmente. Il n'existe donc pas une direction monotone unique sur tout le dataset.</p>
+
+<div class="box box-note">
+  <p><strong>Conclusion :</strong> Spearman est utile pour les relations monotones, pas pour toutes les relations possibles. Un scatter plot reste indispensable avant d'interpréter un coefficient.</p>
+</div>
+
+<h2>10. Usages en sciences sociales</h2>
+<p>Spearman est particulièrement utile lorsque les données représentent surtout un <strong>ordre</strong> plutôt qu'une distance parfaitement mesurable.</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Situation</th><th>Pourquoi Spearman peut être pertinent</th></tr></thead>
+<tbody>
+<tr><td>Satisfaction sur une échelle de 1 à 5</td><td>Les catégories sont ordonnées, mais l'écart entre 1 et 2 n'est pas nécessairement identique à l'écart entre 4 et 5.</td></tr>
+<tr><td>Classement socio-économique</td><td>On peut comparer des positions relatives même si les distances entre rangs n'ont pas d'unité naturelle.</td></tr>
+<tr><td>Rang scolaire et autre classement</td><td>Les deux variables sont déjà exprimées comme positions ordinales.</td></tr>
+<tr><td>Variable quantitative avec relation courbée mais monotone</td><td>Spearman peut mieux représenter l'ordre général que Pearson.</td></tr>
+</tbody>
+</table></div>
+
+<h2>11. À retenir</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Idée</th><th>À retenir</th></tr></thead>
+<tbody>
+<tr><td><strong>Spearman</strong></td><td>Corrélation de Pearson appliquée aux rangs.</td></tr>
+<tr><td><strong>Monotone</strong></td><td>X et Y évoluent globalement toujours dans une même direction.</td></tr>
+<tr><td><strong>Ex aequo</strong></td><td>On attribue un rang moyen aux valeurs identiques.</td></tr>
+<tr><td><strong>Outliers</strong></td><td>Spearman est généralement moins sensible aux distances extrêmes, mais pas totalement insensible aux points atypiques.</td></tr>
+<tr><td><strong>Non-linéarité</strong></td><td>Une relation courbée monotone peut avoir rₛ proche de ±1.</td></tr>
+<tr><td><strong>Limite</strong></td><td>Une relation en U n'est pas monotone et peut être mal résumée par Spearman.</td></tr>
+</tbody>
+</table></div>
 
 <div class="page-nav">
   <a href="ch16.html">← Chapitre 16</a>
   <a href="ch18.html">Chapitre 18 →</a>
 </div>
+
 </div></main></div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 const isDark=document.documentElement.dataset.mode==='dark'||(!document.documentElement.dataset.mode&&matchMedia('(prefers-color-scheme:dark)').matches);
 const gridC=isDark?'rgba(255,255,255,0.12)':'rgba(25,25,24,0.09)';
 const tick=isDark?'#A7A59D':'#6B6963';
 
-// Raw data with outlier
 const rawX=[1,2,3,4,5,6,7,8,9,30];
 const rawY=[2,4,5,7,8,9,11,12,14,15];
 
 function pearsonR(xs,ys){
-  const n=xs.length,mx=xs.reduce((a,b)=>a+b,0)/n,my=ys.reduce((a,b)=>a+b,0)/n;
+  const n=xs.length;
+  const mx=xs.reduce((a,b)=>a+b,0)/n;
+  const my=ys.reduce((a,b)=>a+b,0)/n;
   const num=xs.reduce((a,x,i)=>a+(x-mx)*(ys[i]-my),0);
-  const den=Math.sqrt(xs.reduce((a,x)=>a+(x-mx)**2,0)*ys.reduce((a,y)=>a+(y-my)**2,0));
+  const den=Math.sqrt(
+    xs.reduce((a,x)=>a+(x-mx)**2,0) *
+    ys.reduce((a,y)=>a+(y-my)**2,0)
+  );
   return num/den;
 }
+
 function ranks(arr){
   const sorted=[...arr].map((v,i)=>({v,i})).sort((a,b)=>a.v-b.v);
   const r=new Array(arr.length);
   let i=0;
   while(i<sorted.length){
     let j=i;
-    while(j<sorted.length-1&&sorted[j+1].v===sorted[j].v)j++;
+    while(j<sorted.length-1 && sorted[j+1].v===sorted[j].v)j++;
     const avg=(i+j)/2+1;
     for(let k=i;k<=j;k++)r[sorted[k].i]=avg;
     i=j+1;
   }
   return r;
 }
-function spearmanR(xs,ys){
-  return pearsonR(ranks(xs),ranks(ys));
-}
 
-const pr=pearsonR(rawX,rawY).toFixed(2);
-const sr=spearmanR(rawX,rawY).toFixed(2);
-document.getElementById('r-pearson').textContent=pr;
-document.getElementById('r-spearman').textContent=sr;
+const rkX=ranks(rawX);
+const rkY=ranks(rawY);
 
-new Chart(document.getElementById('sp-raw'),{type:'scatter',
-  data:{datasets:[{data:rawX.map((x,i)=>({x,y:rawY[i]})),
+new Chart(document.getElementById('sp-raw'),{
+  type:'scatter',
+  data:{datasets:[{
+    data:rawX.map((x,i)=>({x,y:rawY[i]})),
     backgroundColor:rawX.map((_,i)=>i===rawX.length-1?'#e34948bb':'#2a78d6bb'),
     borderColor:rawX.map((_,i)=>i===rawX.length-1?'#e34948':'#2a78d6'),
-    borderWidth:1,pointRadius:5}]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-    scales:{x:{grid:{color:gridC},ticks:{color:tick,font:{size:9}}},y:{grid:{color:gridC},ticks:{color:tick,font:{size:9}}}}}
-});
-
-const rkX=ranks(rawX),rkY=ranks(rawY);
-new Chart(document.getElementById('sp-rank'),{type:'scatter',
-  data:{datasets:[{data:rkX.map((rx,i)=>({x:rx,y:rkY[i]})),
-    backgroundColor:rkX.map((_,i)=>i===rkX.length-1?'#1baf7abb':'#1baf7abb'),
-    borderColor:'#1baf7a',borderWidth:1,pointRadius:5}]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-    scales:{x:{grid:{color:gridC},ticks:{color:tick,font:{size:9}},title:{display:true,text:'Rang X',color:tick,font:{size:9}}},
-            y:{grid:{color:gridC},ticks:{color:tick,font:{size:9}},title:{display:true,text:'Rang Y',color:tick,font:{size:9}}}}}
-});
-
-// Main: satisfaction/performance
-const emp=[{sat:5,perf:88,name:'A'},{sat:3,perf:72,name:'B'},{sat:4,perf:85,name:'C'},
-  {sat:1,perf:50,name:'D'},{sat:2,perf:65,name:'E'},{sat:4,perf:80,name:'F'},
-  {sat:3,perf:70,name:'G'},{sat:5,perf:90,name:'H'}];
-const satArr=emp.map(e=>e.sat),perfArr=emp.map(e=>e.perf);
-const rSat=ranks(satArr),rPerf=ranks(perfArr);
-new Chart(document.getElementById('sp-main'),{type:'scatter',
-  data:{datasets:[{data:rSat.map((rs,i)=>({x:rs,y:rPerf[i]})),
-    backgroundColor:'#7F77DD99',borderColor:'#7F77DD',borderWidth:1,pointRadius:7,
-    pointHoverRadius:9}]},
-  options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false},tooltip:{callbacks:{label:t=>`Rang sat.=${t.parsed.x} · Rang perf.=${t.parsed.y}`}}},
-    scales:{x:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'Rang satisfaction',color:tick,font:{size:10}},min:0.5,max:8.5},
-            y:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'Rang performance',color:tick,font:{size:10}},min:0.5,max:8.5}}}
-});
-
-// Monotone non-linear
-const monoX=Array.from({length:15},(_,i)=>i+1);
-const monoY=monoX.map(x=>Math.pow(x,4));
-new Chart(document.getElementById('sp-mono'),{type:'scatter',
-  data:{datasets:[{data:monoX.map((x,i)=>({x,y:monoY[i]})),
-    backgroundColor:'#eda10099',borderColor:'#eda100',borderWidth:1,pointRadius:5}]},
-  options:{responsive:true,maintainAspectRatio:false,
+    borderWidth:1,
+    pointRadius:5
+  }]},
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
     plugins:{legend:{display:false}},
-    scales:{x:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'X',color:tick,font:{size:10}}},
-            y:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'Y',color:tick,font:{size:10}}}}}
+    scales:{
+      x:{grid:{color:gridC},ticks:{color:tick,font:{size:9}},title:{display:true,text:'X',color:tick,font:{size:9}}},
+      y:{grid:{color:gridC},ticks:{color:tick,font:{size:9}},title:{display:true,text:'Y',color:tick,font:{size:9}}}
+    }
+  }
+});
+
+new Chart(document.getElementById('sp-rank'),{
+  type:'scatter',
+  data:{datasets:[{
+    data:rkX.map((rx,i)=>({x:rx,y:rkY[i]})),
+    backgroundColor:'#1baf7abb',
+    borderColor:'#1baf7a',
+    borderWidth:1,
+    pointRadius:5
+  }]},
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{grid:{color:gridC},ticks:{color:tick,font:{size:9}},title:{display:true,text:'Rang X',color:tick,font:{size:9}},min:.5,max:10.5},
+      y:{grid:{color:gridC},ticks:{color:tick,font:{size:9}},title:{display:true,text:'Rang Y',color:tick,font:{size:9}},min:.5,max:10.5}
+    }
+  }
+});
+
+const monoX=[1,2,3,4,5,6,7,8];
+const monoY=monoX.map(x=>x**4);
+
+new Chart(document.getElementById('sp-mono'),{
+  type:'scatter',
+  data:{datasets:[{
+    data:monoX.map((x,i)=>({x,y:monoY[i]})),
+    backgroundColor:'#eda10099',
+    borderColor:'#eda100',
+    borderWidth:1,
+    pointRadius:5
+  }]},
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'X',color:tick,font:{size:10}}},
+      y:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'Y = X⁴',color:tick,font:{size:10}}}
+    }
+  }
 });
 </script>
 <script src="../assets/nav-content.js"></script>
