@@ -60,6 +60,56 @@
 <div class="formula">r = 1 727 500 / √(2 062.5 × 1 636 500 000) ≈ <strong>0.94</strong></div>
 <p>Dans ce dataset, la relation linéaire entre âge et revenu est très forte et positive.</p>
 
+<h2>Formule computationnelle (à partir des sommes brutes)</h2>
+<p>La formule centrée ci-dessus montre <em>ce que</em> r mesure. Il existe une formule équivalente qui calcule exactement le même coefficient directement à partir des sommes des valeurs brutes, sans écrire chaque écart à la moyenne :</p>
+<div class="formula">r = [n·Σxy − (Σx)(Σy)] / √{ [n·Σx² − (Σx)²] · [n·Σy² − (Σy)²] }</div>
+<p>C'est une <strong>formule de calcul équivalente</strong>, pas une autre définition de la corrélation.</p>
+
+<h3>Notation</h3>
+<div class="table-wrap"><table><thead><tr><th>Symbole</th><th>Signification</th></tr></thead><tbody>
+<tr><td>n</td><td>nombre de paires (x, y)</td></tr>
+<tr><td>Σx, Σy</td><td>somme des valeurs de x, somme des valeurs de y</td></tr>
+<tr><td>Σxy</td><td>somme des produits xᵢ · yᵢ</td></tr>
+<tr><td>Σx², Σy²</td><td>somme des carrés des valeurs de x, de y</td></tr>
+</tbody></table></div>
+
+<div class="box box-orange">
+  <p><strong>Σx² ≠ (Σx)² :</strong> Σx² = x₁² + x₂² + ... + xₙ² (on met chaque valeur au carré <em>avant</em> de sommer). (Σx)² = le carré de la somme totale (on somme <em>d'abord</em>, puis on met au carré une seule fois). Confondre les deux est une erreur de calcul fréquente — avec ce dataset, Σx² = 24 625 alors que (Σx)² = 475² = 225 625, deux nombres très différents. Il en va de même pour y.</p>
+</div>
+
+<h3>Tableau des sommes brutes</h3>
+<p>Mêmes 10 individus (âge/revenu) que ci-dessus, avec les colonnes nécessaires à la formule computationnelle :</p>
+<div class="table-wrap"><table class="table-calc"><thead><tr><th>#</th><th>x</th><th>y</th><th>x²</th><th>y²</th><th>xy</th></tr></thead><tbody>
+<tr><td>1</td><td>25</td><td>35 000</td><td>625</td><td>1 225 000 000</td><td>875 000</td></tr>
+<tr><td>2</td><td>30</td><td>42 000</td><td>900</td><td>1 764 000 000</td><td>1 260 000</td></tr>
+<tr><td>3</td><td>35</td><td>48 000</td><td>1 225</td><td>2 304 000 000</td><td>1 680 000</td></tr>
+<tr><td>4</td><td>40</td><td>55 000</td><td>1 600</td><td>3 025 000 000</td><td>2 200 000</td></tr>
+<tr><td>5</td><td>45</td><td>62 000</td><td>2 025</td><td>3 844 000 000</td><td>2 790 000</td></tr>
+<tr><td>6</td><td>50</td><td>58 000</td><td>2 500</td><td>3 364 000 000</td><td>2 900 000</td></tr>
+<tr><td>7</td><td>55</td><td>70 000</td><td>3 025</td><td>4 900 000 000</td><td>3 850 000</td></tr>
+<tr><td>8</td><td>60</td><td>75 000</td><td>3 600</td><td>5 625 000 000</td><td>4 500 000</td></tr>
+<tr><td>9</td><td>65</td><td>68 000</td><td>4 225</td><td>4 624 000 000</td><td>4 420 000</td></tr>
+<tr><td>10</td><td>70</td><td>72 000</td><td>4 900</td><td>5 184 000 000</td><td>5 040 000</td></tr>
+<tr class="total"><td>Σ</td><td class="hi-accent">475</td><td class="hi-accent">585 000</td><td class="hi-accent">24 625</td><td class="hi-accent">35 859 000 000</td><td class="hi-accent">29 515 000</td></tr>
+</tbody></table></div>
+
+<h3>Substitution dans la formule</h3>
+<div class="formula">Numérateur = n·Σxy − (Σx)(Σy)<br>= 10 × 29 515 000 − 475 × 585 000<br>= 295 150 000 − 277 875 000 = <strong>17 275 000</strong></div>
+<div class="formula">1ᵉʳ terme du dénominateur = n·Σx² − (Σx)²<br>= 10 × 24 625 − 475² = 246 250 − 225 625 = <strong>20 625</strong></div>
+<div class="formula">2ᵉ terme du dénominateur = n·Σy² − (Σy)²<br>= 10 × 35 859 000 000 − 585 000² <br>= 358 590 000 000 − 342 225 000 000 = <strong>16 365 000 000</strong></div>
+<div class="formula">r = 17 275 000 / √(20 625 × 16 365 000 000) ≈ <strong>0.9403</strong> ≈ <strong>0.94</strong></div>
+<p>Ce résultat est identique (aux arrondis près) à celui obtenu plus haut avec la formule centrée : <strong>deux formules, même r.</strong></p>
+
+<div class="grid-2">
+  <div class="box box-note">
+    <p><strong>Formule centrée</strong><br>Utile pour comprendre <em>ce que</em> r mesure : les écarts à chaque moyenne, si x et y varient ensemble, et la normalisation par leur variabilité.</p>
+  </div>
+  <div class="box box-green">
+    <p><strong>Formule computationnelle</strong><br>Pratique pour calculer à la main à partir d'un tableau de sommes, vérifier un résultat, ou reconnaître une formule dans un manuel.</p>
+  </div>
+</div>
+<p style="font-size:.85rem;color:var(--text-muted)">En pratique, un logiciel statistique calcule r directement. Connaître la formule computationnelle sert surtout à comprendre les manuels et à vérifier de petits exemples à la main — ni l'une ni l'autre formule n'est « meilleure » statistiquement, ce sont deux chemins vers le même résultat.</p>
+
 <h2>Interprétation des valeurs de r</h2>
 <div class="table-wrap"><table><thead><tr><th>Valeur de |r|</th><th>Interprétation</th></tr></thead><tbody>
 <tr><td>0.90 à 1.00</td><td>Corrélation très forte</td></tr><tr><td>0.70 à 0.89</td><td>Corrélation forte</td></tr><tr><td>0.50 à 0.69</td><td>Corrélation modérée</td></tr><tr><td>0.30 à 0.49</td><td>Corrélation faible</td></tr><tr><td>0.00 à 0.29</td><td>Corrélation très faible ou nulle</td></tr>

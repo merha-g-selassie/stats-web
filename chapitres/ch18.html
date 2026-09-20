@@ -19,8 +19,8 @@
 .note-box b{color:var(--text-primary);}
 .warn-box{background:var(--bg-warning);border-left:3px solid #BA7517;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--text-warning);line-height:1.6;margin:10px 0;}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.stat-row{display:flex;gap:10px;margin:10px 0;}
-.stat-card{flex:1;background:var(--surface-1);border:.5px solid var(--border);border-radius:8px;padding:10px;text-align:center;}
+.stat-row{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0;}
+.stat-card{flex:1;min-width:0;background:var(--surface-1);border:.5px solid var(--border);border-radius:8px;padding:10px;text-align:center;}
 .stat-card .lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;}
 .stat-card .val{font-size:16px;font-weight:500;}
 
@@ -41,14 +41,39 @@
 <p>La corrélation de Pearson résume la force d'une relation linéaire. La régression linéaire va plus loin : elle permet de <strong>prédire</strong> Y à partir de X et de quantifier la variation moyenne de Y <strong>associée</strong> à une unité supplémentaire de X.</p>
 
 <h2>La droite de régression</h2>
-<div class="formula">Ŷ = a + bX</div>
-<ul class="compact-list"><li><strong>b</strong> = pente = combien Y change pour chaque augmentation d'une unité de X.</li><li><strong>a</strong> = ordonnée à l'origine = valeur de Y quand X = 0.</li></ul>
+<div class="formula">ŷ = a + bx</div>
+<ul class="compact-list"><li><strong>b</strong> = pente = combien y change pour chaque augmentation d'une unité de x.</li><li><strong>a</strong> = ordonnée à l'origine = valeur de y quand x = 0.</li></ul>
 <p>La droite est calculée par la méthode des <strong>moindres carrés</strong> — elle minimise la somme des carrés des résidus.</p>
 
 <h2>Calcul étape par étape</h2>
 <p><strong>Dataset âge/revenu</strong> — x̄ = 47.5, ȳ = 58 500, r = 0.94.</p>
 <h3>Étape 1 — Calculer b (pente)</h3>
 <div class="formula">b = Σ(xᵢ−x̄)(yᵢ−ȳ) / Σ(xᵢ−x̄)²<br>b = 1 727 500 / 2 062.5 ≈ <strong>837.58 CHF par année d'âge</strong></div>
+
+<h3>Lien avec la corrélation : b = r × (s_y / s_x)</h3>
+<p>Pour une régression linéaire simple <strong>avec une constante</strong>, la pente peut aussi s'obtenir directement à partir du r de Pearson (chapitre 15) et des écarts-types de x et de y :</p>
+<div class="formula">b = r × (s_y / s_x)</div>
+<p>r est <strong>sans unité</strong> (toujours entre −1 et +1), alors que la pente b s'exprime en <em>unités de y par unité de x</em> (ici : CHF par année). Le rapport s_y / s_x sert à <strong>reconvertir</strong> la force/direction standardisée de la relation (r) dans l'échelle réelle des deux variables.</p>
+
+<p>Les écarts-types (échantillon) se calculent à partir des sommes déjà obtenues au chapitre 15 : Σ(x−x̄)² = 2 062.5 et Σ(y−ȳ)² = 1 636 500 000.</p>
+<div class="formula">s_x = √(2 062.5 / 9) ≈ <strong>15.14 ans</strong><br>s_y = √(1 636 500 000 / 9) ≈ <strong>13 484.56 CHF</strong></div>
+<div class="formula">s_y / s_x ≈ 13 484.5591 / 15.1383 ≈ <strong>890.7607</strong><br>b = r × (s_y / s_x) ≈ 0.9402927 × 890.7607 ≈ <strong>837.5758</strong></div>
+<p>Arrondi : b ≈ <strong>837.58 CHF par année d'âge</strong> — exactement la même pente qu'à l'étape 1 (aux arrondis près).</p>
+
+<div class="table-wrap"><table><thead><tr><th>Méthode</th><th>Pente</th></tr></thead><tbody>
+<tr><td>OLS avec écarts à la moyenne</td><td>837.58</td></tr>
+<tr><td>r × (s_y / s_x)</td><td>837.58</td></tr>
+</tbody></table></div>
+<div class="note-box"><b>Deux méthodes, même pente.</b> Les deux calculs sont mathématiquement équivalents pour une régression linéaire simple avec une constante.</div>
+
+<p style="font-size:.85rem;color:var(--text-sec)">Comme un écart-type est toujours ≥ 0, le signe de b suit toujours celui de r : si r &gt; 0 alors b &gt; 0, si r &lt; 0 alors b &lt; 0, et si r = 0 alors b = 0.</p>
+
+<div class="note-box">
+  <b>Intuition standardisée :</b> si x et y sont tous deux convertis en z-scores, la pente de la régression devient exactement r (chapitre 10 — z-scores). Multiplier par s_y / s_x reconvertit cette pente standardisée dans les unités d'origine de x et y.
+</div>
+
+<p style="font-size:.85rem;color:var(--text-muted)">Cette égalité vaut pour une <strong>régression linéaire simple avec une constante</strong> (un seul prédicteur). Ce n'est pas la formule générale de la pente en régression multiple, sans constante, ou pour un modèle non linéaire.</p>
+
 <h3>Étape 2 — Calculer a (ordonnée à l'origine)</h3>
 <div class="formula">a = ȳ − b × x̄ = 58 500 − 837.58 × 47.5 ≈ <strong>18 715 CHF</strong></div>
 <h3>Étape 3 — Équation de régression</h3>

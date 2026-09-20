@@ -14,6 +14,7 @@
   .hl-row td { background:var(--surface-2); }
   .type-card { border:1px solid var(--border); border-radius:var(--radius-md); padding:.85rem 1rem; font-size:.875rem; }
   .type-card strong { display:block; margin-bottom:.35rem; }
+  .z-compare-svg text { font-family:'Inter',system-ui,sans-serif; }
 </style>
 </head>
 <body>
@@ -41,6 +42,80 @@
 
 <div class="box box-note">
   <p><strong>Intérêt :</strong> peu importe l'unité d'origine (notes, CHF, kg...), un z-score est comparable en <strong>unités d'écart-type</strong>. On peut comparer la position d'un étudiant dans sa classe de stats avec sa position dans sa classe de sociologie — même si les deux examens ont des moyennes et écarts-types différents.</p>
+</div>
+
+<h2>Comparer des valeurs entre deux distributions différentes</h2>
+<p>Un score brut plus élevé ne signifie pas toujours une <strong>meilleure position relative</strong>. Deux moyennes et deux écarts-types différents rendent les scores bruts non comparables directement.</p>
+<p><strong>Exemple :</strong> deux élèves passent deux tests différents.</p>
+<div class="grid-2">
+  <div class="box box-note"><p><strong>Test A</strong><br>Score = 78 · Moyenne = 70 · Écart-type = 4</p></div>
+  <div class="box box-green"><p><strong>Test B</strong><br>Score = 82 · Moyenne = 75 · Écart-type = 5</p></div>
+</div>
+<p>À première vue, 82 &gt; 78, donc le Test B semble meilleur. Mais les deux tests n'ont ni la même moyenne ni le même écart-type — il faut standardiser avant de comparer.</p>
+
+<div class="formula">z_A = (78 − 70) / 4 = 8 / 4 = <strong>+2.00</strong><br>z_B = (82 − 75) / 5 = 7 / 5 = <strong>+1.40</strong></div>
+<p>Le score de 78 est à <strong>2 écarts-types au-dessus</strong> de la moyenne du Test A. Le score de 82 est à <strong>1.4 écart-type au-dessus</strong> de la moyenne du Test B.</p>
+
+<div class="chart-card">
+  <h4>Même axe standardisé — distance à la moyenne en écarts-types</h4>
+  <p>Les deux repères de score sont placés selon leur z, pas selon leur valeur brute.</p>
+  <div class="grid-2">
+    <div>
+      <p style="font-size:.8rem;color:var(--text-muted);text-align:center;margin-bottom:.4rem">Test A</p>
+      <svg class="z-compare-svg" viewBox="0 0 300 70" width="100%" role="img" aria-label="Test A : moyenne 70, score 78, z = +2.00">
+        <line x1="60" y1="35" x2="270" y2="35" stroke="var(--border-strong)" stroke-width="2"/>
+        <circle cx="60" cy="35" r="5" fill="var(--text-muted)"/><text x="60" y="20" text-anchor="middle" fill="var(--text-muted)" font-size="11">μ = 70</text>
+        <circle cx="200" cy="35" r="6" fill="var(--accent)"/><text x="200" y="20" text-anchor="middle" fill="var(--accent)" font-size="11" font-weight="600">78</text>
+        <text x="200" y="55" text-anchor="middle" fill="var(--accent)" font-size="11" font-weight="600">z = +2.00</text>
+      </svg>
+    </div>
+    <div>
+      <p style="font-size:.8rem;color:var(--text-muted);text-align:center;margin-bottom:.4rem">Test B</p>
+      <svg class="z-compare-svg" viewBox="0 0 300 70" width="100%" role="img" aria-label="Test B : moyenne 75, score 82, z = +1.40">
+        <line x1="60" y1="35" x2="270" y2="35" stroke="var(--border-strong)" stroke-width="2"/>
+        <circle cx="60" cy="35" r="5" fill="var(--text-muted)"/><text x="60" y="20" text-anchor="middle" fill="var(--text-muted)" font-size="11">μ = 75</text>
+        <circle cx="158" cy="35" r="6" fill="var(--green)"/><text x="158" y="20" text-anchor="middle" fill="var(--green)" font-size="11" font-weight="600">82</text>
+        <text x="158" y="55" text-anchor="middle" fill="var(--green)" font-size="11" font-weight="600">z = +1.40</text>
+      </svg>
+    </div>
+  </div>
+  <p style="font-size:.8rem;color:var(--text-muted);text-align:center;margin-top:.5rem">Le repère du Test A est plus loin de sa moyenne que celui du Test B, même si 82 &gt; 78 en valeur brute.</p>
+</div>
+
+<div class="table-wrap">
+<table class="table-calc">
+  <thead><tr><th></th><th>Test A</th><th>Test B</th></tr></thead>
+  <tbody>
+    <tr><td>Score brut</td><td>78</td><td>82</td></tr>
+    <tr><td>Moyenne</td><td>70</td><td>75</td></tr>
+    <tr><td>Écart-type</td><td>4</td><td>5</td></tr>
+    <tr class="total"><td>z-score</td><td class="hi-accent">2.00</td><td class="hi-accent">1.40</td></tr>
+  </tbody>
+</table>
+</div>
+<p><strong>Conclusion :</strong> le score brut est plus élevé pour le Test B (82 &gt; 78), mais la <strong>position relative standardisée</strong> est plus élevée pour le Test A (2.00 &gt; 1.40).</p>
+
+<div class="box box-orange">
+  <p><strong>Attention :</strong> un z-score plus grand ne veut pas dire « meilleur » de façon universelle — il veut seulement dire que l'observation est <strong>plus au-dessus de sa propre distribution</strong>. Que ce soit souhaitable dépend de la variable : pour une note d'examen, plus haut est souvent préférable ; pour un temps de réaction ou un nombre d'erreurs, plus bas l'est. On préfère donc parler de « position relative standardisée plus élevée » plutôt que de « meilleur » score.</p>
+</div>
+
+<h3>Un z négatif</h3>
+<p>Le signe indique seulement la <strong>direction</strong> par rapport à la moyenne — il ne signifie pas que le calcul est invalide.</p>
+<p>Exemple : score = 54, moyenne = 60, écart-type = 3.</p>
+<div class="formula">z = (54 − 60) / 3 = −6 / 3 = <strong>−2</strong></div>
+<p>Ce score est à <strong>2 écarts-types en dessous</strong> de la moyenne.</p>
+
+<h3>Z-score et percentile : deux choses différentes</h3>
+<p>Un z-score indique toujours un <strong>nombre d'écarts-types par rapport à la moyenne</strong> — son calcul ne suppose pas que les données suivent une distribution normale. Un <strong>percentile</strong> indique une <strong>position cumulée relative</strong> dans une distribution (voir chapitre 08). Un z-score ne détermine <strong>pas à lui seul</strong> un percentile : il faut en plus connaître (ou supposer) la forme de la distribution.</p>
+<p>Si on <strong>suppose</strong> un modèle normal, on peut alors traduire un z en percentile approximatif :</p>
+<ul style="margin:.5rem 0 .9rem 1.2rem;color:var(--text-sec);font-size:.9rem;line-height:1.8">
+<li>z = 0 → environ le 50ᵉ percentile ;</li>
+<li>z ≈ 1 → environ le 84ᵉ percentile ;</li>
+<li>z ≈ 2 → environ le 97.7ᵉ percentile.</li>
+</ul>
+<p style="font-size:.85rem;color:var(--text-muted)">Ce sont des valeurs propres au <strong>modèle normal</strong>, pas des propriétés universelles des z-scores. La table z de la section suivante sert précisément à faire cette traduction lorsque le modèle normal est supposé.</p>
+<div class="box box-note">
+  <p><strong>Distributions de formes différentes :</strong> standardiser rend les distances à la moyenne comparables en unités d'écart-type, mais ne rend pas deux distributions identiques. Si une distribution est fortement asymétrique et l'autre symétrique, un même z-score peut correspondre à des percentiles différents. Les z-scores sont donc excellents pour comparer une distance standardisée à la moyenne ; comparer des percentiles demande de prêter attention à la forme de chaque distribution.</p>
 </div>
 
 <h2>Body et tail</h2>
@@ -104,7 +179,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 const mu=12.77, sd=2.54;
-const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+const isDark=document.documentElement.dataset.mode==='dark'||(!document.documentElement.dataset.mode&&matchMedia('(prefers-color-scheme:dark)').matches);
 const gridC=isDark?'rgba(255,255,255,.08)':'rgba(0,0,0,.06)';
 const tick='#7A7875';
 const notes=[8,9,10,11,12,13,14,15,16,17,18];

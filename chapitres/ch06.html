@@ -17,7 +17,7 @@
 <div class="ch-header">
   <div class="ch-eyebrow">Chapitre 06</div>
   <h1 class="ch-title">Visualisation des données quantitatives</h1>
-  <p class="ch-desc">Histogrammes, stem-and-leaf plot.</p>
+  <p class="ch-desc">Histogrammes, classes et bornes, stem-and-leaf plot.</p>
 </div>
 
 <h2>L'idée centrale</h2>
@@ -32,6 +32,68 @@
 <tr><td>Axe X</td><td>Catégories</td><td>Valeurs numériques / classes</td></tr>
 </tbody></table></div>
 <p>Les barres d'un histogramme sont <strong>collées</strong> parce qu'elles représentent des intervalles contigus d'un axe numérique. Même pour des notes entières, on peut imaginer des classes comme 9.5–10.5, 10.5–11.5, etc.</p>
+<blockquote><p><strong>Bar chart :</strong> catégories séparées → les barres ont normalement un espace entre elles.<br><strong>Histogramme :</strong> intervalles numériques adjacents → les barres se touchent.</p></blockquote>
+<p style="font-size:.85rem;color:var(--text-muted)">Ce n'est pas simplement parce que la variable est continue que les barres se touchent : un histogramme peut aussi représenter des données discrètes regroupées en classes (ex : nombre d'enfants par ménage, regroupé en 0–1, 2–3, 4+). Ce qui compte, c'est que l'axe horizontal représente des intervalles numériques adjacents et ordonnés — sans catégories distinctes entre elles.</p>
+
+<h2>Classes (bins) : bornes et largeur</h2>
+<p>Quand une variable quantitative peut prendre beaucoup de valeurs différentes, afficher une barre par valeur individuelle rendrait l'histogramme illisible. On regroupe alors les valeurs en <strong>classes</strong> (aussi appelées <em>bins</em>, ou intervalles de classe).</p>
+<p>Exemple : plutôt que d'afficher chaque âge séparément, on regroupe en intervalles comme <code>[20, 30)</code>, <code>[30, 40)</code>, <code>[40, 50)</code>, <code>[50, 60)</code> — chaque intervalle devient une barre de l'histogramme.</p>
+
+<h3>Qu'est-ce qu'une classe ?</h3>
+<p>Une <strong>classe</strong> est un intervalle contenant une plage de valeurs numériques. Par exemple, <code>[20, 30)</code> signifie : valeurs à partir de 20 inclus, jusqu'à 30 exclu.</p>
+<ul style="margin:.5rem 0 .9rem 1.2rem;color:var(--text-sec);font-size:.9rem;line-height:1.8">
+<li><strong>20</strong> appartient à cette classe ;</li>
+<li><strong>25.4</strong> appartient à cette classe ;</li>
+<li><strong>29.99</strong> appartient à cette classe ;</li>
+<li><strong>30</strong> n'appartient <strong>pas</strong> à cette classe : il appartient à la classe suivante, <code>[30, 40)</code>.</li>
+</ul>
+<p>Cette convention évite qu'une valeur tombant pile sur une frontière appartienne à deux classes à la fois.</p>
+
+<h3>Notation d'intervalle</h3>
+<p>La notation <code>[a, b)</code> utilisée sur ce site signifie : <strong>a</strong> est inclus, <strong>b</strong> est exclu. D'autres conventions existent dans certains ouvrages, mais un histogramme doit utiliser une règle cohérente afin que chaque valeur frontière soit attribuée sans ambiguïté à une seule classe.</p>
+
+<h3>Bornes inférieure et supérieure</h3>
+<p>Pour la classe <code>[20, 30)</code>, la <strong>borne inférieure</strong> (lower class limit) est <strong>20</strong> et la <strong>borne supérieure</strong> (upper class limit) est <strong>30</strong>.</p>
+<div class="table-wrap">
+<table class="table-calc">
+  <thead><tr><th>Classe</th><th>Borne inférieure</th><th>Borne supérieure</th></tr></thead>
+  <tbody>
+    <tr><td>[20, 30)</td><td>20</td><td>30</td></tr>
+    <tr><td>[30, 40)</td><td>30</td><td>40</td></tr>
+    <tr><td>[40, 50)</td><td>40</td><td>50</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Largeur de classe</h3>
+<p>La <strong>largeur de classe</strong> est la taille numérique de l'intervalle : pour <code>[20, 30)</code>, largeur = 30 − 20 = <strong>10</strong>. Si toutes les classes ont la même largeur, on peut aussi l'obtenir en soustrayant deux bornes inférieures consécutives : 30 − 20 = 10.</p>
+
+<h3>Exemple complet regroupé en classes</h3>
+<p>Dataset — temps de trajet en minutes (n = 16) : <strong>12, 14, 17, 18, 22, 24, 25, 27, 31, 33, 36, 38, 41, 44, 47, 52</strong></p>
+<p>On regroupe en classes de largeur 10 :</p>
+<div class="table-wrap">
+<table class="table-calc">
+  <thead><tr><th>Classe</th><th>Fréquence</th></tr></thead>
+  <tbody>
+    <tr><td>[10, 20)</td><td>4</td></tr>
+    <tr><td>[20, 30)</td><td>4</td></tr>
+    <tr><td>[30, 40)</td><td>4</td></tr>
+    <tr><td>[40, 50)</td><td>3</td></tr>
+    <tr><td>[50, 60)</td><td>1</td></tr>
+    <tr class="total"><td>Σ</td><td class="hi-accent">16</td></tr>
+  </tbody>
+</table>
+</div>
+<p style="font-size:.85rem;color:var(--text-muted)">4 + 4 + 4 + 3 + 1 = 16, ce qui correspond bien aux 16 observations. Rappel : 20 appartient à <code>[20, 30)</code>, pas à <code>[10, 20)</code> ; 30 appartient à <code>[30, 40)</code>, pas à <code>[20, 30)</code>.</p>
+
+<div class="chart-card">
+  <h4>Histogramme — temps de trajet regroupés en classes</h4>
+  <p>Cinq classes adjacentes, largeur 10, barres collées.</p>
+  <div class="chart-wrap" style="height:180px"><canvas id="h-commute" role="img" aria-label="Histogramme des temps de trajet regroupés en 5 classes"></canvas></div>
+</div>
+
+<div class="box box-orange"><p><strong>Choisir les classes :</strong> trop larges, la structure de la distribution peut disparaître ; trop étroites, le graphique devient bruité et difficile à lire (voir aussi l'exemple des revenus ci-dessous). Il n'y a pas de règle unique — c'est un jugement méthodologique, et on privilégie ici des classes de largeur égale.</p></div>
+<p style="font-size:.85rem;color:var(--text-muted)"><strong>Remarque :</strong> quand toutes les classes ont la même largeur, la hauteur des barres peut représenter directement la fréquence. Si les largeurs diffèrent, comparer les hauteurs brutes peut être trompeur — il faudrait alors que l'<em>aire</em> des barres représente la fréquence/densité. Ce cas ne sera pas développé ici.</p>
 
 <h2>Histogramme — données discrètes</h2>
 <div class="chart-card">
@@ -97,9 +159,18 @@
 <div class="box box-note"><p><strong>Lien avec la suite :</strong> l'histogramme est le premier outil pour vérifier visuellement la normalité (ch. 09). Une forme en cloche symétrique = premier signal.</p></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+const isDark=document.documentElement.dataset.mode==='dark'||(!document.documentElement.dataset.mode&&matchMedia('(prefers-color-scheme:dark)').matches);
 const gc=isDark?'rgba(255,255,255,.08)':'rgba(0,0,0,.06)';
 const tk='#7A7875';
+const commuteClasses=['[10, 20)','[20, 30)','[30, 40)','[40, 50)','[50, 60)'];
+const commuteFreq=[4,4,4,3,1];
+new Chart(document.getElementById('h-commute'),{type:'bar',
+  data:{labels:commuteClasses,datasets:[{data:commuteFreq,
+    backgroundColor:isDark?'#79A6FF':'#2857A8',
+    borderColor:isDark?'#141413':'#fff',borderWidth:1.5,borderRadius:0,borderSkipped:false,categoryPercentage:1,barPercentage:1}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:t=>'Classe : '+t[0].label,label:t=>'f = '+t.raw}}},
+    scales:{x:{grid:{display:false},ticks:{color:tk,font:{size:11}}},y:{grid:{color:gc},ticks:{color:tk,font:{size:11},stepSize:1},beginAtZero:true,max:5}}}
+});
 const notes=[8,9,9,10,10,10,11,11,11,11,12,12,12,12,12,13,13,13,13,14,14,14,15,15,15,16,16,17,17,18];
 const nc={};notes.forEach(n=>nc[n]=(nc[n]||0)+1);
 const nl=Object.keys(nc).map(Number).sort((a,b)=>a-b);

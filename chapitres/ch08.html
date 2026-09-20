@@ -17,7 +17,7 @@
 <div class="ch-header">
   <div class="ch-eyebrow">Chapitre 08 · Statistiques descriptives</div>
   <h1 class="ch-title">Mesures de dispersion</h1>
-  <p class="ch-desc">Étendue, variance, écart-type, IQR, CV — mesurer l'éparpillement des données autour de la moyenne.</p>
+  <p class="ch-desc">Étendue, variance, écart-type, percentiles, quartiles, IQR, boxplots, asymétrie, CV — mesurer l'éparpillement et la position des données.</p>
 </div>
 
 <h2>L'idée centrale</h2>
@@ -65,11 +65,11 @@
 </div>
 
 <h3>Calcul étape par étape</h3>
-<p>Dataset : <strong>10, 12, 14, 16, 18</strong> (n = 5) — x̄ = 14</p>
+<p>Dataset : <strong>10, 12, 14, 16, 18</strong> — moyenne = 14. Le tableau des écarts ne dépend pas du diviseur : on le calcule une fois, puis on divise différemment selon que ces 5 valeurs sont <strong>toute la population</strong> ou <strong>un échantillon</strong>.</p>
 
 <div class="table-wrap">
 <table class="table-calc">
-  <thead><tr><th>xᵢ</th><th>xᵢ − x̄</th><th>(xᵢ − x̄)²</th></tr></thead>
+  <thead><tr><th>xᵢ</th><th>xᵢ − moyenne</th><th>(xᵢ − moyenne)²</th></tr></thead>
   <tbody>
     <tr><td>10</td><td>−4</td><td>16</td></tr>
     <tr><td>12</td><td>−2</td><td>4</td></tr>
@@ -81,13 +81,43 @@
 </table>
 </div>
 
-<div class="formula">s² = 40 / (5−1) = 40 / 4 = <strong>10 notes²</strong> ← unité bizarre<br>s = √10 = <strong>3.16 points</strong> ← même unité que les données ✓</div>
+<div class="grid-2">
+  <div class="box box-note">
+    <p><strong>Si population</strong> (N = 5, μ = 14)<br>
+    σ² = 40 / 5 = <strong>8</strong><br>
+    σ = √8 ≈ <strong>2.83</strong></p>
+  </div>
+  <div class="box box-green">
+    <p><strong>Si échantillon</strong> (n = 5, x̄ = 14)<br>
+    s² = 40 / (5−1) = <strong>10 notes²</strong> ← unité bizarre<br>
+    s = √10 ≈ <strong>3.16 points</strong> ← même unité que les données ✓</p>
+  </div>
+</div>
+
+<div class="box box-orange">
+  <p><strong>Ne pas confondre :</strong> avec exactement les mêmes données, σ² = 8 (population, diviseur N) et s² = 10 (échantillon, diviseur n−1) sont deux résultats différents et corrects — cela dépend uniquement de ce que représentent les données, pas d'une erreur de calcul.</p>
+</div>
 
 <div class="box box-note">
   <p><strong>Pourquoi la racine ne retombe pas à 0 ?</strong> Le carré a effacé les signes — √16 = 4, jamais −4. L'écart-type est toujours ≥ 0, et ne vaut 0 que si toutes les valeurs sont identiques.</p>
 </div>
 
-<h3>Formule définitionnelle vs computationnelle</h3>
+<h3>Formule computationnelle — population</h3>
+<p>Plutôt que de calculer chaque écart (xᵢ − μ) individuellement, on peut élever au carré les valeurs brutes, en faire la moyenne, puis soustraire le carré de la moyenne. Les deux formules calculent exactement la même variance de population.</p>
+<div class="grid-2">
+  <div class="box box-purple">
+    <p><strong>Définitionnelle</strong> — pédagogique<br>
+    <code>σ² = Σ(xᵢ − μ)² / N</code></p>
+  </div>
+  <div class="box box-note">
+    <p><strong>Computationnelle</strong> — rapide à la main<br>
+    <code>σ² = (Σxᵢ² / N) − μ²</code></p>
+  </div>
+</div>
+<p>Vérification, avec N = 5 et μ = 14 : Σxᵢ² = 10² + 12² + 14² + 16² + 18² = <strong>1020</strong> → σ² = (1020 / 5) − 14² = 204 − 196 = <strong>8 ✓</strong> — identique au résultat obtenu avec le tableau des écarts.</p>
+<p style="font-size:.85rem;color:var(--text-muted)">Historiquement, cette forme évitait de recalculer chaque écart à la main. Elle reste utile pour vérifier un calcul ou reconnaître une formule dans un manuel, mais un logiciel statistique calcule la variance directement — ce n'est pas la méthode à préférer par défaut.</p>
+
+<h3>Formule computationnelle — échantillon</h3>
 <div class="grid-2">
   <div class="box box-purple">
     <p><strong>Définitionnelle</strong> — pédagogique<br>
@@ -99,18 +129,245 @@
   </div>
 </div>
 <p>Vérification : Σxᵢ = 70 → (70)²/5 = 980 · Σxᵢ² = 1020 → s² = (1020−980)/4 = <strong>10 ✓</strong></p>
+<p style="font-size:.85rem;color:var(--text-muted)">Attention à ne pas utiliser le diviseur N (population) pour une variance d'échantillon, ni l'inverse : le choix du diviseur dépend de ce que représentent les données, pas de la formule utilisée.</p>
 
-<h2>3. IQR — robuste aux outliers</h2>
-<p><strong>IQR = Q3 − Q1.</strong> Mesure la dispersion des 50 % centraux et est <strong>robuste aux valeurs extrêmes</strong>. C'est la largeur de la boîte dans un boxplot.</p>
+<h2>3. Percentiles</h2>
+<p>Un <strong>percentile</strong> (aussi appelé centile) indique une <strong>position</strong> dans une distribution triée. Le p-ème percentile est une valeur telle qu'environ p % des observations lui sont inférieures ou égales, selon la convention utilisée.</p>
+<ul style="margin:.5rem 0 .9rem 1.2rem;color:var(--text-sec);font-size:.9rem;line-height:1.8">
+<li>le 25ᵉ percentile marque environ le premier quart des données ;</li>
+<li>le 50ᵉ percentile correspond à la médiane ;</li>
+<li>le 90ᵉ percentile marque une valeur proche du haut de la distribution : environ 90 % des observations lui sont inférieures ou égales.</li>
+</ul>
+
+<div class="box box-orange">
+  <p><strong>Pourcentage ≠ percentile</strong><br>
+  Un <strong>pourcentage</strong> décrit une proportion : 18 bonnes réponses sur 20 = <strong>90 %</strong>.<br>
+  Un <strong>percentile</strong> décrit une position relative dans un groupe : être au <strong>90ᵉ percentile</strong> signifie se situer autour ou au-dessus de 90 % de la distribution de référence — cela ne veut <strong>pas</strong> dire que le score lui-même est de 90 %.</p>
+</div>
+
+<h3>Rang percentile d'une valeur</h3>
+<p>Le <strong>rang percentile</strong> d'une valeur indique quel pourcentage des observations lui sont inférieures. Pour un calcul manuel simple :</p>
+<div class="formula">rang percentile ≈ (nb d'observations en dessous de x / n total) × 100</div>
+<div class="box box-note">
+  <p><strong>Exemple</strong> — données triées : 42, 48, 51, 55, 60, 64, 68, 72, 76, 81<br>
+  Pour x = 72 : 7 observations sont en dessous, sur 10 au total.<br>
+  Rang percentile ≈ 7 / 10 × 100 = <strong>70</strong> → 72 se situe environ au <strong>70ᵉ percentile</strong>.</p>
+</div>
+<p style="font-size:.85rem;color:var(--text-muted)">Les formules de rang percentile varient selon la gestion des ex æquo — un logiciel peut renvoyer une valeur légèrement différente. Ce qui compte est la <strong>position relative</strong> de la valeur dans la distribution.</p>
+
+<h3>Trouver la valeur d'un percentile — méthode du rang le plus proche</h3>
+<p>Pour trouver la valeur correspondant à un percentile donné, on peut utiliser la <strong>méthode du rang le plus proche</strong> :</p>
+<ol style="margin:.5rem 0 .9rem 1.2rem;color:var(--text-sec);font-size:.9rem;line-height:1.8">
+<li>trier les observations ;</li>
+<li>calculer r = plafond((p / 100) × n) — arrondi au nombre entier supérieur ;</li>
+<li>prendre l'observation au rang r.</li>
+</ol>
+<div class="box box-green">
+  <p><strong>Exemple</strong> — données triées : 12, 15, 18, 20, 22, 25, 28, 30, 35, 40 (n = 10)<br>
+  80ᵉ percentile : r = plafond(0.80 × 10) = <strong>8</strong> → la 8ᵉ observation est <strong>30</strong>.<br>
+  Le 80ᵉ percentile est donc <strong>30</strong>.</p>
+</div>
+<p style="font-size:.85rem;color:var(--text-muted)">Il n'existe pas d'algorithme universel pour calculer les percentiles : Excel, R, Python ou SPSS peuvent utiliser des règles d'interpolation différentes et donner un résultat légèrement différent. Sur ce site, on utilise la <strong>méthode du rang le plus proche</strong> pour les percentiles en général, et la <strong>méthode de la médiane de chaque moitié</strong> (ci-dessous) pour les quartiles.</p>
+
+<h2>4. Quartiles et résumé à cinq nombres</h2>
+<p>Les <strong>quartiles</strong> sont trois points de coupure qui divisent les données triées en quatre parties égales.</p>
+<div class="grid-3">
+  <div class="box box-note"><p><strong>Q1</strong><br>≈ 25ᵉ percentile</p></div>
+  <div class="box box-green"><p><strong>Q2 = médiane</strong><br>≈ 50ᵉ percentile</p></div>
+  <div class="box box-purple"><p><strong>Q3</strong><br>≈ 75ᵉ percentile</p></div>
+</div>
+
+<h3>Convention de calcul — médiane de chaque moitié</h3>
+<ol style="margin:.5rem 0 .9rem 1.2rem;color:var(--text-sec);font-size:.9rem;line-height:1.8">
+<li>trier les données ;</li>
+<li>trouver la médiane globale (Q2) ;</li>
+<li>séparer en une moitié inférieure et une moitié supérieure ;</li>
+<li>si n est impair, <strong>exclure la médiane globale</strong> des deux moitiés ;</li>
+<li>Q1 = médiane de la moitié inférieure ; Q3 = médiane de la moitié supérieure.</li>
+</ol>
+<p style="font-size:.85rem;color:var(--text-muted)">D'autres logiciels utilisent des conventions d'interpolation différentes et peuvent donner des quartiles légèrement différents.</p>
+
+<h3>Exemple travaillé</h3>
+<p>Dataset (n = 19) : <strong>1, 2, 2, 2, 3, 3, 4, 5, 5, 5, 6, 6, 6, 6, 7, 8, 8, 9, 27</strong></p>
+<div class="table-wrap">
+<table class="table-calc">
+  <thead><tr><th>Étape</th><th>Sous-ensemble</th><th>Résultat</th></tr></thead>
+  <tbody>
+    <tr><td>1. Médiane globale</td><td>19 valeurs → 10ᵉ position</td><td class="hi-accent">Q2 = 5</td></tr>
+    <tr><td>2. Moitié inférieure (Q2 exclue)</td><td>1,2,2,2,3,3,4,5,5 → 5ᵉ position</td><td class="hi-accent">Q1 = 3</td></tr>
+    <tr><td>3. Moitié supérieure (Q2 exclue)</td><td>6,6,6,6,7,8,8,9,27 → 5ᵉ position</td><td class="hi-accent">Q3 = 7</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Résumé à cinq nombres</h3>
+<p>Le <strong>résumé à cinq nombres</strong> décrit une distribution avec : minimum, Q1, médiane, Q3, maximum. Pour ce dataset : <strong>1 | 3 | 5 | 7 | 27</strong> — un résumé rapide de la position et de l'étalement des données.</p>
 
 <div class="chart-card">
-  <h4>IQR sur notre dataset : Q1 = 11, Q3 = 17, IQR = 6</h4>
+  <h4>Résumé à cinq nombres — visualisation</h4>
+  <p>Les distances entre les repères ne sont pas nécessairement égales.</p>
+  <svg viewBox="0 0 640 90" width="100%" role="img" aria-label="Ligne numérique montrant minimum, Q1, médiane, Q3 et maximum">
+    <line x1="30" y1="45" x2="610" y2="45" stroke="var(--border-strong)" stroke-width="2"/>
+    <g font-size="12" fill="var(--text-sec)" text-anchor="middle">
+      <circle cx="30" cy="45" r="5" fill="var(--text-muted)"/><text x="30" y="26">Min</text><text x="30" y="68" fill="var(--text-pri)" font-weight="600">1</text>
+      <circle cx="180" cy="45" r="6" fill="var(--accent)"/><text x="180" y="26">Q1</text><text x="180" y="68" fill="var(--text-pri)" font-weight="600">3</text>
+      <circle cx="320" cy="45" r="6" fill="var(--green)"/><text x="320" y="26">Médiane</text><text x="320" y="68" fill="var(--text-pri)" font-weight="600">5</text>
+      <circle cx="430" cy="45" r="6" fill="var(--purple)"/><text x="430" y="26">Q3</text><text x="430" y="68" fill="var(--text-pri)" font-weight="600">7</text>
+      <circle cx="610" cy="45" r="5" fill="var(--text-muted)"/><text x="605" y="26">Max</text><text x="610" y="68" fill="var(--text-pri)" font-weight="600">27</text>
+    </g>
+  </svg>
+</div>
+
+<h2>5. IQR — robuste aux outliers</h2>
+<p><strong>IQR = Q3 − Q1.</strong> Mesure la dispersion des 50 % centraux et est <strong>robuste aux valeurs extrêmes</strong> — contrairement à l'étendue, qui dépend entièrement des deux valeurs les plus extrêmes. C'est la largeur de la boîte dans un boxplot.</p>
+
+<div class="chart-card">
+  <h4>IQR sur un petit dataset : Q1 = 11, Q3 = 17, IQR = 6</h4>
   <p>Ici on utilise la convention « médiane de chaque moitié » : pour 10, 12, 14, 16, 18, Q1 = 11 et Q3 = 17. D'autres logiciels peuvent utiliser une convention légèrement différente.</p>
-  <p>Dans ce boxplot simplifié, les moustaches vont jusqu'au min et au max. Dans un boxplot de Tukey, elles s'arrêtent généralement à la dernière valeur située dans les limites de 1.5 × IQR.</p>
+  <p>Dans ce boxplot simplifié, les moustaches vont jusqu'au min et au max — une variante pédagogique courante. La section suivante présente le boxplot de Tukey, la convention standard.</p>
   <div class="chart-wrap" style="height:100px"><canvas id="iqr-chart" role="img" aria-label="Boxplot montrant IQR"></canvas></div>
 </div>
 
-<h2>4. Coefficient de variation (CV)</h2>
+<h3>Limites (fences) et outliers potentiels</h3>
+<p>Une règle courante pour repérer des <strong>outliers potentiels</strong> utilise l'IQR :</p>
+<div class="formula">Limite inférieure = Q1 − 1.5 × IQR<br>Limite supérieure = Q3 + 1.5 × IQR</div>
+<p>Avec le dataset de la section 4 (Q1 = 3, Q3 = 7, IQR = 4) :</p>
+<div class="box box-note">
+  <p>Limite inférieure = 3 − 1.5 × 4 = <strong>−3</strong><br>
+  Limite supérieure = 7 + 1.5 × 4 = <strong>13</strong><br>
+  Toute valeur en dessous de −3 ou au-dessus de 13 est signalée comme <strong>outlier potentiel</strong> → <strong>27</strong> en est un.</p>
+</div>
+<div class="box box-orange">
+  <p><strong>Important :</strong> une valeur signalée comme outlier ne doit pas être supprimée automatiquement. Elle peut refléter une erreur de saisie ou de mesure, une observation réelle mais inhabituelle, ou un sous-groupe pertinent. La bonne réaction est d'<strong>investiguer</strong> selon le contexte et l'objectif de l'analyse.</p>
+</div>
+
+<h2>6. Le boxplot (boîte à moustaches)</h2>
+<p>Un <strong>boxplot</strong> est un graphique compact basé sur les quartiles. Dans la version standard dite <strong>de Tukey</strong> :</p>
+<ul style="margin:.5rem 0 .9rem 1.2rem;color:var(--text-sec);font-size:.9rem;line-height:1.8">
+<li>la <strong>boîte</strong> s'étend de Q1 à Q3 ;</li>
+<li>le trait à l'intérieur de la boîte est la <strong>médiane</strong> ;</li>
+<li>la largeur de la boîte représente l'<strong>IQR</strong> ;</li>
+<li>les <strong>moustaches</strong> s'étendent jusqu'à l'observation la plus extrême encore <strong>à l'intérieur</strong> des limites (fences) ;</li>
+<li>les observations au-delà des limites sont affichées séparément comme <strong>outliers potentiels</strong>.</li>
+</ul>
+
+<div class="chart-card">
+  <h4>Boxplot de Tukey — dataset de la section 4</h4>
+  <p>Q1 = 3, médiane = 5, Q3 = 7, IQR = 4, limites = −3 et 13. Les moustaches s'arrêtent à 1 et 9 (dernières valeurs encore dans les limites) ; 27 est affiché séparément.</p>
+  <svg viewBox="0 0 640 110" width="100%" role="img" aria-label="Boxplot de Tukey avec un outlier">
+    <g stroke="var(--text-muted)" stroke-width="1">
+      <line x1="20" y1="55" x2="620" y2="55"/>
+    </g>
+    <g font-size="11" fill="var(--text-muted)" text-anchor="middle">
+      <text x="20" y="95">0</text><text x="167" y="95">7</text><text x="314" y="95">14</text><text x="461" y="95">21</text><text x="608" y="95">28</text>
+      <line x1="20" y1="88" x2="20" y2="92" stroke="var(--text-muted)"/><line x1="167" y1="88" x2="167" y2="92" stroke="var(--text-muted)"/>
+      <line x1="314" y1="88" x2="314" y2="92" stroke="var(--text-muted)"/><line x1="461" y1="88" x2="461" y2="92" stroke="var(--text-muted)"/>
+      <line x1="608" y1="88" x2="608" y2="92" stroke="var(--text-muted)"/>
+    </g>
+    <!-- whiskers: lower 1 -> Q1 3, upper Q3 7 -> 9 (scale: x = 20 + v*21) -->
+    <line x1="41" y1="45" x2="83" y2="45" stroke="var(--text-sec)" stroke-width="1.5"/>
+    <line x1="41" y1="35" x2="41" y2="55" stroke="var(--text-sec)" stroke-width="1.5"/>
+    <line x1="167" y1="35" x2="167" y2="55" stroke="var(--text-sec)" stroke-width="1.5"/>
+    <line x1="209" y1="45" x2="167" y2="45" stroke="var(--text-sec)" stroke-width="1.5"/>
+    <!-- box Q1(83) to Q3(167) -->
+    <rect x="83" y="25" width="84" height="40" rx="2" fill="var(--accent-light)" stroke="var(--accent)" stroke-width="1.5"/>
+    <!-- median at 5 -> x=125 -->
+    <line x1="125" y1="25" x2="125" y2="65" stroke="var(--accent)" stroke-width="2.5"/>
+    <!-- outlier at 27 -> x = 20+27*21=587 -->
+    <circle cx="587" cy="45" r="5" fill="none" stroke="var(--red)" stroke-width="2"/>
+    <g font-size="11" fill="var(--text-sec)" text-anchor="middle">
+      <text x="41" y="20">1</text><text x="83" y="20">3</text><text x="125" y="20" fill="var(--accent)" font-weight="600">5</text>
+      <text x="167" y="20">7</text><text x="209" y="20">9</text><text x="587" y="30" fill="var(--red)">27</text>
+    </g>
+  </svg>
+</div>
+
+<div class="box box-note">
+  <p><strong>À ne pas confondre :</strong> le résumé à cinq nombres contient le minimum et le maximum réels (1 et 27 ici). Dans un boxplot de Tukey standard, les moustaches n'atteignent <strong>pas forcément</strong> ces valeurs quand des outliers sont présents. Certains boxplots simplifiés (comme celui de la section 5) tracent les moustaches directement jusqu'au min et au max — une variante à connaître, mais ce n'est pas la convention standard.</p>
+</div>
+
+<h3>Lire un boxplot</h3>
+<div class="grid-2">
+  <div class="box box-note"><p><strong>Centre</strong><br>La médiane donne la position centrale de la distribution.</p></div>
+  <div class="box box-green"><p><strong>Étalement</strong><br>Un IQR plus grand signifie que les 50 % centraux sont plus dispersés.</p></div>
+  <div class="box box-purple"><p><strong>Asymétrie</strong><br>Si la médiane est décentrée dans la boîte, ou si une moustache est bien plus longue que l'autre, la distribution est probablement asymétrique.</p></div>
+  <div class="box box-orange"><p><strong>Outliers potentiels</strong><br>Les points au-delà des moustaches signalent des observations inhabituelles — mais une moustache longue ne prouve pas à elle seule la présence d'outliers.</p></div>
+</div>
+
+<h3>Comparer plusieurs boxplots</h3>
+<p>Les boxplots sont particulièrement utiles pour comparer des groupes, car ils placent centre et dispersion sur la même échelle.</p>
+<div class="chart-card">
+  <h4>Exemple — scores de deux groupes</h4>
+  <p>Groupe A : médiane plus élevée mais IQR large. Groupe B : médiane plus basse mais IQR resserré.</p>
+  <svg viewBox="0 0 640 130" width="100%" role="img" aria-label="Comparaison de deux boxplots">
+    <g font-size="11" fill="var(--text-sec)">
+      <text x="10" y="35">Groupe A</text>
+      <text x="10" y="95">Groupe B</text>
+    </g>
+    <!-- scale: x = 110 + (v-40) * 8.33, values 40..100 -->
+    <!-- Groupe A : min 50, Q1 60, médiane 75, Q3 90, max 95 -->
+    <line x1="193" y1="25" x2="277" y2="25" stroke="var(--text-sec)" stroke-width="1.5"/>
+    <line x1="193" y1="15" x2="193" y2="35" stroke="var(--text-sec)" stroke-width="1.5"/>
+    <line x1="527" y1="25" x2="568" y2="25" stroke="var(--text-sec)" stroke-width="1.5"/>
+    <line x1="568" y1="15" x2="568" y2="35" stroke="var(--text-sec)" stroke-width="1.5"/>
+    <rect x="277" y="10" width="250" height="30" rx="2" fill="var(--accent-light)" stroke="var(--accent)" stroke-width="1.5"/>
+    <line x1="402" y1="10" x2="402" y2="40" stroke="var(--accent)" stroke-width="2.5"/>
+
+    <!-- Groupe B : min 50, Q1 55, médiane 65, Q3 70, max 75 -->
+    <line x1="193" y1="85" x2="235" y2="85" stroke="var(--text-sec)" stroke-width="1.5"/>
+    <line x1="193" y1="75" x2="193" y2="95" stroke="var(--text-sec)" stroke-width="1.5"/>
+    <line x1="360" y1="85" x2="402" y2="85" stroke="var(--text-sec)" stroke-width="1.5"/>
+    <line x1="402" y1="75" x2="402" y2="95" stroke="var(--text-sec)" stroke-width="1.5"/>
+    <rect x="235" y="70" width="125" height="30" rx="2" fill="var(--green-light)" stroke="var(--green)" stroke-width="1.5"/>
+    <line x1="318" y1="70" x2="318" y2="100" stroke="var(--green)" stroke-width="2.5"/>
+
+    <g font-size="10" fill="var(--text-muted)" text-anchor="middle">
+      <text x="277" y="6">Q1 60</text><text x="402" y="53" fill="var(--accent)">méd. 75</text><text x="527" y="6">Q3 90</text>
+      <text x="235" y="66">Q1 55</text><text x="318" y="113" fill="var(--green)">méd. 65</text><text x="360" y="126">Q3 70</text>
+    </g>
+  </svg>
+</div>
+<p>Interprétation : le groupe A tend à avoir des scores plus élevés, mais aussi plus variables ; le groupe B est plus resserré autour de sa médiane. La comparaison devrait porter sur les médianes, les IQR, l'étalement général, l'asymétrie et les outliers potentiels — un simple recouvrement visuel des boîtes ne permet pas de conclure à une différence statistiquement significative.</p>
+
+<h2>7. Asymétrie (skewness)</h2>
+<p>L'<strong>asymétrie</strong> décrit le déséquilibre d'une distribution par rapport à son centre. Le nom de l'asymétrie se base sur la <strong>queue</strong> (tail) de la distribution, pas sur l'endroit où se trouve la majorité des observations.</p>
+
+<div class="grid-3">
+  <div class="chart-card" style="margin:0">
+    <h4 style="text-align:center">Symétrique</h4>
+    <svg viewBox="0 0 200 100" width="100%" role="img" aria-label="Distribution symétrique">
+      <path d="M15,85 C55,85 65,15 100,15 C135,15 145,85 185,85" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+      <line x1="100" y1="10" x2="100" y2="88" stroke="var(--text-muted)" stroke-dasharray="3,3"/>
+    </svg>
+    <p style="text-align:center;font-size:.8rem">moyenne ≈ médiane</p>
+  </div>
+  <div class="chart-card" style="margin:0">
+    <h4 style="text-align:center">Asymétrie positive</h4>
+    <svg viewBox="0 0 200 100" width="100%" role="img" aria-label="Distribution asymétrique à droite, longue queue vers la droite">
+      <path d="M15,85 C35,85 45,15 75,15 C110,15 130,60 185,80" fill="none" stroke="var(--orange)" stroke-width="2.5"/>
+      <text x="150" y="45" font-size="11" fill="var(--orange)" text-anchor="middle">queue →</text>
+    </svg>
+    <p style="text-align:center;font-size:.8rem">moyenne &gt; médiane</p>
+  </div>
+  <div class="chart-card" style="margin:0">
+    <h4 style="text-align:center">Asymétrie négative</h4>
+    <svg viewBox="0 0 200 100" width="100%" role="img" aria-label="Distribution asymétrique à gauche, longue queue vers la gauche">
+      <path d="M15,80 C70,60 90,15 125,15 C155,15 165,85 185,85" fill="none" stroke="var(--purple)" stroke-width="2.5"/>
+      <text x="50" y="45" font-size="11" fill="var(--purple)" text-anchor="middle">← queue</text>
+    </svg>
+    <p style="text-align:center;font-size:.8rem">moyenne &lt; médiane</p>
+  </div>
+</div>
+
+<p>Dans une distribution <strong>symétrique</strong> et unimodale, les deux côtés sont à peu près équilibrés : moyenne ≈ médiane (et le mode est souvent proche de la même position).</p>
+<p>Une <strong>asymétrie positive</strong> (queue longue vers les <strong>grandes</strong> valeurs — typiquement les revenus) : quelques valeurs très élevées tirent la moyenne vers le haut, d'où généralement moyenne &gt; médiane.</p>
+<p>Une <strong>asymétrie négative</strong> (queue longue vers les <strong>petites</strong> valeurs) : quelques valeurs très basses tirent la moyenne vers le bas, d'où généralement moyenne &lt; médiane.</p>
+
+<div class="box box-note">
+  <p>Une règle pratique courante — asymétrie positive : mode &lt; médiane &lt; moyenne ; asymétrie négative : moyenne &lt; médiane &lt; mode (détaillée au <a href="ch07.html">chapitre 07</a>). Ce n'est <strong>pas une loi universelle</strong> : des distributions multimodales ou irrégulières peuvent ne pas suivre cet ordre. L'intuition la plus fiable pour un débutant reste : les valeurs extrêmes élevées tirent la moyenne vers le haut, les valeurs extrêmes basses la tirent vers le bas, et la <strong>médiane résiste mieux</strong> aux observations extrêmes.</p>
+</div>
+
+<h2>8. Coefficient de variation (CV)</h2>
 <p>Écart-type exprimé en % de la moyenne. Il permet de <strong>comparer des dispersions relatives</strong>, surtout pour des variables avec un zéro significatif (échelles de ratio). Il devient peu utile si la moyenne est proche de 0.</p>
 <div class="formula">CV = (s / x̄) × 100</div>
 <div class="grid-2">
@@ -144,7 +401,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-const isDark = window.matchMedia('(prefers-color-scheme:dark)').matches;
+const isDark = document.documentElement.dataset.mode==='dark'||(!document.documentElement.dataset.mode&&matchMedia('(prefers-color-scheme:dark)').matches);
 const gridC  = isDark ? 'rgba(255,255,255,.08)' : 'rgba(0,0,0,.06)';
 const tick   = '#7A7875';
 
