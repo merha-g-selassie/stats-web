@@ -146,7 +146,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+const isDark=document.documentElement.dataset.mode==='dark'||(!document.documentElement.dataset.mode&&matchMedia('(prefers-color-scheme:dark)').matches);
 const gridC=isDark?'rgba(255,255,255,0.12)':'rgba(25,25,24,0.09)';
 const tick='#7A7875';
 const mu=12.77, sd=2.54;

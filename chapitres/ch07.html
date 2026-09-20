@@ -86,7 +86,7 @@
 <div class="box box-purple"><p>L'OFS publie le salaire <strong>médian</strong> en Suisse, pas le moyen — parce que la distribution des revenus est asymétrique positive. Quelques très hauts salaires tirent la moyenne vers le haut et la rendent peu représentative de l'individu typique.</p></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+const isDark=document.documentElement.dataset.mode==='dark'||(!document.documentElement.dataset.mode&&matchMedia('(prefers-color-scheme:dark)').matches);
 const gc=isDark?'rgba(255,255,255,.08)':'rgba(0,0,0,.06)';
 const tk='#7A7875';
 function med(a){const s=[...a].sort((x,y)=>x-y),n=s.length;return n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2;}

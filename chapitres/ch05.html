@@ -82,7 +82,7 @@
 <p>Avec des catégories <strong>nominales</strong>, on utilise surtout fréquences, proportions et mode. Avec des catégories <strong>ordinales</strong>, on peut en plus utiliser l'ordre, les rangs, la médiane et les quantiles. Une moyenne sur les noms des catégories n'a en revanche pas de sens.</p>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+const isDark=document.documentElement.dataset.mode==='dark'||(!document.documentElement.dataset.mode&&matchMedia('(prefers-color-scheme:dark)').matches);
 const gc=isDark?'rgba(255,255,255,.08)':'rgba(0,0,0,.06)';
 const tk='#7A7875';
 const COLS=['#2B52A0','#0F6E56','#C05A20','#5B3FA0'];

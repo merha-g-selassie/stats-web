@@ -38,6 +38,20 @@
 <tr><td><strong>Total</strong></td><td><strong>20</strong></td><td><strong>1.00</strong></td><td><strong>100 %</strong></td></tr>
 </tbody></table></div>
 
+<div class="box box-note">
+  <p><strong>Vocabulaire :</strong> la colonne <strong>f/n</strong> est la <strong>proportion</strong> — aussi appelée <strong>fréquence relative</strong> — de chaque valeur : proportion = fréquence / n. Le <strong>pourcentage</strong> est cette proportion × 100. Pour la note 12 : fréquence = 5, proportion = 5/20 = <strong>0.25</strong>, pourcentage = 0.25 × 100 = <strong>25 %</strong>. Fréquence absolue (5), fréquence relative/proportion (0.25) et pourcentage (25 %) sont donc trois façons d'exprimer la même information — on passe de l'une à l'autre en multipliant ou divisant par n, puis par 100.</p>
+</div>
+
+<h3>Pourquoi passer au pourcentage ? Comparer des groupes de tailles différentes</h3>
+<p>Un compte brut et un pourcentage ne répondent pas à la même question. Exemple avec deux groupes de tailles différentes :</p>
+<div class="grid-2">
+  <div class="box box-green"><p><strong>Groupe A</strong><br>20 / 40 = <strong>50 %</strong></p></div>
+  <div class="box box-purple"><p><strong>Groupe B</strong><br>30 / 100 = <strong>30 %</strong></p></div>
+</div>
+<p style="font-size:.85rem;color:var(--text-muted)">Le groupe B a le plus grand nombre absolu (30 &gt; 20), mais la catégorie est proportionnellement plus fréquente dans le groupe A (50 % &gt; 30 %). Compte et pourcentage répondent donc à deux questions différentes — aucun des deux n'est « le bon » dans l'absolu.</p>
+
+<p style="font-size:.85rem;color:var(--text-muted)"><strong>Deux précisions utiles :</strong> des pourcentages arrondis peuvent totaliser 99 %, 100 % ou 101 % (ex. 33.3 % + 33.3 % + 33.3 % = 99.9 %) sans que ce soit une erreur — c'est un simple effet d'arrondi. Et les pourcentages ne totalisent 100 % que si les catégories sont <strong>mutuellement exclusives</strong> et couvrent tout le total : dans un sondage à choix multiples (une personne peut cocher plusieurs cases), les pourcentages peuvent légitimement dépasser 100 %.</p>
+
 <h2>Fréquence cumulée</h2>
 <p>On additionne les fréquences au fur et à mesure. Répond à : combien d'individus ont une valeur <strong>inférieure ou égale</strong> à x ? La fréquence cumulée est utile seulement lorsque les valeurs ont un <strong>ordre naturel</strong> (données ordinales ou quantitatives).</p>
 <div class="table-wrap"><table>
@@ -77,7 +91,7 @@
 <div class="box box-purple"><p>La distribution de fréquences est souvent la <strong>première chose qu'on fait</strong> sur un dataset — avant toute statistique descriptive. Elle révèle la forme générale, les concentrations, et les valeurs extrêmes.</p></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+const isDark=document.documentElement.dataset.mode==='dark'||(!document.documentElement.dataset.mode&&matchMedia('(prefers-color-scheme:dark)').matches);
 const gc=isDark?'rgba(255,255,255,.08)':'rgba(0,0,0,.06)';
 const tk='#7A7875';
 new Chart(document.getElementById('fa'),{type:'bar',
