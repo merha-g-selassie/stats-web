@@ -29,7 +29,13 @@
 .symbol-card{display:grid;grid-template-columns:90px 1fr;gap:10px;align-items:start;background:var(--surface-1);border:.5px solid var(--border);border-radius:10px;padding:12px;margin:8px 0;}
 .symbol-card .symbol{font-size:20px;font-weight:600;text-align:center;}
 .warning{border-left:3px solid #D85A30;background:rgba(216,90,48,.08);padding:10px 14px;border-radius:0 8px 8px 0;margin:10px 0;}
+.source-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0;}
+.source-card{background:var(--surface-1);border:.5px solid var(--border);border-radius:10px;padding:12px;min-width:0;}
+.source-card .kicker{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
+.student-hit{background:rgba(127,119,221,.14);font-weight:600;}
+.student-row th,.student-row td{border-top:1.5px solid #7F77DD;border-bottom:1.5px solid #7F77DD;}
 @media(max-width:640px){
+  .source-grid{grid-template-columns:1fr;}
   .compare-grid{grid-template-columns:1fr;}
   .symbol-card{grid-template-columns:70px 1fr;}
 }
@@ -109,15 +115,15 @@
 </div>
 
 <h2>3. Que signifie α = 0,05 ?</h2>
-<p>On fixe avant le test un seuil appelé <strong>alpha</strong>, souvent :</p>
+<p>Avant de regarder le résultat du test, on fixe un seuil appelé <strong>alpha</strong> :</p>
 <div class="formula">α = 0,05</div>
 
-<p>Ce seuil contrôle le risque de <strong>rejeter H₀ alors qu’elle est en réalité vraie</strong>. On appelle cela une <strong>erreur de type I</strong>, ou faux positif.</p>
+<p><strong>α est le risque de faux positif accepté par la procédure</strong> : rejeter H₀ alors que H₀ est en réalité vraie. Cette erreur s’appelle une <strong>erreur de type I</strong>.</p>
 
 <div class="compare-grid">
   <div class="compare-card">
     <h3>Interprétation correcte</h3>
-    <p>Si H₀ était vraie et que l’on répétait énormément de fois ce type d’étude, une procédure utilisant α = 0,05 rejetterait H₀ à tort environ <strong>5 % du temps</strong>.</p>
+    <p>Si H₀ était vraie et que l’on répétait énormément de fois cette procédure, un test utilisant α = 0,05 rejetterait H₀ à tort environ <strong>5 % du temps</strong>.</p>
   </div>
   <div class="compare-card">
     <h3>Interprétation incorrecte</h3>
@@ -125,44 +131,141 @@
   </div>
 </div>
 
-<h2>4. Transformer r en statistique t</h2>
-<p>Pour tester H₀ : ρ = 0, on transforme la corrélation observée en une <strong>statistique t</strong>. Cela permet de comparer notre résultat à ce que l’on attendrait si H₀ était vraie, en tenant compte de la taille de l’échantillon.</p>
+<h3>Pourquoi choisir 0,05 ?</h3>
+<p><strong>0,05 n’est pas une valeur magique.</strong> C’est une convention historique très courante. Selon le contexte, on pourrait fixer par exemple α = 0,10, α = 0,05 ou α = 0,01.</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th>α</th><th>Conséquence générale</th></tr></thead>
+<tbody>
+<tr><td>0,10</td><td>Seuil moins strict : plus facile de rejeter H₀, mais davantage de faux positifs.</td></tr>
+<tr><td><strong>0,05</strong></td><td>Convention courante ; c’est celle retenue ici pour l’exemple.</td></tr>
+<tr><td>0,01</td><td>Seuil plus strict : moins de faux positifs, mais il faut des données plus convaincantes pour rejeter H₀.</td></tr>
+</tbody>
+</table></div>
+
+<p>Ici, on choisit donc <strong>α = 0,05 avant de prendre la décision</strong>. Comme le test est <strong>bilatéral</strong>, les 5 % sont répartis dans les deux queues de la distribution :</p>
+
+<div class="formula">0,05 / 2 = 0,025 → <strong>2,5 % à gauche + 2,5 % à droite</strong></div>
+
+<div class="box box-note">
+  <p>Le choix de α définit à partir de quel point un résultat sera considéré comme suffisamment extrême sous H₀. Il ne dépend pas de la valeur observée de r.</p>
+</div>
+
+<h2>4. Les degrés de liberté : pourquoi df = n − 2 ?</h2>
+<p>La statistique que nous utiliserons suit, sous H₀, une <strong>distribution t de Student</strong>. La forme exacte de cette distribution dépend des <strong>degrés de liberté</strong>, notés <strong>df</strong> (<em>degrees of freedom</em>).</p>
+
+<p>Intuitivement, les degrés de liberté correspondent au <strong>nombre d’informations indépendantes qui restent disponibles après avoir estimé certains paramètres à partir des données</strong>.</p>
+
+<div class="box box-note">
+  <p><strong>Mini-exemple :</strong> si trois nombres doivent avoir une moyenne fixée à 10, on peut choisir librement les deux premiers, mais le troisième est alors imposé. Trois valeurs moins une contrainte donnent 2 degrés de liberté.</p>
+</div>
+
+<h3>Pourquoi retirer 2 dans le test de Pearson ?</h3>
+<p>Le test de la corrélation de Pearson est mathématiquement équivalent, dans ce cas, au test de la pente d’une <strong>régression linéaire simple</strong>. Cette droite estime deux paramètres à partir des données :</p>
+
+<ul class="compact-list">
+  <li><strong>l’intercept a</strong> ;</li>
+  <li><strong>la pente b</strong>.</li>
+</ul>
+
+<p>Ces deux paramètres utilisent deux degrés de liberté. Il en reste donc :</p>
+<div class="formula">df = n − 2</div>
+
+<p>Avec notre échantillon :</p>
+<div class="formula">df = 10 − 2 = <strong>8</strong></div>
+
+<div class="source-grid">
+  <div class="source-card">
+    <div class="kicker">Données disponibles</div>
+    <strong>10 observations</strong>
+  </div>
+  <div class="source-card">
+    <div class="kicker">Paramètres estimés</div>
+    <strong>2</strong> : intercept + pente
+  </div>
+</div>
+
+<p>Avec peu de degrés de liberté, la distribution t a des queues plus épaisses : il faut un résultat plus extrême pour rejeter H₀. Quand df augmente, la distribution t se rapproche progressivement de la distribution normale.</p>
+
+<h2>5. Trouver la valeur critique dans la table t de Student</h2>
+<p>Nous connaissons maintenant les deux informations nécessaires pour chercher la frontière de rejet :</p>
+
+<ul class="compact-list">
+  <li><strong>α = 0,05</strong> pour un test bilatéral ;</li>
+  <li><strong>df = 8</strong>.</li>
+</ul>
+
+<p>La valeur critique <strong>n’est pas calculée à partir de r</strong>. Elle se lit dans une <strong>table de la distribution t de Student</strong> — ou se calcule avec un logiciel à partir de cette même distribution théorique.</p>
+
+<div class="table-wrap"><table>
+<thead>
+<tr>
+  <th>df</th>
+  <th>α = 0,10<br><span style="font-weight:400;font-size:10px;">bilatéral</span></th>
+  <th class="student-hit">α = 0,05<br><span style="font-weight:400;font-size:10px;">bilatéral</span></th>
+  <th>α = 0,02<br><span style="font-weight:400;font-size:10px;">bilatéral</span></th>
+  <th>α = 0,01<br><span style="font-weight:400;font-size:10px;">bilatéral</span></th>
+</tr>
+</thead>
+<tbody>
+<tr><td>4</td><td>2,132</td><td>2,776</td><td>3,747</td><td>4,604</td></tr>
+<tr><td>5</td><td>2,015</td><td>2,571</td><td>3,365</td><td>4,032</td></tr>
+<tr><td>6</td><td>1,943</td><td>2,447</td><td>3,143</td><td>3,707</td></tr>
+<tr><td>7</td><td>1,895</td><td>2,365</td><td>2,998</td><td>3,499</td></tr>
+<tr class="student-row"><td><strong>8</strong></td><td>1,860</td><td class="student-hit"><strong>2,306</strong></td><td>2,896</td><td>3,355</td></tr>
+<tr><td>9</td><td>1,833</td><td>2,262</td><td>2,821</td><td>3,250</td></tr>
+<tr><td>10</td><td>1,812</td><td>2,228</td><td>2,764</td><td>3,169</td></tr>
+</tbody>
+</table></div>
+
+<div class="step-row"><div class="step-num">1</div><div>Prendre la ligne correspondant à <strong>df = 8</strong>.</div></div>
+<div class="step-row"><div class="step-num">2</div><div>Prendre la colonne correspondant à <strong>α = 0,05, test bilatéral</strong>.</div></div>
+<div class="step-row"><div class="step-num">3</div><div>À l’intersection, on lit <strong>2,306</strong>.</div></div>
+
+<div class="formula">table t de Student → df = 8 + α = 0,05 bilatéral → <strong>2,306</strong></div>
+
+<p>Comme la distribution t est symétrique, on obtient deux frontières :</p>
+<div class="formula">t critique = <strong>−2,306</strong> et <strong>+2,306</strong></div>
+
+<p>Les 95 % centraux se trouvent entre ces deux valeurs ; les 5 % restants sont répartis dans les deux queues :</p>
+<div class="formula">2,5 % | ← rejet → <strong>−2,306</strong> … 0 … <strong>+2,306</strong> ← rejet → | 2,5 %</div>
+
+<div class="box box-note">
+  <p><strong>D’où vient 2,306 ?</strong> De la distribution t de Student avec 8 degrés de liberté. Pour un test bilatéral à α = 0,05, on cherche le quantile 97,5 % : <strong>t<sub>0,975;8</sub> ≈ 2,306</strong>.</p>
+</div>
+
+<h2>6. Calculer la statistique t observée</h2>
+<p>Nous avons maintenant une frontière théorique exprimée en unités <strong>t</strong>. Il faut donc convertir notre corrélation observée <strong>r</strong> dans cette même échelle afin de pouvoir la comparer à la valeur critique.</p>
+
+<p>Une <strong>statistique</strong> est simplement un nombre calculé à partir d’un échantillon. On parle ici de <strong>statistique t</strong> parce que, si H₀ est vraie et que les hypothèses du test sont satisfaites, cette statistique suit une distribution t de Student avec <strong>df = n − 2</strong>.</p>
 
 <div class="formula">t = r × √(n−2) / √(1−r²)</div>
 
 <p>Avec :</p>
 <ul class="compact-list">
-  <li><strong>r = 0,94</strong></li>
-  <li><strong>n = 10</strong></li>
+  <li><strong>r = 0,94</strong> ;</li>
+  <li><strong>n = 10</strong>.</li>
 </ul>
 
 <div class="formula">t = 0,94 × √8 / √(1−0,94²) ≈ <strong>7,79</strong></div>
 
-<p>Un |t| très grand signifie que le r observé est loin de ce que l’on attend typiquement sous H₀.</p>
+<div class="source-grid">
+  <div class="source-card">
+    <div class="kicker">t critique</div>
+    <strong>±2,306</strong><br>
+    <span style="font-size:11px;color:var(--text-muted);">vient de la table t : α + df</span>
+  </div>
+  <div class="source-card">
+    <div class="kicker">t observé</div>
+    <strong>7,79</strong><br>
+    <span style="font-size:11px;color:var(--text-muted);">vient de nos données : r + n</span>
+  </div>
+</div>
 
-<h2>5. Pourquoi df = n − 2 ?</h2>
-<p>La statistique t est comparée à une <strong>distribution t de Student</strong>. Sa forme dépend des <strong>degrés de liberté</strong>, notés df.</p>
+<p>On compare alors :</p>
+<div class="formula">|t observé| = 7,79 &gt; t critique = 2,306</div>
 
-<div class="formula">df = n − 2 = 10 − 2 = <strong>8</strong></div>
-
-<p>Dans la formulation équivalente en régression linéaire simple, on estime deux paramètres : l’intercept et la pente. Il reste donc n − 2 degrés de liberté pour évaluer l’incertitude résiduelle.</p>
-
-<p>Avec peu de degrés de liberté, la distribution t est plus étalée : il faut donc un résultat plus extrême pour franchir le seuil de rejet. Quand n augmente, la distribution t se rapproche progressivement de la distribution normale.</p>
-
-<h2>6. Valeur critique : où commence la zone de rejet ?</h2>
-<p>Pour un test bilatéral avec :</p>
-<ul class="compact-list">
-  <li>α = 0,05 ;</li>
-  <li>df = 8 ;</li>
-</ul>
-
-<p>la valeur critique est :</p>
-<div class="formula">t critique = <strong>±2,306</strong></div>
-
-<p>Comme :</p>
-<div class="formula">|7,79| &gt; 2,306</div>
-
-<p>notre statistique tombe dans une zone suffisamment extrême pour <strong>rejeter H₀</strong>.</p>
+<p>Notre statistique tombe donc dans la <strong>zone de rejet</strong>. Elle est beaucoup plus extrême que ce que l’on considérerait comme habituel sous H₀ au seuil α = 0,05.</p>
 
 <h2>7. La p-value : une autre façon de prendre la décision</h2>
 <p>La <strong>p-value</strong> répond à cette question :</p>
@@ -261,31 +364,82 @@
 
 <h2>12. Visualisation du test</h2>
 <div class="wrap">
+
 <div class="section">Résumé en 5 étapes</div>
 <div class="chart-box">
   <div class="chart-title">Test H₀ : ρ = 0 vs H₁ : ρ ≠ 0 — dataset âge/revenu, n = 10</div>
+  <div class="chart-sub">Chaque nombre important a une origine différente : choix du chercheur, taille de l’échantillon, table t ou données observées.</div>
+
   <div style="margin:8px 0;">
-    <div class="step-row"><div class="step-num">1</div><div><b style="color:var(--text-primary)">Hypothèses</b><br>H₀ : ρ = 0<br>H₁ : ρ ≠ 0</div></div>
-    <div class="step-row"><div class="step-num">2</div><div><b style="color:var(--text-primary)">Seuil</b><br>α = 0,05</div></div>
-    <div class="step-row"><div class="step-num">3</div><div><b style="color:var(--text-primary)">Degrés de liberté</b><br>df = n − 2 = <b style="color:#7F77DD">8</b></div></div>
-    <div class="step-row"><div class="step-num">4</div><div><b style="color:var(--text-primary)">Statistique et p-value</b><br>t ≈ <b style="color:#D85A30">7,79</b><br>p ≈ <b style="color:#D85A30">0,000053</b></div></div>
-    <div class="step-row"><div class="step-num">5</div><div><b style="color:var(--text-primary)">Décision</b><br>p &lt; 0,05 et |t| &gt; 2,306 → on rejette H₀</div></div>
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div><b style="color:var(--text-primary)">Poser les hypothèses</b><br>H₀ : ρ = 0<br>H₁ : ρ ≠ 0</div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div><b style="color:var(--text-primary)">Fixer le seuil α avant la décision</b><br>α = <b style="color:#7F77DD">0,05</b>, test bilatéral<br>→ 2,5 % dans chaque queue</div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div><b style="color:var(--text-primary)">Trouver la valeur critique avec df et la table t</b><br>df = n − 2 = 10 − 2 = <b style="color:#7F77DD">8</b><br>table t : df = 8 + α = 0,05 bilatéral → <b style="color:#2a78d6">t critique = ±2,306</b></div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">4</div>
+      <div><b style="color:var(--text-primary)">Calculer le résultat observé</b><br>r = 0,94 et n = 10 → <b style="color:#D85A30">t observé ≈ 7,79</b><br>p ≈ <b style="color:#D85A30">0,000053</b></div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">5</div>
+      <div><b style="color:var(--text-primary)">Comparer et décider</b><br>|7,79| &gt; 2,306 et 0,000053 &lt; 0,05<br>→ <strong>on rejette H₀</strong></div>
+    </div>
   </div>
+</div>
+
+<div class="section">D’où vient chaque nombre ?</div>
+<div class="chart-box">
+  <div class="table-wrap"><table>
+    <thead><tr><th>Nombre</th><th>Origine</th><th>Rôle</th></tr></thead>
+    <tbody>
+      <tr><td><strong>0,05</strong></td><td>Choix de seuil α, fixé avant la décision</td><td>Risque de faux positif accepté par la procédure</td></tr>
+      <tr><td><strong>8</strong></td><td>df = n − 2 = 10 − 2</td><td>Détermine la distribution t appropriée</td></tr>
+      <tr><td><strong>±2,306</strong></td><td><strong>Table t de Student</strong> : df = 8, α = 0,05 bilatéral</td><td>Frontières des zones de rejet</td></tr>
+      <tr><td><strong>7,79</strong></td><td>Calcul à partir des données : r = 0,94 et n = 10</td><td>Statistique t observée</td></tr>
+      <tr><td><strong>0,000053</strong></td><td>Distribution t avec t = 7,79 et df = 8</td><td>p-value bilatérale</td></tr>
+    </tbody>
+  </table></div>
 </div>
 
 <div class="section">Distribution t — zones de rejet</div>
 <div class="chart-box">
-  <div class="chart-title">t calculé = 7,79 est bien au-delà du seuil critique</div>
-  <div class="chart-sub">Pour α = 0,05 bilatéral, 2,5 % sont placés dans chaque queue. Le t observé est hors de l’échelle à droite.</div>
+  <div class="chart-title">La table fixe ±2,306 ; les données donnent t = 7,79</div>
+  <div class="chart-sub">Pour α = 0,05 bilatéral et df = 8, la table t place 2,5 % dans chaque queue. Notre t observé = 7,79 est encore beaucoup plus loin dans la queue droite.</div>
   <svg id="t-dist" viewBox="0 0 640 180" width="100%" role="img">
     <title>Distribution t avec zones de rejet</title>
-    <desc>Distribution t pour huit degrés de liberté, seuils critiques à moins et plus 2,306, avec t observé égal à 7,79 hors échelle à droite.</desc>
+    <desc>Distribution t pour huit degrés de liberté, seuils critiques lus dans la table à moins et plus 2,306, avec t observé égal à 7,79 hors échelle à droite.</desc>
   </svg>
   <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-top:8px;font-size:11px;color:var(--text-secondary);">
-    <span><span style="display:inline-block;width:12px;height:12px;background:rgba(227,73,72,.35);border-radius:2px;margin-right:4px;vertical-align:middle;"></span>Zone de rejet (2,5 % par côté)</span>
-    <span><span style="display:inline-block;width:12px;height:12px;background:rgba(55,138,221,.25);border-radius:2px;margin-right:4px;vertical-align:middle;"></span>Zone de non-rejet</span>
-    <span style="color:#D85A30;font-weight:500;">⟶ t = 7,79 (hors échelle)</span>
+    <span><span style="display:inline-block;width:12px;height:12px;background:rgba(227,73,72,.35);border-radius:2px;margin-right:4px;vertical-align:middle;"></span>Zone de rejet : 2,5 % par côté</span>
+    <span><span style="display:inline-block;width:12px;height:12px;background:rgba(55,138,221,.25);border-radius:2px;margin-right:4px;vertical-align:middle;"></span>Zone centrale : 95 %</span>
+    <span style="color:#2a78d6;font-weight:500;">±2,306 = table t</span>
+    <span style="color:#D85A30;font-weight:500;">7,79 = données</span>
   </div>
+</div>
+
+<div class="section">Lecture de la comparaison</div>
+<div class="chart-box">
+  <div class="source-grid">
+    <div class="source-card">
+      <div class="kicker">Frontière théorique</div>
+      <div style="font-size:20px;font-weight:600;color:#2a78d6;">±2,306</div>
+      <p style="margin-bottom:0;">Lue dans la table t de Student avec <strong>df = 8</strong> et <strong>α = 0,05 bilatéral</strong>.</p>
+    </div>
+    <div class="source-card">
+      <div class="kicker">Résultat de l’échantillon</div>
+      <div style="font-size:20px;font-weight:600;color:#D85A30;">7,79</div>
+      <p style="margin-bottom:0;">Calculé à partir de <strong>r = 0,94</strong> et <strong>n = 10</strong>.</p>
+    </div>
+  </div>
+  <div class="formula">7,79 &gt; 2,306 → le résultat est dans la zone de rejet</div>
+  <div class="formula">p ≈ 0,000053 &lt; 0,05 → même décision</div>
 </div>
 
 <div class="section">Effet de la taille de l’échantillon</div>
@@ -294,6 +448,7 @@
   <div class="chart-sub">Avec peu de données, la distribution t a des queues plus épaisses : il faut un résultat plus extrême pour rejeter H₀ au même niveau α.</div>
   <div style="position:relative;height:160px;"><canvas id="df-chart" role="img" aria-label="Valeurs critiques de t selon les degrés de liberté">t critique diminue quand df augmente.</canvas></div>
 </div>
+
 </div>
 
 <h2>13. À retenir</h2>
@@ -304,7 +459,9 @@
 <tr><td><strong>ρ</strong></td><td>Quelle est la vraie corrélation linéaire dans la population ?</td><td>Inconnue</td></tr>
 <tr><td><strong>H₀</strong></td><td>Hypothèse de référence</td><td>ρ = 0</td></tr>
 <tr><td><strong>α</strong></td><td>Quel risque de faux positif fixe-t-on pour la procédure ?</td><td>0,05</td></tr>
-<tr><td><strong>t</strong></td><td>À quel point le résultat observé est-il extrême sous H₀ ?</td><td>≈ 7,79</td></tr>
+<tr><td><strong>df</strong></td><td>Quelle distribution t faut-il utiliser ?</td><td>n − 2 = 8</td></tr>
+<tr><td><strong>t critique</strong></td><td>Où commence la zone de rejet ?</td><td>±2,306, lu dans la table t</td></tr>
+<tr><td><strong>t observé</strong></td><td>À quel point le résultat calculé sur l’échantillon est-il extrême sous H₀ ?</td><td>≈ 7,79</td></tr>
 <tr><td><strong>p-value</strong></td><td>À quel point ce résultat ou plus extrême serait-il rare sous H₀ ?</td><td>≈ 0,000053</td></tr>
 <tr><td><strong>Décision</strong></td><td>Les données sont-elles assez incompatibles avec H₀ ?</td><td>Rejet de H₀</td></tr>
 </tbody>
@@ -386,11 +543,11 @@ el('line',{x1:mL,y1:mT+pH,x2:W-mR,y2:mT+pH,stroke:isDark?'rgba(255,255,255,.2)':
 
 [tCrit,-tCrit].forEach(tc=>{
   el('line',{x1:toX(tc),y1:mT,x2:toX(tc),y2:mT+pH,stroke:'#2a78d6','stroke-width':'1.5','stroke-dasharray':'4,3'},svg);
-  tx(`t=${tc>0?'+':''}${tc}`,{x:toX(tc),y:mT+10,'text-anchor':'middle','font-size':'9.5',fill:'#2a78d6','font-family':'var(--font-sans)'},svg);
+  tx(`t critique=${tc>0?'+':''}${tc}`,{x:toX(tc),y:mT+10,'text-anchor':'middle','font-size':'9.5',fill:'#2a78d6','font-family':'var(--font-sans)'},svg);
 });
 
 el('line',{x1:toX(xMax)-10,y1:mT+pH/2,x2:toX(xMax)+30,y2:mT+pH/2,stroke:'#D85A30','stroke-width':'2'},svg);
-tx('t = 7,79 →',{x:toX(xMax)-15,y:mT+pH/2-8,'text-anchor':'end','font-size':'10','font-weight':'500',fill:'#D85A30','font-family':'var(--font-sans)'},svg);
+tx('t observé = 7,79 →',{x:toX(xMax)-15,y:mT+pH/2-8,'text-anchor':'end','font-size':'10','font-weight':'500',fill:'#D85A30','font-family':'var(--font-sans)'},svg);
 
 [-3,-2,-1,0,1,2,3].forEach(t=>{
   tx(String(t),{x:toX(t),y:mT+pH+14,'text-anchor':'middle','font-size':'10',fill:tick,'font-family':'var(--font-sans)'},svg);
