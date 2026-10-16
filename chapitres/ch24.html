@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 24 — Comparer deux groupes</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+.compact-list{margin:.75rem 0 1rem 1.2rem;color:var(--text-sec);}
+.compact-list li{margin:.35rem 0;}
+.r-block{background:var(--surface-1);border:.5px solid var(--border);border-radius:10px;padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--text-secondary);margin:1rem 0;line-height:1.8;}
+.r-block .comment{color:var(--text-muted);font-style:italic;}
+.r-block .fn{color:var(--accent);}
+.chart-box{background:var(--surface-1);border:.5px solid var(--border);border-radius:12px;padding:16px;margin:12px 0;}
+.chart-title{font-size:12px;font-weight:500;color:var(--text-primary);margin-bottom:4px;}
+.chart-sub{font-size:11px;color:var(--text-secondary);margin-bottom:10px;line-height:1.5;}
+.duo-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:1rem 0;}
+.duo-card{background:var(--surface-1);border:.5px solid var(--border);border-radius:10px;padding:14px;}
+.duo-card h4{margin:0 0 8px;font-size:.92rem;color:var(--text-primary);}
+.duo-card p{margin:0;font-size:.87rem;color:var(--text-sec);line-height:1.6;}
+@media(max-width:600px){.duo-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">☰</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content"><div class="content-inner">
+
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 24 · Inférence statistique</div>
+  <h1 class="ch-title">Comparer deux groupes</h1>
+  <p class="ch-desc">Tester si deux groupes ont la même moyenne ou la même proportion — et comment le design de l'étude change tout.</p>
+</div>
+
+<h2>1. La question centrale</h2>
+<p>Jusqu'ici, on comparait un échantillon à une valeur fixe (H₀). Mais souvent, la vraie question est :</p>
+<blockquote><p>Est-ce que deux groupes différents ont la même moyenne (ou proportion) dans la population ?</p></blockquote>
+<p><strong>Exemples :</strong></p>
+<ul class="compact-list">
+  <li>Les femmes gagnent-elles en moyenne autant que les hommes dans cette entreprise ?</li>
+  <li>Le nouveau traitement réduit-il la tension artérielle plus que l'ancien ?</li>
+  <li>Le taux de satisfaction est-il le même entre les clients fidèles et les nouveaux clients ?</li>
+</ul>
+
+<h2>2. La distinction cruciale : indépendant ou apparié ?</h2>
+<p>Avant de choisir le test, il faut comprendre comment les données ont été collectées. Il y a deux situations très différentes :</p>
+
+<div class="duo-grid">
+  <div class="duo-card">
+    <h4>📊 Données indépendantes</h4>
+    <p>Les deux groupes sont composés de <strong>personnes différentes</strong>. Il n'y a aucun lien naturel entre un individu du groupe 1 et un du groupe 2.</p>
+    <p style="margin-top:8px;"><strong>Exemple :</strong> comparer les salaires de 50 femmes et 50 hommes choisis au hasard.</p>
+  </div>
+  <div class="duo-card">
+    <h4>🔗 Données appariées</h4>
+    <p>Chaque observation du groupe 1 est <strong>liée naturellement</strong> à une observation du groupe 2 — souvent, c'est le même individu mesuré deux fois.</p>
+    <p style="margin-top:8px;"><strong>Exemple :</strong> tension artérielle des mêmes patients, avant et après traitement.</p>
+  </div>
+</div>
+
+<div class="box box-orange">
+  <p><strong>Pourquoi cette distinction est importante :</strong> les données appariées permettent d'éliminer la variabilité entre individus. Si une personne a naturellement une forte tension, ça s'annule dans la différence avant/après. On gagne en précision — et on utilise un test différent.</p>
+</div>
+
+<h2>3. Test t pour deux groupes indépendants</h2>
+<p>On compare les moyennes de deux groupes distincts. H₀ : les deux vraies moyennes sont égales (μ₁ = μ₂).</p>
+<div class="formula">t = (ȳ₁ − ȳ₂) / √(s₁²/n₁ + s₂²/n₂)</div>
+<p>En R, la syntaxe est simple : on donne les deux vecteurs de données et R fait le reste.</p>
+<div class="r-block">
+<span class="comment"># Test t pour données indépendantes</span><br>
+<span class="fn">t.test</span>(salaires_femmes, salaires_hommes)<br>
+<br>
+<span class="comment"># Résultat type :</span><br>
+<span class="comment"># t = -2.1, df = 96, p-value = 0.038</span><br>
+<span class="comment"># 95 percent confidence interval: [-8400, -250]</span>
+</div>
+<p>L'IC donne la plage plausible pour la <strong>différence des deux moyennes</strong>. Ici, les femmes gagnent entre 250 CHF et 8 400 CHF de moins que les hommes en moyenne — et la différence est statistiquement significative.</p>
+
+<h2>4. Test t pour données appariées</h2>
+<p>On a mesuré le même individu deux fois (avant/après). On calcule d'abord la différence pour chaque personne, puis on teste si la moyenne de ces différences est nulle.</p>
+<div class="formula">t = d̄ / (sᵈ / √n)</div>
+<p>Où d̄ est la moyenne des différences individuelles et sᵈ leur écart-type.</p>
+<div class="r-block">
+<span class="comment"># Test t apparié : même argument, paramètre paired = TRUE</span><br>
+<span class="fn">t.test</span>(tension_apres, tension_avant, paired = <span style="color:#1baf7a">TRUE</span>)<br>
+<br>
+<span class="comment"># Résultat :</span><br>
+<span class="comment"># t = -3.8, df = 29, p-value = 0.001</span><br>
+<span class="comment"># 95 percent confidence interval: [-8.1, -2.4]</span>
+</div>
+<p><strong>Lecture :</strong> Le traitement réduit la tension artérielle de 2,4 à 8,1 mmHg en moyenne, et cette réduction est significative (p = 0,001).</p>
+
+<h2>5. Comparer deux proportions</h2>
+<p>Si la variable est binaire (oui/non), on compare deux proportions. H₀ : les deux vraies proportions sont égales (p₁ = p₂).</p>
+<div class="r-block">
+<span class="comment"># 2 groupes : 68/120 satisfaits vs 82/150 satisfaits</span><br>
+<span class="fn">prop.test</span>(c(68, 82), c(120, 150))<br>
+<br>
+<span class="comment"># Résultat :</span><br>
+<span class="comment"># X-squared = 0.98, df = 1, p-value = 0.322</span><br>
+<span class="comment"># 95 percent conf. interval: [-0.08, 0.24]</span>
+</div>
+<p>Ici, p = 0,322 > 0,05 → on ne rejette pas H₀. Les deux taux de satisfaction ne sont pas significativement différents. L'IC inclut 0 (pas de différence), ce qui est cohérent.</p>
+
+<h2>6. Choisir le bon test</h2>
+<div class="table-wrap"><table><thead><tr><th>Situation</th><th>Variable</th><th>Test R</th></tr></thead><tbody>
+<tr><td>2 groupes indépendants, variable quantitative</td><td>Moyenne</td><td>t.test(grp1, grp2)</td></tr>
+<tr><td>Même individu mesuré 2 fois</td><td>Moyenne</td><td>t.test(avant, après, paired=TRUE)</td></tr>
+<tr><td>2 groupes indépendants, variable binaire</td><td>Proportion</td><td>prop.test(c(x1,x2), c(n1,n2))</td></tr>
+</tbody></table></div>
+
+<h2>7. Ce qu'il faut vérifier</h2>
+<ul class="compact-list">
+  <li><strong>Indépendance des observations :</strong> dans un test à deux groupes indépendants, les individus ne doivent pas se retrouver dans les deux groupes.</li>
+  <li><strong>Tailles d'échantillon :</strong> les deux tests t sont robustes si n ≥ 30 dans chaque groupe (ou données normales).</li>
+  <li><strong>Homogénéité des variances (optionnel) :</strong> R utilise par défaut la version de Welch, qui ne suppose pas des variances égales — c'est le choix sûr.</li>
+</ul>
+
+<h2>8. Attention à l'interprétation causale</h2>
+<div class="box box-orange">
+  <p><strong>Un test à deux groupes ne prouve pas la causalité.</strong> Si les femmes gagnent moins que les hommes, c'est peut-être lié au secteur, au poste, à l'ancienneté. Un test statistique confirme qu'il y a une différence — pas pourquoi elle existe. La causalité demande une étude expérimentale avec assignation aléatoire aux groupes.</p>
+</div>
+
+<h2>À retenir</h2>
+<div class="table-wrap"><table><thead><tr><th>Concept</th><th>En bref</th></tr></thead><tbody>
+<tr><td>Données indépendantes</td><td>Deux groupes de personnes différentes.</td></tr>
+<tr><td>Données appariées</td><td>Les mêmes personnes mesurées deux fois (ou paires naturelles).</td></tr>
+<tr><td>t.test(x, y)</td><td>Test t indépendant — compare deux moyennes.</td></tr>
+<tr><td>t.test(x, y, paired=TRUE)</td><td>Test t apparié — analyse les différences individuelles.</td></tr>
+<tr><td>prop.test(c(x1,x2), c(n1,n2))</td><td>Compare deux proportions.</td></tr>
+<tr><td>IC de la différence</td><td>Plage plausible pour μ₁ − μ₂ ou p₁ − p₂.</td></tr>
+</tbody></table></div>
+
+<div class="page-nav">
+  <a href="ch23.html">← Chapitre 23</a>
+  <a href="ch25.html">Chapitre 25 →</a>
+</div>
+</div></main></div>
+<script src="../assets/nav-content.js"></script>
+</body>
+</html>

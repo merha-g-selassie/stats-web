@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 25 — Test du khi-deux</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+.compact-list{margin:.75rem 0 1rem 1.2rem;color:var(--text-sec);}
+.compact-list li{margin:.35rem 0;}
+.r-block{background:var(--surface-1);border:.5px solid var(--border);border-radius:10px;padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--text-secondary);margin:1rem 0;line-height:1.8;}
+.r-block .comment{color:var(--text-muted);font-style:italic;}
+.r-block .fn{color:var(--accent);}
+.chart-box{background:var(--surface-1);border:.5px solid var(--border);border-radius:12px;padding:16px;margin:12px 0;}
+.chart-title{font-size:12px;font-weight:500;color:var(--text-primary);margin-bottom:4px;}
+.chart-sub{font-size:11px;color:var(--text-secondary);margin-bottom:10px;line-height:1.5;}
+.ct-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:1rem 0;}
+.ct-cell{background:var(--surface-1);border:.5px solid var(--border);padding:10px;text-align:center;font-size:.88rem;}
+.ct-head{background:var(--surface-2);font-weight:600;color:var(--text-primary);}
+.ct-total{background:var(--surface-2);font-weight:600;color:var(--accent);}
+.hi-diff{color:var(--orange);font-weight:700;}
+</style>
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">☰</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content"><div class="content-inner">
+
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 25 · Inférence statistique</div>
+  <h1 class="ch-title">Test du khi-deux (χ²)</h1>
+  <p class="ch-desc">Tester si deux variables catégorielles sont indépendantes, en comparant les effectifs observés à ceux attendus si H₀ était vraie.</p>
+</div>
+
+<h2>1. À quoi sert le test khi-deux ?</h2>
+<p>Les tests t et z concernent des variables quantitatives ou binaires. Le test khi-deux répond à une question différente :</p>
+<blockquote><p>Y a-t-il une association entre deux variables catégorielles — ou sont-elles indépendantes l'une de l'autre ?</p></blockquote>
+<p><strong>Exemples :</strong></p>
+<ul class="compact-list">
+  <li>Le choix du parti politique dépend-il du niveau d'études ?</li>
+  <li>La préférence pour un produit dépend-elle du groupe d'âge ?</li>
+  <li>Le fait de fumer est-il lié au sexe ?</li>
+</ul>
+<p>Ces questions impliquent deux variables dont les modalités ne sont pas ordonnées numériquement. On ne peut pas calculer une moyenne. On travaille avec des <strong>effectifs</strong> dans un tableau croisé.</p>
+
+<h2>2. Le tableau de contingence</h2>
+<p>On organise les données dans un tableau croisant les deux variables. Exemple : 200 personnes interrogées sur leurs études et leur vote.</p>
+
+<div class="table-wrap"><table><thead><tr><th></th><th>Vote A</th><th>Vote B</th><th>Vote C</th><th>Total</th></tr></thead><tbody>
+<tr><td><strong>Pas de diplôme</strong></td><td>30</td><td>10</td><td>10</td><td>50</td></tr>
+<tr><td><strong>Bac</strong></td><td>30</td><td>20</td><td>30</td><td>80</td></tr>
+<tr><td><strong>Université</strong></td><td>10</td><td>20</td><td>40</td><td>70</td></tr>
+<tr><td><strong>Total</strong></td><td>70</td><td>50</td><td>80</td><td>200</td></tr>
+</tbody></table></div>
+
+<p>Si les deux variables étaient <strong>indépendantes</strong>, la répartition des votes serait la même dans chaque groupe d'études. Les différences visibles dans ce tableau sont-elles réelles ou dues au hasard ?</p>
+
+<h2>3. Les effectifs théoriques : que s'attendrait-on si H₀ était vraie ?</h2>
+<p>Si le vote et les études sont indépendants, chaque cellule devrait avoir un effectif proportionnel aux totaux de sa ligne et de sa colonne :</p>
+<div class="formula">Effectif théorique = (Total ligne × Total colonne) / Total général</div>
+<p>Exemple pour la cellule (Pas de diplôme, Vote A) :</p>
+<div class="formula">T = (50 × 70) / 200 = <strong>17,5</strong></div>
+<p>Dans les données observées, il y en a 30 — nettement plus que les 17,5 attendus sous H₀.</p>
+
+<div class="table-wrap"><table><thead><tr><th></th><th>Vote A</th><th>Vote B</th><th>Vote C</th></tr></thead><tbody>
+<tr><td><strong>Pas de diplôme</strong></td><td>Obs: 30 / Théo: 17,5</td><td>Obs: 10 / Théo: 12,5</td><td>Obs: 10 / Théo: 20</td></tr>
+<tr><td><strong>Bac</strong></td><td>Obs: 30 / Théo: 28</td><td>Obs: 20 / Théo: 20</td><td>Obs: 30 / Théo: 32</td></tr>
+<tr><td><strong>Université</strong></td><td>Obs: 10 / Théo: 24,5</td><td>Obs: 20 / Théo: 17,5</td><td>Obs: 40 / Théo: 28</td></tr>
+</tbody></table></div>
+
+<h2>4. La statistique χ²</h2>
+<p>Pour chaque cellule, on mesure l'écart entre ce qu'on observe et ce qu'on attendrait sous H₀, en le normalisant par la valeur théorique :</p>
+<div class="formula">χ² = Σ (Observé − Théorique)² / Théorique</div>
+<p>Plus χ² est grand, plus les données s'écartent de ce qu'on attendrait sous H₀ → p-value plus petite.</p>
+<p>Avec les données de notre exemple :</p>
+<div class="formula">χ² ≈ (30−17,5)²/17,5 + (10−12,5)²/12,5 + … ≈ <strong>23,8</strong></div>
+
+<h2>5. Les degrés de liberté</h2>
+<p>Les degrés de liberté du test khi-deux dépendent du nombre de lignes et de colonnes du tableau :</p>
+<div class="formula">df = (nombre de lignes − 1) × (nombre de colonnes − 1)</div>
+<p>Dans notre exemple : df = (3 − 1) × (3 − 1) = <strong>4</strong></p>
+
+<h2>6. Conclusion</h2>
+<p>Avec χ²(4) = 23,8, la p-value est &lt; 0,001. On rejette H₀ : le vote et le niveau d'études ne sont pas indépendants — il y a une association statistiquement significative.</p>
+
+<div class="chart-box">
+  <div class="chart-title">Distribution χ² (df = 4)</div>
+  <div class="chart-sub">Notre χ² = 23,8 se situe très loin dans la queue droite. La zone de rejet pour α = 0,05 commence à 9,49.</div>
+  <div style="position:relative;height:190px;"><canvas id="chi-dist" role="img" aria-label="Distribution chi-deux avec 4 degrés de liberté, zone de rejet à partir de 9.49"></canvas></div>
+</div>
+
+<h2>7. En R : chisq.test()</h2>
+<div class="r-block">
+<span class="comment"># Créer le tableau de contingence</span><br>
+tableau &lt;- <span class="fn">matrix</span>(c(30,10,10, 30,20,30, 10,20,40), nrow=3, byrow=<span style="color:#1baf7a">TRUE</span>)<br>
+<br>
+<span class="comment"># Test khi-deux</span><br>
+<span class="fn">chisq.test</span>(tableau)<br>
+<br>
+<span class="comment"># Résultat :</span><br>
+<span class="comment"># X-squared = 23.8, df = 4, p-value = 9e-05</span><br>
+<br>
+<span class="comment"># Voir les effectifs théoriques :</span><br>
+<span class="fn">chisq.test</span>(tableau)$expected
+</div>
+
+<h2>8. La condition des effectifs théoriques ≥ 5</h2>
+<div class="box box-orange">
+  <p><strong>Condition à vérifier :</strong> tous les effectifs <em>théoriques</em> doivent être ≥ 5. Si ce n'est pas le cas (tableau avec beaucoup de catégories rares), le test khi-deux n'est pas fiable. On utilise alors le test exact de Fisher, disponible en R avec fisher.test().</p>
+</div>
+
+<h2>9. Ce que le test khi-deux ne fait pas</h2>
+<div class="grid-2">
+  <div class="box box-orange">
+    <p><strong>Il ne quantifie pas la force de l'association.</strong> Un χ² grand peut venir d'une association forte ou d'un très grand échantillon. Pour mesurer la force, utiliser le V de Cramér (cramers_v dans le package rstatix).</p>
+  </div>
+  <div class="box box-orange">
+    <p><strong>Il ne dit pas où est l'association.</strong> Il détecte qu'il y en a une quelque part dans le tableau. Pour savoir quelles cellules contribuent le plus, examiner les résidus standardisés : chisq.test(tableau)$residuals</p>
+  </div>
+</div>
+
+<h2>À retenir</h2>
+<div class="table-wrap"><table><thead><tr><th>Concept</th><th>En bref</th></tr></thead><tbody>
+<tr><td>Usage</td><td>Tester l'indépendance de deux variables catégorielles.</td></tr>
+<tr><td>H₀</td><td>Les deux variables sont indépendantes.</td></tr>
+<tr><td>Formule χ²</td><td>Σ(O − T)² / T, pour chaque cellule du tableau.</td></tr>
+<tr><td>Degrés de liberté</td><td>(lignes − 1) × (colonnes − 1)</td></tr>
+<tr><td>Condition</td><td>Tous les effectifs théoriques ≥ 5.</td></tr>
+<tr><td>En R</td><td>chisq.test(tableau)</td></tr>
+<tr><td>Limites</td><td>Ne quantifie pas la force ni ne localise l'association.</td></tr>
+</tbody></table></div>
+
+<div class="page-nav">
+  <a href="ch24.html">← Chapitre 24</a>
+</div>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const isDark=document.documentElement.dataset.mode==='dark'||(!document.documentElement.dataset.mode&&matchMedia('(prefers-color-scheme:dark)').matches);
+const gridC=isDark?'rgba(255,255,255,0.12)':'rgba(25,25,24,0.09)';
+const tick=isDark?'#A7A59D':'#6B6963';
+
+// Chi-squared distribution pdf (df=4)
+function chi2pdf(x,k){
+  if(x<=0)return 0;
+  const lgamma_k2=k===4?0.6931471806:0; // log(Gamma(2))=log(1)=0, for k=4: Gamma(2)=1
+  return Math.exp((k/2-1)*Math.log(x)-x/2-Math.log(2)*(k/2)-lgamma_k2);
+}
+// Gamma(2)=1 for k=4: pdf = x*e^(-x/2)/4
+function chi4pdf(x){return x<=0?0:x*Math.exp(-x/2)/4;}
+
+const labels3=[];const vals3=[];const colors3=[];
+for(let x=0.05;x<=30;x+=0.15){
+  labels3.push(x.toFixed(2));
+  vals3.push(chi4pdf(x));
+  if(x>=9.49){colors3.push('rgba(235,104,52,0.55)');}
+  else{colors3.push(isDark?'rgba(42,120,214,0.25)':'rgba(42,120,214,0.20)');}
+}
+new Chart(document.getElementById('chi-dist'),{type:'bar',data:{labels:labels3,datasets:[{data:vals3,backgroundColor:colors3,borderWidth:0,barPercentage:1,categoryPercentage:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:t=>'χ² = '+t[0].label,label:()=>''}}},scales:{x:{ticks:{color:tick,font:{size:9},callback:(v,i)=>{const n=Number(labels3[i]);return(n>=0&&Math.abs(n%5)<0.1)?n.toFixed(0):'';}},grid:{display:false}},y:{display:false}}}});
+</script>
+<script src="../assets/nav-content.js"></script>
+</body>
+</html>

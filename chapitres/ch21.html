@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 21 — Intervalles de confiance</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+.compact-list { margin:.75rem 0 1rem 1.2rem; color:var(--text-sec); }
+.compact-list li { margin:.35rem 0; }
+.ic-bar-wrap { margin:1.2rem 0; }
+.ic-bar { position:relative; height:60px; background:var(--surface-1); border:.5px solid var(--border); border-radius:10px; overflow:visible; margin-bottom:4px; }
+.chart-box{background:var(--surface-1);border:.5px solid var(--border);border-radius:12px;padding:16px;margin:12px 0;}
+.chart-title{font-size:12px;font-weight:500;color:var(--text-primary);margin-bottom:4px;}
+.chart-sub{font-size:11px;color:var(--text-secondary);margin-bottom:10px;line-height:1.5;}
+.ic-visual { display:flex; align-items:center; gap:10px; margin:1rem 0; font-size:.88rem; }
+.ic-line { position:relative; flex:1; height:40px; }
+.ic-line svg { width:100%; height:40px; }
+</style>
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">☰</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content"><div class="content-inner">
+
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 21 · Inférence statistique</div>
+  <h1 class="ch-title">Intervalles de confiance</h1>
+  <p class="ch-desc">Plutôt qu'un seul chiffre, estimer une plage plausible pour la vraie valeur de la population.</p>
+</div>
+
+<h2>1. Le problème : un chiffre seul ne suffit pas</h2>
+<p>On mesure que des employés travaillent en moyenne <strong>44 heures par semaine</strong> dans un échantillon. Mais cette moyenne est calculée sur quelques dizaines de personnes — si on prenait un autre échantillon, on obtiendrait probablement <strong>43,5h</strong> ou <strong>44,8h</strong>.</p>
+<p>La vraie moyenne de toute la population est quelque part dans cette zone d'incertitude. L'<strong>intervalle de confiance</strong> (IC) permet de quantifier cette incertitude.</p>
+
+<h2>2. Ce qu'est un intervalle de confiance</h2>
+<p>Un IC à 95 % est une plage de valeurs calculée à partir de l'échantillon, telle que si on répétait l'expérience un grand nombre de fois, <strong>95 % de ces plages captureraient la vraie valeur</strong> de la population.</p>
+<div class="box box-note">
+  <p><strong>Ce que l'IC ne dit pas :</strong> On ne peut pas dire "il y a 95 % de chances que la vraie valeur soit dans cet intervalle" — une fois l'IC calculé, la vraie valeur y est ou n'y est pas. L'interprétation correcte porte sur la <em>méthode</em>, pas sur cet IC précis.</p>
+</div>
+<p>En pratique, on interprète souvent l'IC comme "la plage plausible pour la vraie valeur" — c'est une approximation utile même si elle n'est pas mathématiquement exacte.</p>
+
+<h2>3. La formule générale</h2>
+<div class="formula">IC = estimation ± marge d'erreur</div>
+<div class="formula">IC = estimation ± (valeur critique × erreur standard)</div>
+<p>Pour une <strong>moyenne</strong> :</p>
+<div class="formula">IC = ȳ ± t* × (s / √n)</div>
+<ul class="compact-list">
+  <li><strong>ȳ</strong> : la moyenne de l'échantillon</li>
+  <li><strong>t*</strong> : une valeur issue de la loi t (dépend du niveau de confiance et de la taille d'échantillon)</li>
+  <li><strong>s</strong> : l'écart-type de l'échantillon</li>
+  <li><strong>n</strong> : la taille de l'échantillon</li>
+</ul>
+
+<h2>4. Exemple concret</h2>
+<p>Dans notre enquête sur les heures de travail :</p>
+<ul class="compact-list">
+  <li>Taille de l'échantillon : n = 50</li>
+  <li>Moyenne observée : ȳ = 44 h</li>
+  <li>Écart-type : s = 6 h</li>
+  <li>Valeur critique t* ≈ 2,01 (pour 95 % de confiance, df = 49)</li>
+</ul>
+<div class="formula">Erreur standard = 6 / √50 ≈ 0,849</div>
+<div class="formula">Marge d'erreur = 2,01 × 0,849 ≈ 1,71</div>
+<div class="formula">IC à 95 % = [44 − 1,71 ; 44 + 1,71] = <strong>[42,29 h ; 45,71 h]</strong></div>
+
+<div class="chart-box">
+  <div class="chart-title">Visualisation de l'IC</div>
+  <div class="chart-sub">La barre représente l'intervalle [42,29 ; 45,71]. La valeur hypothétique H₀ = 41h est en dehors — ce qui est cohérent avec un résultat significatif.</div>
+  <div style="position:relative;height:80px;"><canvas id="ic-chart" role="img" aria-label="Intervalle de confiance [42,29 à 45,71] autour de la moyenne 44h"></canvas></div>
+</div>
+
+<p><strong>Lecture :</strong> On est à 95 % confiant que la vraie moyenne de la population est quelque part entre 42,29 h et 45,71 h. La valeur légale de 41 h est <strong>en dehors</strong> de cet intervalle.</p>
+
+<h2>5. Le lien direct avec les tests d'hypothèses</h2>
+<p>IC et test bilatéral sont deux façons de voir la même information. La règle est simple :</p>
+<div class="box box-green">
+  <p>Si la valeur H₀ est <strong>en dehors</strong> de l'IC → on rejette H₀ au niveau α correspondant.<br>
+  Si la valeur H₀ est <strong>dans</strong> l'IC → on ne rejette pas H₀.</p>
+</div>
+<p>Dans notre exemple : H₀ dit que la vraie moyenne est 41h. L'IC est [42,29 ; 45,71]. 41h est dehors → on rejette H₀. Résultat cohérent avec un test bilatéral à α = 0,05.</p>
+
+<h2>6. Largeur de l'IC : ce qui l'influence</h2>
+<div class="table-wrap"><table><thead><tr><th>Facteur</th><th>Effet sur la largeur de l'IC</th></tr></thead><tbody>
+<tr><td>Augmenter n (plus de données)</td><td>IC plus étroit → estimation plus précise</td></tr>
+<tr><td>Augmenter la variabilité des données (s grand)</td><td>IC plus large → moins de précision</td></tr>
+<tr><td>Augmenter le niveau de confiance (95 % → 99 %)</td><td>IC plus large → plus de sécurité, moins de précision</td></tr>
+</tbody></table></div>
+<div class="box box-note">
+  <p><strong>Le trade-off fondamental :</strong> plus on veut être "sûr" (niveau de confiance élevé), plus l'intervalle est large — et donc moins informatif. Un IC de [0 h ; 80 h] à 99,9 % de confiance est mathématiquement correct mais inutile.</p>
+</div>
+
+<h2>7. IC à 90 %, 95 %, 99 % : comment choisir ?</h2>
+<p>Le niveau de confiance (1 − α) dépend du contexte :</p>
+<ul class="compact-list">
+  <li><strong>90 %</strong> : études exploratoires, pas de décision critique.</li>
+  <li><strong>95 %</strong> : standard dans la plupart des sciences sociales. Correspond à α = 0,05.</li>
+  <li><strong>99 %</strong> : quand les erreurs ont des conséquences sérieuses (médecine, droit).</li>
+</ul>
+
+<h2>8. Ce que l'IC apporte en plus du test</h2>
+<p>Le test d'hypothèse répond à une question binaire : significatif ou pas. L'IC donne en plus :</p>
+<ul class="compact-list">
+  <li>La <strong>taille estimée de l'effet</strong> (ici : entre 1,3h et 4,7h de plus que 41h).</li>
+  <li>La <strong>précision de l'estimation</strong> (quelle est la marge d'erreur ?).</li>
+  <li>Une information sur l'<strong>importance pratique</strong> : une différence significative peut être très petite.</li>
+</ul>
+<div class="box box-orange">
+  <p><strong>À toujours rapporter :</strong> En recherche moderne, on recommande de donner l'IC plutôt que (ou en plus de) la p-value. Un IC de [0,001 ; 0,003] statistiquement significatif révèle un effet minuscule — ce que "p &lt; 0,05" seul ne montrerait pas.</p>
+</div>
+
+<h2>À retenir</h2>
+<div class="table-wrap"><table><thead><tr><th>Concept</th><th>En bref</th></tr></thead><tbody>
+<tr><td>IC à 95 %</td><td>Plage plausible pour la vraie valeur, construite avec la méthode qui capture la vraie valeur dans 95 % des cas.</td></tr>
+<tr><td>Formule</td><td>estimation ± t* × erreur standard</td></tr>
+<tr><td>IC étroit</td><td>Grande précision — souvent grâce à un grand n.</td></tr>
+<tr><td>IC large</td><td>Grande incertitude — petit n ou grande variabilité.</td></tr>
+<tr><td>Lien avec test</td><td>H₀ hors de l'IC → rejet de H₀ au niveau α correspondant.</td></tr>
+</tbody></table></div>
+
+<div class="page-nav">
+  <a href="ch20.html">← Chapitre 20</a>
+  <a href="ch22.html">Chapitre 22 →</a>
+</div>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const isDark=document.documentElement.dataset.mode==='dark'||(!document.documentElement.dataset.mode&&matchMedia('(prefers-color-scheme:dark)').matches);
+const gridC=isDark?'rgba(255,255,255,0.12)':'rgba(25,25,24,0.09)';
+const tick=isDark?'#A7A59D':'#6B6963';
+
+// IC chart
+const ctx=document.getElementById('ic-chart').getContext('2d');
+new Chart(ctx,{type:'scatter',data:{datasets:[
+  {data:[{x:44,y:0}],pointRadius:8,pointBackgroundColor:'#2a78d6',pointBorderColor:'#2a78d6',label:'Moyenne observée (44h)'},
+  {data:[{x:41,y:0}],pointRadius:7,pointStyle:'crossRot',pointRadius:9,pointBackgroundColor:'#e34948',pointBorderColor:'#e34948',label:'H₀ = 41h'},
+]},options:{responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:true,labels:{color:tick,font:{size:10},boxWidth:10}},
+    annotation:{annotations:{
+      icBar:{type:'box',xMin:42.29,xMax:45.71,yMin:-0.5,yMax:0.5,backgroundColor:'rgba(42,120,214,0.15)',borderColor:'#2a78d6',borderWidth:1.5}
+    }}
+  },
+  scales:{x:{grid:{color:gridC},ticks:{color:tick,font:{size:10}},title:{display:true,text:'Heures par semaine',color:tick,font:{size:10}},min:39,max:47},y:{display:false,min:-1,max:1}}}});
+</script>
+<script src="../assets/nav-content.js"></script>
+</body>
+</html>

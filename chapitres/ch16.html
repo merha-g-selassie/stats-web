@@ -29,6 +29,9 @@
 .symbol-card{display:grid;grid-template-columns:90px 1fr;gap:10px;align-items:start;background:var(--surface-1);border:.5px solid var(--border);border-radius:10px;padding:12px;margin:8px 0;}
 .symbol-card .symbol{font-size:20px;font-weight:600;text-align:center;}
 .warning{border-left:3px solid #D85A30;background:rgba(216,90,48,.08);padding:10px 14px;border-radius:0 8px 8px 0;margin:10px 0;}
+.r-block{background:var(--surface-1);border:.5px solid var(--border);border-radius:10px;padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--text-secondary);margin:1rem 0;line-height:1.8;}
+.r-block .comment{color:var(--text-muted);font-style:italic;}
+.r-block .fn{color:var(--accent);}
 .source-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0;}
 .source-card{background:var(--surface-1);border:.5px solid var(--border);border-radius:10px;padding:12px;min-width:0;}
 .source-card .kicker{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
@@ -469,6 +472,49 @@
 
 <div class="box box-note">
   <p><strong>Formulation à retenir :</strong> on ne « prouve » généralement ni H₀ ni H₁. On évalue plutôt dans quelle mesure les données sont compatibles ou incompatibles avec H₀, sous les hypothèses du test.</p>
+</div>
+
+
+<h2>14. En R : cor.test()</h2>
+<p>Au lieu de calculer t à la main, R fait tout en une seule commande :</p>
+<div class="r-block">
+<span class="fn">cor.test</span>(age, revenu)<br>
+<br>
+<span class="comment"># t = 7.80, df = 8, p-value = 4.6e-05</span><br>
+<span class="comment"># 95 percent confidence interval: 0.7867 0.9883</span><br>
+<span class="comment"># sample estimates: cor = 0.9403</span>
+</div>
+<p>On retrouve exactement les mêmes valeurs : t ≈ 7,79, df = 8 et p ≈ 0,000053 — les résultats du calcul manuel des sections 4 à 7, confirmés par R.</p>
+
+<h3>Lire la sortie</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Champ</th><th>Valeur ici</th><th>Signification</th></tr></thead>
+<tbody>
+<tr><td>t</td><td>7,80</td><td>Statistique t calculée à partir de r et n</td></tr>
+<tr><td>df</td><td>8</td><td>Degrés de liberté = n − 2</td></tr>
+<tr><td>p-value</td><td>4,6 × 10⁻⁵</td><td>Probabilité d'un t aussi extrême sous H₀</td></tr>
+<tr><td>confidence interval</td><td>[0,787 ; 0,988]</td><td>IC 95 % sur la vraie corrélation ρ</td></tr>
+<tr><td>cor</td><td>0,9403</td><td>Corrélation observée r dans l'échantillon</td></tr>
+</tbody>
+</table></div>
+
+<h2>15. L'intervalle de confiance sur r</h2>
+<p>La p-value répond à une question binaire : rejeter ou non H₀ ? L'IC apporte plus d'information : <strong>où se situe probablement la vraie corrélation ρ dans la population ?</strong></p>
+
+<div class="formula">IC 95 % sur ρ : [0,787 ; 0,988]</div>
+
+<p>On est à 95 % confiant que la vraie corrélation entre l'âge et le revenu se situe entre 0,79 et 0,99 dans la population représentée.</p>
+
+<div class="box box-green">
+  <p><strong>Bonne pratique :</strong> toujours reporter r, l'IC et la p-value ensemble. L'IC montre la précision de l'estimation ; la p-value indique si H₀ peut être rejetée.</p>
+</div>
+
+<div class="note-box">
+  <b>Pourquoi l'IC sur r est asymétrique :</b> r est contraint entre −1 et +1. Quand r est proche de 1, l'IC ne peut pas s'étendre uniformément — il sera naturellement plus serré du côté de +1.
+</div>
+
+<div class="box box-note">
+  <p><strong>Corrélation de Spearman (ch. 17) :</strong> cor.test() fonctionne aussi avec la corrélation de Spearman :<br><code>cor.test(x, y, method = "spearman")</code></p>
 </div>
 
 <div class="page-nav">

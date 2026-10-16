@@ -30,6 +30,12 @@
 .resid-pos{border-left:3px solid #1baf7a;padding:8px 12px;background:rgba(29,158,117,.08);border-radius:0 8px 8px 0;}
 .resid-neg{border-left:3px solid #e34948;padding:8px 12px;background:rgba(227,73,72,.08);border-radius:0 8px 8px 0;}
 .mini-svg{width:100%;height:auto;display:block;}
+.r-block{background:var(--surface-1);border:.5px solid var(--border);border-radius:10px;padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--text-secondary);margin:1rem 0;line-height:1.8;}
+.r-block .comment{color:var(--text-muted);font-style:italic;}
+.r-block .fn{color:var(--accent);}
+.output-block{background:var(--surface-2);border-radius:8px;padding:12px 16px;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--text-secondary);margin:.8rem 0;overflow-x:auto;line-height:1.8;}
+.output-block .hi{color:var(--accent);font-weight:600;}
+.output-block .hi-g{color:var(--green);font-weight:600;}
 @media(max-width:700px){
   .grid2,.grid3{grid-template-columns:1fr;}
 }
@@ -432,6 +438,67 @@
 <tr><td><strong>Extrapolation</strong></td><td>Peut-on prédire hors de la plage observée ?</td><td>À éviter sans justification</td></tr>
 </tbody>
 </table></div>
+
+
+<h2>19. En R : tester la pente avec lm()</h2>
+<p>On a calculé b et a à la main aux sections 6 et 7. En pratique, R fait tout automatiquement avec lm(), et summary() affiche les tests d'hypothèses sur les coefficients :</p>
+
+<div class="r-block">
+modele &lt;- <span class="fn">lm</span>(revenu ~ age, data = dataset)<br>
+<span class="fn">summary</span>(modele)
+</div>
+
+<div class="output-block">Call:<br>
+lm(formula = revenu ~ age, data = dataset)<br><br>
+Coefficients:<br>
+            Estimate  Std. Error  t value  Pr(&gt;|t|)<br>
+(Intercept)  18715.2      5319.3    3.518   0.00773 **<br>
+age            <span class="hi-g">837.6</span>         107.2    <span class="hi">7.814</span>   <span class="hi-g">4.6e-05 ***</span><br><br>
+Residual standard error: 4868 on 8 degrees of freedom<br>
+Multiple R-squared:  0.8841<br>
+F-statistic: 61.06 on 1 and 8 DF, p-value: 4.6e-05
+</div>
+
+<h3>Lire ce tableau ligne par ligne</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Colonne (ligne age)</th><th>Ce que ça signifie</th></tr></thead>
+<tbody>
+<tr><td>Estimate = 837,6</td><td>La pente b. Quand l'âge augmente d'un an, le revenu prédit augmente de ~838 CHF — exactement la valeur calculée manuellement.</td></tr>
+<tr><td>Std. Error = 107,2</td><td>L'incertitude sur cette pente.</td></tr>
+<tr><td>t value = 7,81</td><td>t = b / SE(b). Même formule que le t du test de Pearson r : les deux tests sont mathématiquement équivalents en régression simple.</td></tr>
+<tr><td>Pr(&gt;|t|) = 4,6e−05</td><td>p-value bilatérale. Très significatif → on rejette H₀ : β = 0.</td></tr>
+<tr><td>R-squared = 0,884</td><td>Le modèle rend compte de 88,4 % de la variation du revenu. Identique à r² = 0,94² du ch. 15.</td></tr>
+</tbody>
+</table></div>
+
+<div class="box box-green">
+  <p><strong>Conclusion :</strong> L'âge prédit significativement le revenu. La pente est b = 838 CHF/an (t(8) = 7,81, p &lt; 0,001). R² = 0,884 : le modèle rend compte de 88,4 % de la variation du revenu.</p>
+</div>
+
+<h2>20. L'intervalle de confiance sur la pente</h2>
+<p>confint() donne la plage plausible pour chaque coefficient dans la population :</p>
+
+<div class="r-block">
+<span class="fn">confint</span>(modele)<br>
+<span class="comment">#               2.5 %    97.5 %</span><br>
+<span class="comment"># (Intercept)    6449    30981</span><br>
+<span class="comment"># age             591     1085</span>
+</div>
+
+<p>IC 95 % sur la pente : <strong>[591 ; 1085] CHF par année d'âge</strong>. On est à 95 % confiant que chaque année d'âge supplémentaire correspond à une augmentation du revenu de 591 à 1 085 CHF dans la population.</p>
+
+<div class="box box-note">
+  <p><strong>IC et p-value sont liés :</strong> l'IC ne contient pas 0, ce qui est cohérent avec le rejet de H₀ : β = 0 au seuil 5 %.</p>
+</div>
+
+<h3>Le test F global</h3>
+<p>En bas du summary(), on voit :</p>
+<div class="output-block">F-statistic: 61.06 on 1 and 8 DF, p-value: 4.6e-05</div>
+<p>Dans une régression simple (un seul prédicteur), le test F et le test t sur la pente donnent <strong>exactement la même p-value</strong>. Le test F devient plus utile dans la régression multiple (plusieurs prédicteurs), où il teste si le modèle dans son ensemble est significatif.</p>
+
+<div class="box box-orange">
+  <p><strong>Significatif ≠ bon modèle.</strong> p &lt; 0,05 confirme que la pente n'est probablement pas nulle. Ça ne dit pas que la droite est la bonne forme, ni que les prédictions sont précises en dehors de la plage observée.</p>
+</div>
 
 <div class="page-nav">
   <a href="ch17.html">← Chapitre 17</a>
