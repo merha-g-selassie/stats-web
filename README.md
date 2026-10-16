@@ -7,3 +7,6 @@ A static website covering the basics of statistics. Its goal is to make essentia
 
 📊 **Live site**: https://merha-g-selassie.github.io/stats-web/
 
+### Resources I Used
+
+I used [Statistics Lectures playlist](https://www.youtube.com/playlist?list=PL568547ACA9211CCA) from the YouTube channel [Statistics Lectures](https://www.youtube.com/@statslectures) as one of my main learning resources while building this project, and I highly recommend it for learning the fundamentals of statistics.
