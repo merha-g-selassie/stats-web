@@ -6,7 +6,7 @@ const chapBase  = isChapter ? ''    : 'chapitres/';
 document.querySelector('.nav').innerHTML = `
   <div class="nav-theme nav-theme-top">
     <div class="nav-theme-label">Apparence</div>
-    <div class="theme-switch" role="group" aria-label="Thème d’affichage">
+    <div class="theme-switch" role="group" aria-label="Thème d'affichage">
       <button type="button" data-theme-choice="auto" aria-pressed="false" title="Suivre le thème du système">Auto</button>
       <button type="button" data-theme-choice="light" aria-pressed="false">Clair</button>
       <button type="button" data-theme-choice="dark" aria-pressed="false">Sombre</button>
@@ -35,7 +35,7 @@ document.querySelector('.nav').innerHTML = `
   <a href="${chapBase}ch12.html"><span class="ch-num">12</span> Permutations & combinaisons</a>
   <a href="${chapBase}ch13.html"><span class="ch-num">13</span> Loi des grands nombres</a>
 
-  <div class="nav-section-label">Corrélation & inférence</div>
+  <div class="nav-section-label">Corrélation & régression</div>
   <a href="${chapBase}ch14.html"><span class="ch-num">14</span> Scatter plots</a>
   <a href="${chapBase}ch15.html"><span class="ch-num">15</span> Corrélation de Pearson</a>
   <a href="${chapBase}ch16.html"><span class="ch-num">16</span> Hypothesis testing</a>
@@ -43,6 +43,16 @@ document.querySelector('.nav').innerHTML = `
   <a href="${chapBase}ch18.html"><span class="ch-num">18</span> Régression linéaire</a>
   <a href="${chapBase}ch19.html"><span class="ch-num">19</span> Corrélation vs causalité</a>
 
+  <div class="nav-section-label">Inférence statistique</div>
+  <a href="${chapBase}ch20.html"><span class="ch-num">20</span> Logique des tests</a>
+  <a href="${chapBase}ch21.html"><span class="ch-num">21</span> Intervalles de confiance</a>
+  <a href="${chapBase}ch22.html"><span class="ch-num">22</span> Test t — une moyenne</a>
+  <a href="${chapBase}ch23.html"><span class="ch-num">23</span> Test z — une proportion</a>
+  <a href="${chapBase}ch24.html"><span class="ch-num">24</span> Comparer deux groupes</a>
+  <a href="${chapBase}ch25.html"><span class="ch-num">25</span> Test du khi-deux</a>
+  <a href="${chapBase}ch26.html"><span class="ch-num">26</span> Régression multiple</a>
+  <a href="${chapBase}ch27.html"><span class="ch-num">27</span> Moindres carrés et MLE</a>
+  <a href="${chapBase}ch28.html"><span class="ch-num">28</span> Inférence bayésienne</a>
 `;
 
 // Active link
@@ -50,6 +60,15 @@ const current = location.pathname.split('/').pop() || 'index.html';
 document.querySelectorAll('.nav a').forEach(a => {
   const href = a.getAttribute('href').split('/').pop();
   if (href === current) a.classList.add('active');
+});
+
+// Persist nav scroll position across page navigations
+const NAV_SCROLL_KEY = 'statsNavScroll';
+const navEl = document.querySelector('.nav');
+const savedNavScroll = sessionStorage.getItem(NAV_SCROLL_KEY);
+if (savedNavScroll !== null && navEl) navEl.scrollTop = parseInt(savedNavScroll, 10);
+document.querySelectorAll('.nav a').forEach(a => {
+  a.addEventListener('click', () => navEl && sessionStorage.setItem(NAV_SCROLL_KEY, navEl.scrollTop));
 });
 
 // Mobile toggle

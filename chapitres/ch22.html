@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 22 — Test t : comparer une moyenne</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+.compact-list{margin:.75rem 0 1rem 1.2rem;color:var(--text-sec);}
+.compact-list li{margin:.35rem 0;}
+.step-list{counter-reset:step;list-style:none;margin:1rem 0;padding:0;}
+.step-list li{counter-increment:step;display:flex;gap:12px;margin:.7rem 0;align-items:flex-start;}
+.step-list li::before{content:counter(step);min-width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-size:.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.chart-box{background:var(--surface-1);border:.5px solid var(--border);border-radius:12px;padding:16px;margin:12px 0;}
+.chart-title{font-size:12px;font-weight:500;color:var(--text-primary);margin-bottom:4px;}
+.chart-sub{font-size:11px;color:var(--text-secondary);margin-bottom:10px;line-height:1.5;}
+.r-block{background:var(--surface-1);border:.5px solid var(--border);border-radius:10px;padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--text-secondary);margin:1rem 0;line-height:1.8;}
+.r-block .comment{color:var(--text-muted);font-style:italic;}
+.r-block .fn{color:var(--accent);}
+</style>
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">☰</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content"><div class="content-inner">
+
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 22 · Inférence statistique</div>
+  <h1 class="ch-title">Test t : comparer une moyenne</h1>
+  <p class="ch-desc">Tester si la vraie moyenne d'une population est égale à une valeur de référence, à partir d'un seul échantillon.</p>
+</div>
+
+<h2>1. À quoi sert le test t ?</h2>
+<p>Le test t pour une moyenne répond à une question précise :</p>
+<blockquote><p>Est-ce que la vraie moyenne de la population est différente d'une valeur de référence donnée ?</p></blockquote>
+<p><strong>Exemples typiques :</strong></p>
+<ul class="compact-list">
+  <li>La durée moyenne de livraison est-elle différente des 48h promises ?</li>
+  <li>La note moyenne des élèves est-elle différente de 10/20 ?</li>
+  <li>Le temps de travail réel est-il différent des 41h légales ?</li>
+</ul>
+<p>Dans chaque cas, on a un <strong>échantillon</strong> et une <strong>valeur de référence</strong> (μ₀). Le test t mesure à quel point la moyenne observée s'éloigne de cette valeur, en tenant compte de la variabilité et de la taille de l'échantillon.</p>
+
+<h2>2. Comment ça fonctionne</h2>
+<p>L'idée est simple : l'écart entre la moyenne observée et la valeur de référence est-il grand par rapport à l'incertitude naturelle de l'échantillon ?</p>
+<div class="formula">t = (ȳ − μ₀) / (s / √n)</div>
+<ul class="compact-list">
+  <li><strong>ȳ</strong> : la moyenne observée dans l'échantillon</li>
+  <li><strong>μ₀</strong> : la valeur de référence (la valeur de H₀)</li>
+  <li><strong>s</strong> : l'écart-type de l'échantillon</li>
+  <li><strong>n</strong> : la taille de l'échantillon</li>
+</ul>
+<p>Plus t est grand en valeur absolue, plus l'écart est grand par rapport à l'incertitude → p-value plus petite → plus on doute de H₀.</p>
+
+<h2>3. Exemple complet : les heures de travail</h2>
+<p>Situation : on enquête sur les heures de travail hebdomadaires. La loi prévoit 41h.</p>
+
+<ol class="step-list">
+  <li><strong>Formuler les hypothèses :</strong><br>H₀ : la vraie moyenne est μ = 41h<br>H₁ : la vraie moyenne est μ ≠ 41h (test bilatéral)</li>
+  <li><strong>Fixer le seuil :</strong> α = 0,05</li>
+  <li><strong>Données de l'échantillon :</strong><br>n = 50, ȳ = 44h, s = 6h</li>
+  <li><strong>Calculer t :</strong><br>
+    Erreur standard = 6 / √50 ≈ 0,849<br>
+    t = (44 − 41) / 0,849 ≈ <strong>3,54</strong></li>
+  <li><strong>Obtenir la p-value :</strong><br>
+    Avec t = 3,54 et df = 49 (degrés de liberté = n − 1), on obtient <strong>p ≈ 0,009</strong></li>
+  <li><strong>Conclure :</strong><br>
+    p = 0,009 &lt; α = 0,05 → on <strong>rejette H₀</strong>.<br>
+    Les données fournissent des preuves significatives que la vraie moyenne est différente de 41h.</li>
+</ol>
+
+<div class="chart-box">
+  <div class="chart-title">Distribution de t sous H₀ (df = 49)</div>
+  <div class="chart-sub">La statistique t = 3,54 se situe très loin dans la queue de la distribution. La zone grisée représente la p-value (les 2 queues combinées pour le test bilatéral).</div>
+  <div style="position:relative;height:200px;"><canvas id="t-dist" role="img" aria-label="Distribution t avec t=3.54 dans la queue droite et zone de rejet grisée"></canvas></div>
+</div>
+
+<h2>4. En R : une seule ligne</h2>
+<p>En pratique, R fait tout le calcul :</p>
+<div class="r-block">
+<span class="comment"># t.test(données, valeur de référence, type de test)</span><br>
+<span class="fn">t.test</span>(heures, mu = 41, alternative = <span style="color:#1baf7a">"two.sided"</span>)<br>
+<br>
+<span class="comment"># Résultat :</span><br>
+<span class="comment"># t = 3.54, df = 49, p-value = 0.009</span><br>
+<span class="comment"># 95 percent confidence interval: [42.29, 45.71]</span>
+</div>
+<p>Le paramètre <code>alternative</code> peut être <code>"two.sided"</code> (bilatéral), <code>"less"</code> (unilatéral gauche) ou <code>"greater"</code> (unilatéral droit).</p>
+
+<h2>5. Interprétation complète</h2>
+<p>Un bon compte-rendu d'un test t inclut :</p>
+<ul class="compact-list">
+  <li>La valeur de t et les degrés de liberté : <em>t(49) = 3,54</em></li>
+  <li>La p-value : <em>p = 0,009</em></li>
+  <li>L'intervalle de confiance : <em>IC 95 % = [42,29 ; 45,71]</em></li>
+  <li>La conclusion en mots simples, avec le contexte</li>
+</ul>
+<div class="box box-green">
+  <p><strong>Conclusion rédigée :</strong> Les employés travaillent en moyenne 44h par semaine (IC 95 % : [42,3 ; 45,7]), soit significativement plus que les 41h légales, t(49) = 3,54, p = 0,009.</p>
+</div>
+
+<h2>6. Les conditions d'application</h2>
+<div class="table-wrap"><table><thead><tr><th>Condition</th><th>Ce qu'il faut vérifier</th></tr></thead><tbody>
+<tr><td>Données indépendantes</td><td>Chaque observation est un individu différent, sans lien entre eux.</td></tr>
+<tr><td>Distribution approximativement normale <em>ou</em> n grand</td><td>Si n ≥ 30, le théorème central limite garantit que la moyenne suit une distribution normale — peu importe la forme des données individuelles.</td></tr>
+<tr><td>Pas de valeurs aberrantes extrêmes</td><td>Vérifier sur un graphique (boxplot, histogramme).</td></tr>
+</tbody></table></div>
+<div class="box box-note">
+  <p><strong>Le test t est robuste.</strong> Si n est grand (≥ 30–40), il donne de bons résultats même si les données ne sont pas parfaitement normales. En dessous de 30, il vaut mieux que les données soient assez symétriques.</p>
+</div>
+
+<h2>7. Significatif ≠ important</h2>
+<p>Avec n = 50 000 (une grande enquête nationale), même une différence de 0,1h avec la norme légale donnerait un t gigantesque et une p-value infime. On rejetterait H₀ — mais +6 minutes par semaine n'a aucun intérêt pratique.</p>
+<p>C'est pourquoi on rapporte toujours <strong>l'IC</strong> en plus du test : il montre l'ampleur réelle de l'effet, pas juste son existence statistique.</p>
+
+<h2>À retenir</h2>
+<div class="table-wrap"><table><thead><tr><th>Élément</th><th>Valeur / signification</th></tr></thead><tbody>
+<tr><td>Formule</td><td>t = (ȳ − μ₀) / (s / √n)</td></tr>
+<tr><td>Degrés de liberté</td><td>df = n − 1</td></tr>
+<tr><td>En R</td><td>t.test(données, mu = valeur_H0)</td></tr>
+<tr><td>Conditions</td><td>Données indépendantes, n ≥ 30 ou distribution normale</td></tr>
+<tr><td>Toujours reporter</td><td>t, df, p-value, IC à 95 %</td></tr>
+</tbody></table></div>
+
+<div class="page-nav">
+  <a href="ch21.html">← Chapitre 21</a>
+  <a href="ch23.html">Chapitre 23 →</a>
+</div>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const isDark=document.documentElement.dataset.mode==='dark'||(!document.documentElement.dataset.mode&&matchMedia('(prefers-color-scheme:dark)').matches);
+const gridC=isDark?'rgba(255,255,255,0.12)':'rgba(25,25,24,0.09)';
+const tick=isDark?'#A7A59D':'#6B6963';
+
+// Draw t distribution
+function tpdf(t,df){
+  const num=Math.pow(1+t*t/df,-(df+1)/2);
+  return num;
+}
+const df=49;
+const labels=[];const vals=[];const colors=[];
+for(let t=-5;t<=5;t+=0.05){
+  labels.push(t.toFixed(2));
+  const y=tpdf(t,df);
+  vals.push(y);
+  // Shade tails beyond ±3.54 (p-value zone)
+  if(Math.abs(t)>=3.54){colors.push('rgba(235,104,52,0.55)');}
+  else{colors.push(isDark?'rgba(42,120,214,0.25)':'rgba(42,120,214,0.20)');}
+}
+new Chart(document.getElementById('t-dist'),{type:'bar',data:{labels,datasets:[{data:vals,backgroundColor:colors,borderWidth:0,barPercentage:1,categoryPercentage:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:t=>'t = '+t[0].label,label:()=>''}}},scales:{x:{ticks:{color:tick,font:{size:9},callback:(v,i,arr)=>{const n=Number(labels[i]);return Math.abs(n-Math.round(n))<0.001&&Math.abs(n)<=5?n.toFixed(0):'';}},grid:{display:false}},y:{display:false}}}});
+</script>
+<script src="../assets/nav-content.js"></script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 28 — Inférence bayésienne</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+.compact-list{margin:.75rem 0 1rem 1.2rem;color:var(--text-sec);}
+.compact-list li{margin:.35rem 0;}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
+.bayes-card{background:var(--surface-1);border:.5px solid var(--border);border-radius:12px;padding:16px;text-align:center;}
+.bayes-icon{font-size:1.6rem;margin-bottom:6px;}
+.bayes-label{font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;}
+.bayes-name{font-size:1rem;font-weight:600;color:var(--text-primary);}
+.bayes-desc{font-size:.82rem;color:var(--text-secondary);margin-top:6px;line-height:1.5;}
+.arrow-mid{display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--accent);}
+.sim-bar{height:12px;border-radius:6px;background:linear-gradient(90deg,rgba(42,120,214,.15),rgba(42,120,214,.6),rgba(42,120,214,.15));margin:6px 0;}
+.compare-row{display:flex;gap:0;border:.5px solid var(--border);border-radius:10px;overflow:hidden;margin:14px 0;}
+.compare-col{flex:1;padding:14px;font-size:.87rem;line-height:1.6;}
+.compare-col:first-child{border-right:.5px solid var(--border);}
+.compare-col .head{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;}
+@media(max-width:600px){.grid3{grid-template-columns:1fr;}.compare-row{flex-direction:column;}.compare-col:first-child{border-right:none;border-bottom:.5px solid var(--border);}}
+</style>
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">☰</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content"><div class="content-inner">
+
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 28 · Inférence</div>
+  <h1 class="ch-title">Inférence bayésienne</h1>
+  <p class="ch-desc">Une façon de modéliser l'incertitude qui combine ce qu'on savait avant les données avec ce que les données nous apprennent — et qui produit une distribution complète de valeurs plausibles.</p>
+</div>
+
+<h2>1. Le problème de la valeur unique</h2>
+<p>En régression classique (ch.&nbsp;18), on obtient un seul coefficient : par exemple, b = 837 CHF. C'est une estimation, mais elle cache quelque chose d'important : cette valeur est issue d'un échantillon particulier. Avec un autre échantillon, on aurait obtenu une valeur légèrement différente.</p>
+<p>On traite cette incertitude avec les intervalles de confiance (ch.&nbsp;21). Mais l'approche bayésienne va plus loin : elle ne donne pas un chiffre + un intervalle autour. Elle donne directement une <strong>distribution de probabilité</strong> sur les valeurs plausibles du paramètre.</p>
+
+<h2>2. Les trois concepts fondamentaux</h2>
+<div class="grid3">
+  <div class="bayes-card">
+    <div class="bayes-icon">📋</div>
+    <div class="bayes-label">Avant les données</div>
+    <div class="bayes-name">Prior</div>
+    <div class="bayes-desc">Ce qu'on croit plausible avant d'observer les données. Peut être vague ou informatif.</div>
+  </div>
+  <div class="bayes-card">
+    <div class="bayes-icon">📊</div>
+    <div class="bayes-label">Les données</div>
+    <div class="bayes-name">Vraisemblance</div>
+    <div class="bayes-desc">Ce que les données nous apprennent. Quels paramètres rendraient ces données les plus probables ?</div>
+  </div>
+  <div class="bayes-card">
+    <div class="bayes-icon">✅</div>
+    <div class="bayes-label">Après les données</div>
+    <div class="bayes-name">Posterior</div>
+    <div class="bayes-desc">La combinaison du prior et des données. Notre croyance mise à jour.</div>
+  </div>
+</div>
+<div class="box box-note" style="margin-top:14px;">
+  <p><strong>Formule conceptuelle :</strong> Posterior ∝ Prior × Vraisemblance<br>
+  Le posterior est proportionnel au produit du prior et de la vraisemblance des données.</p>
+</div>
+
+<h2>3. Le prior : ce qu'on sait avant</h2>
+<p>Le prior encode notre croyance initiale sur les paramètres, <em>avant</em> de regarder les données. C'est un concept qui peut sembler subjectif — et il l'est partiellement. Mais en pratique :</p>
+<ul class="compact-list">
+  <li>Un <strong>prior non-informatif</strong> dit « je ne sais rien a priori » — toutes les valeurs sont également plausibles.</li>
+  <li>Un <strong>prior faiblement informatif</strong> dit « je sais que des valeurs extrêmes sont peu plausibles » sans contraindre fortement le résultat.</li>
+  <li>Un <strong>prior informatif</strong> intègre des connaissances existantes (études précédentes, théorie).</li>
+</ul>
+<div class="box box-note">
+  <p>Dans <code>stan_glm</code>, le prior par défaut est <strong>faiblement informatif</strong> : il exclut les valeurs absurdes mais ne pousse pas vers une valeur précise. Avec suffisamment de données, il a peu d'influence sur le posterior.</p>
+</div>
+
+<h2>4. Le posterior : une distribution, pas un chiffre</h2>
+<p>Le résultat d'une analyse bayésienne, c'est le <strong>posterior</strong> — une distribution complète qui montre toutes les valeurs plausibles du paramètre, avec leur probabilité relative.</p>
+<p>Au lieu d'avoir b = 837 CHF, on a une distribution centrée autour de 837, plus ou moins large selon la quantité de données et leur cohérence.</p>
+<div class="sim-bar" style="max-width:400px;margin:10px auto;"></div>
+<p style="text-align:center;font-size:.85rem;color:var(--text-muted);">Représentation schématique d'un posterior : la masse est concentrée là où les valeurs sont les plus plausibles.</p>
+
+<h2>5. Ce que <code>stan_glm</code> fait concrètement</h2>
+<p><code>stan_glm</code> (du package R <code>rstanarm</code>) est une version bayésienne de la régression. Au lieu de calculer directement les coefficients, il utilise une technique appelée <strong>MCMC</strong> (Markov Chain Monte Carlo) pour générer des milliers de valeurs plausibles pour chaque paramètre.</p>
+<p>Ces milliers de simulations forment une approximation du posterior. On peut ensuite :</p>
+<ul class="compact-list">
+  <li>Prendre la <strong>médiane</strong> comme estimation centrale (plus robuste que la moyenne pour un posterior asymétrique).</li>
+  <li>Calculer un <strong>intervalle de crédibilité</strong> à 90 % ou 95 % — la plage qui contient 90 % (ou 95 %) des simulations.</li>
+  <li>Simuler des prédictions pour de nouveaux individus en tirant des valeurs du posterior — on obtient alors une distribution de prédictions, pas juste un chiffre.</li>
+</ul>
+
+<h2>6. Intervalle de crédibilité vs intervalle de confiance</h2>
+<div class="compare-row">
+  <div class="compare-col">
+    <div class="head">Intervalle de confiance (classique)</div>
+    <p>« Si on répétait l'étude un grand nombre de fois, 95 % des intervalles construits de cette façon contiendraient le vrai paramètre. »<br><br>L'interprétation porte sur la procédure, pas sur cet intervalle précis.</p>
+  </div>
+  <div class="compare-col">
+    <div class="head">Intervalle de crédibilité (bayésien)</div>
+    <p>« Étant donné les données et le prior, il y a 95 % de probabilité que le paramètre soit dans cet intervalle. »<br><br>L'interprétation est directe et intuitive.</p>
+  </div>
+</div>
+<div class="box box-green">
+  <p>L'intervalle de crédibilité bayésien dit ce que beaucoup de gens <em>voudraient</em> que l'intervalle de confiance classique dise — mais que celui-ci ne dit pas techniquement.</p>
+</div>
+
+<h2>7. Quand les données sont abondantes</h2>
+<p>Une propriété importante : avec beaucoup de données, le posterior est très peu sensible au prior. Les données « écrasent » la croyance initiale. C'est ce qu'on appelle la <strong>convergence vers le maximum de vraisemblance</strong>.</p>
+<p>En pratique : avec de grands échantillons, les résultats bayésiens et classiques sont très similaires. La différence se voit surtout avec des données rares ou des modèles complexes.</p>
+
+<h2>À retenir</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Concept</th><th>En bref</th></tr></thead>
+<tbody>
+<tr><td><strong>Prior</strong></td><td>Croyance initiale sur les paramètres, avant les données.</td></tr>
+<tr><td><strong>Vraisemblance</strong></td><td>Ce que les données nous apprennent sur les paramètres.</td></tr>
+<tr><td><strong>Posterior</strong></td><td>Croyance mise à jour : Prior × Vraisemblance.</td></tr>
+<tr><td><strong>stan_glm</strong></td><td>Génère des milliers de simulations du posterior via MCMC.</td></tr>
+<tr><td><strong>Intervalle de crédibilité</strong></td><td>« 95 % de chances que le paramètre soit ici » — interprétation directe.</td></tr>
+<tr><td><strong>Prior faible</strong></td><td>Default de stan_glm : peu d'influence avec beaucoup de données.</td></tr>
+</tbody>
+</table></div>
+
+<div class="page-nav">
+  <a href="ch27.html">← Chapitre 27</a>
+</div>
+</div></main></div>
+<script src="../assets/nav-content.js"></script>
+</body>
+</html>

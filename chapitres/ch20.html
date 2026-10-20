@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 20 — Logique des tests d'hypothèses</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+.compact-list { margin:.75rem 0 1rem 1.2rem; color:var(--text-sec); }
+.compact-list li { margin:.35rem 0; }
+.step-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin:1rem 0; }
+.step-card { background:var(--surface-1); border:.5px solid var(--border); border-radius:12px; padding:12px; text-align:center; }
+.step-num { font-size:1.4rem; font-weight:700; color:var(--accent); }
+.step-label { font-size:.78rem; color:var(--text-secondary); margin-top:4px; line-height:1.4; }
+.alpha-bar { display:flex; align-items:stretch; border-radius:8px; overflow:hidden; margin:1rem 0; font-size:.85rem; }
+.alpha-accept { background:var(--green-light); border:1px solid var(--green); flex:19; padding:10px 14px; color:var(--text-sec); display:flex; align-items:center; }
+.alpha-reject { background:var(--orange-light); border:1px solid var(--orange); flex:1; padding:10px 14px; color:var(--text-sec); display:flex; align-items:center; justify-content:center; }
+.chart-box{background:var(--surface-1);border:.5px solid var(--border);border-radius:12px;padding:16px;margin:8px 0;}
+.chart-title{font-size:12px;font-weight:500;color:var(--text-primary);margin-bottom:4px;}
+.chart-sub{font-size:11px;color:var(--text-secondary);margin-bottom:10px;line-height:1.5;}
+@media(max-width:700px){.step-grid{grid-template-columns:repeat(2,1fr);}}</style>
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">☰</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content"><div class="content-inner">
+
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 20 · Inférence statistique</div>
+  <h1 class="ch-title">Logique des tests d'hypothèses</h1>
+  <p class="ch-desc">Comprendre pourquoi et comment on teste une hypothèse — la logique qui est derrière tous les tests statistiques.</p>
+</div>
+
+<h2>1. Le problème de départ</h2>
+<p>On a des données d'un <strong>échantillon</strong>. On veut savoir si ce qu'on observe peut nous apprendre quelque chose sur la <strong>population</strong> entière.</p>
+<p>Exemple concret : une enquête mesure que les employés d'une entreprise travaillent en moyenne <strong>44 heures par semaine</strong>. La loi prévoit 41 heures. Est-ce que la différence (+3h) est réelle — c'est-à-dire qu'elle existe aussi dans la population — ou est-ce juste la variation normale d'un échantillon ?</p>
+<p>Le test d'hypothèse est la méthode pour répondre à cette question de façon rigoureuse.</p>
+
+<h2>2. Les deux hypothèses</h2>
+<p>On formule toujours <strong>deux hypothèses opposées</strong> avant de regarder les données :</p>
+<div class="grid-2">
+  <div class="box box-note">
+    <p><strong>H₀ — Hypothèse nulle</strong><br>
+    Le statu quo. « Rien d'anormal ne se passe. »<br>
+    Dans notre exemple : la vraie moyenne est 41 heures.<br>
+    <em>C'est toujours l'hypothèse qu'on cherche à tester.</em></p>
+  </div>
+  <div class="box box-green">
+    <p><strong>H₁ — Hypothèse alternative</strong><br>
+    Ce qu'on soupçonne. « Il se passe quelque chose. »<br>
+    Dans notre exemple : la vraie moyenne est différente de 41 heures.<br>
+    <em>C'est ce qu'on veut montrer.</em></p>
+  </div>
+</div>
+<div class="box box-orange">
+  <p><strong>Règle fondamentale :</strong> On ne teste jamais directement H₁. On teste H₀. Si les données sont incompatibles avec H₀, on conclut en faveur de H₁. C'est un raisonnement par contradiction.</p>
+</div>
+
+<h2>3. La logique avec un exemple simple</h2>
+<p>Imaginez qu'on vous donne une pièce de monnaie et qu'on vous demande si elle est truquée. Vous ne pouvez pas l'examiner — vous pouvez seulement la lancer.</p>
+<p>Vous formulez :</p>
+<ul class="compact-list">
+  <li><strong>H₀ :</strong> la pièce est équilibrée (50% de chances de tomber sur face).</li>
+  <li><strong>H₁ :</strong> la pièce est truquée.</li>
+</ul>
+<p>Vous lancez la pièce <strong>40 fois</strong> et obtenez <strong>38 faces</strong>. Est-ce possible avec une pièce équilibrée ? Techniquement oui — mais c'est <strong>extrêmement rare</strong>.</p>
+<blockquote><p>Si la pièce était vraiment équilibrée, la probabilité d'obtenir 38 faces ou plus sur 40 lancers serait infime — moins de 0,01 %.</p></blockquote>
+<p>Ce résultat est si improbable sous H₀ qu'on <strong>doute de H₀</strong>. On conclut que la pièce est probablement truquée.</p>
+<p>C'est exactement la logique d'un test d'hypothèse.</p>
+
+<h2>4. La p-value : l'outil central</h2>
+<p>La <strong>p-value</strong> est la probabilité d'obtenir des données aussi extrêmes (ou plus) que celles qu'on a observées, <em>si H₀ était vraie</em>.</p>
+<div class="box box-note">
+  <p><strong>Formulation précise :</strong> p-value = P(données aussi extrêmes | H₀ vraie)</p>
+</div>
+<p>La p-value ne dit <strong>pas</strong> quelle est la probabilité que H₀ soit vraie. Elle dit : si H₀ était vraie, à quel point nos données seraient-elles rares ?</p>
+<ul class="compact-list">
+  <li><strong>p-value petite</strong> (ex. 0,001) → nos données seraient très rares sous H₀ → on doute de H₀.</li>
+  <li><strong>p-value grande</strong> (ex. 0,40) → nos données seraient assez courantes sous H₀ → pas de raison de rejeter H₀.</li>
+</ul>
+
+<h2>5. Le seuil α : où mettre la limite ?</h2>
+<p>On fixe à l'avance un seuil de tolérance, noté <strong>α</strong> (alpha). C'est la probabilité d'erreur qu'on accepte de commettre.</p>
+<p>La convention dans la plupart des sciences : <strong>α = 0,05</strong> (5 %).</p>
+
+<div class="alpha-bar" role="img" aria-label="Barre montrant 95% de zone d'acceptation et 5% de zone de rejet">
+  <div class="alpha-accept"><strong>95 % des cas</strong> — Si H₀ est vraie, nos données tomberaient ici.</div>
+  <div class="alpha-reject"><strong>5 %</strong><br>zone rare</div>
+</div>
+
+<ul class="compact-list">
+  <li>Si <strong>p-value &lt; 0,05</strong> : nos données sont dans la zone rare → on <strong>rejette H₀</strong>.</li>
+  <li>Si <strong>p-value ≥ 0,05</strong> : on <strong>ne rejette pas H₀</strong> (attention : ça ne prouve pas que H₀ est vraie).</li>
+</ul>
+<div class="box box-orange">
+  <p><strong>Pourquoi 5 % ?</strong> C'est une convention historique (Ronald Fisher, années 1920). C'est une décision arbitraire collectivement acceptée. Dans certains domaines (médecine, physique), on utilise α = 0,01 ou même 0,001 quand les enjeux sont plus sérieux.</p>
+</div>
+
+<h2>6. Les 5 étapes d'un test</h2>
+<div class="step-grid">
+  <div class="step-card"><div class="step-num">1</div><div class="step-label">Formuler H₀ et H₁</div></div>
+  <div class="step-card"><div class="step-num">2</div><div class="step-label">Choisir le seuil α (souvent 0,05)</div></div>
+  <div class="step-card"><div class="step-num">3</div><div class="step-label">Calculer la statistique de test</div></div>
+  <div class="step-card"><div class="step-num">4</div><div class="step-label">Obtenir la p-value</div></div>
+  <div class="step-card"><div class="step-num">5</div><div class="step-label">Conclure : rejeter ou non H₀</div></div>
+</div>
+<p>Les chapitres suivants appliquent ces 5 étapes à différentes situations concrètes.</p>
+
+<h2>7. Tests unilatéraux vs bilatéraux</h2>
+<p>La formulation de H₁ change selon ce qu'on cherche :</p>
+<div class="table-wrap"><table><thead><tr><th>Type de test</th><th>H₁</th><th>Quand l'utiliser</th></tr></thead><tbody>
+<tr><td><strong>Bilatéral</strong></td><td>μ ≠ 41h (différent)</td><td>On sait juste que ça peut être dans les deux sens.</td></tr>
+<tr><td><strong>Unilatéral gauche</strong></td><td>μ &lt; 41h (moins)</td><td>On soupçonne une valeur plus petite.</td></tr>
+<tr><td><strong>Unilatéral droit</strong></td><td>μ &gt; 41h (plus)</td><td>On soupçonne une valeur plus grande.</td></tr>
+</tbody></table></div>
+<div class="box box-note">
+  <p>Par défaut, sauf raison forte, on utilise le test <strong>bilatéral</strong>. Il est plus prudent car il ne présuppose pas la direction de l'effet.</p>
+</div>
+
+<h2>8. Ce qu'un test ne fait pas</h2>
+<div class="grid-2">
+  <div class="box box-orange">
+    <p><strong>Rejeter H₀ ≠ prouver H₁.</strong><br>Cela dit juste que nos données sont incompatibles avec H₀. Plusieurs H₁ différentes peuvent expliquer les données.</p>
+  </div>
+  <div class="box box-orange">
+    <p><strong>Ne pas rejeter H₀ ≠ prouver H₀.</strong><br>Peut-être que l'échantillon est trop petit pour détecter un effet réel. On parle alors de <em>manque de puissance</em>.</p>
+  </div>
+  <div class="box box-orange">
+    <p><strong>Significatif ≠ important.</strong><br>Avec un grand échantillon, un effet minuscule peut être statistiquement significatif sans être intéressant en pratique.</p>
+  </div>
+  <div class="box box-orange">
+    <p><strong>p-value ≠ probabilité que H₀ soit vraie.</strong><br>C'est l'erreur la plus fréquente. La p-value suppose H₀ vraie ; elle ne dit pas si H₀ est vraie.</p>
+  </div>
+</div>
+
+<h2>À retenir</h2>
+<div class="table-wrap"><table><thead><tr><th>Concept</th><th>En bref</th></tr></thead><tbody>
+<tr><td>H₀</td><td>Hypothèse par défaut qu'on cherche à réfuter.</td></tr>
+<tr><td>H₁</td><td>Ce qu'on soupçonne, ce qu'on veut montrer.</td></tr>
+<tr><td>p-value</td><td>Probabilité d'observer nos données si H₀ était vraie.</td></tr>
+<tr><td>α = 0,05</td><td>Seuil de tolérance à l'erreur, fixé avant le test.</td></tr>
+<tr><td>p &lt; α</td><td>On rejette H₀ — résultat statistiquement significatif.</td></tr>
+<tr><td>p ≥ α</td><td>On ne rejette pas H₀ — pas de preuve suffisante contre H₀.</td></tr>
+</tbody></table></div>
+
+<div class="page-nav">
+  <a href="ch19.html">← Chapitre 19</a>
+  <a href="ch21.html">Chapitre 21 →</a>
+</div>
+</div></main></div>
+<script src="../assets/nav-content.js"></script>
+</body>
+</html>

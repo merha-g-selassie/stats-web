@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 27 — Moindres carrés et MLE</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+.compact-list{margin:.75rem 0 1rem 1.2rem;color:var(--text-sec);}
+.compact-list li{margin:.35rem 0;}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+.method-card{background:var(--surface-1);border:.5px solid var(--border);border-radius:12px;padding:16px;}
+.method-card h3{margin-top:0;font-size:.95rem;}
+.method-tag{display:inline-block;font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:4px;margin-bottom:8px;}
+.tag-blue{background:rgba(42,120,214,.12);color:var(--accent);}
+.tag-green{background:rgba(27,175,122,.12);color:#1baf7a;}
+@media(max-width:600px){.grid2{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">☰</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content"><div class="content-inner">
+
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 27 · Régression</div>
+  <h1 class="ch-title">Trouver le meilleur modèle : moindres carrés et MLE</h1>
+  <p class="ch-desc">Deux façons d'estimer les paramètres d'une régression — et pourquoi comprendre la seconde aide à aborder l'inférence bayésienne.</p>
+</div>
+
+<h2>1. Le problème : comment choisit-on les coefficients ?</h2>
+<p>Quand on fait une régression, on cherche les valeurs de <em>a</em> et <em>b</em> qui définissent la droite. Il y a une infinité de droites possibles — comment l'ordinateur choisit-il la « meilleure » ?</p>
+<p>Il existe deux grandes réponses à cette question. Elles donnent souvent le même résultat, mais leur logique est profondément différente.</p>
+
+<h2>2. Méthode 1 — Moindres carrés (OLS)</h2>
+<p>Déjà vue au chapitre 18, on la rappelle ici pour mieux la contraster.</p>
+<p><strong>Idée :</strong> on cherche la droite qui minimise la somme des erreurs de prédiction. Chaque résidu (écart entre valeur réelle et valeur prédite) est mis au carré, et on cherche à rendre cette somme la plus petite possible.</p>
+<ul class="compact-list">
+  <li>Mettre au carré évite que les erreurs positives et négatives s'annulent.</li>
+  <li>Les grands résidus sont pénalisés plus fortement que les petits.</li>
+</ul>
+<div class="box box-note">
+  <p><strong>Nature de la méthode :</strong> purement géométrique. On cherche la droite la plus proche des points, sans aucune hypothèse sur la façon dont les données ont été générées.</p>
+</div>
+
+<h2>3. Méthode 2 — Maximum de vraisemblance (MLE)</h2>
+<p>La logique est fondamentalement différente. On part de l'idée que les données ont été générées par un mécanisme probabiliste — et on cherche les paramètres qui rendent nos données observées <strong>les plus probables possible</strong>.</p>
+<p>Autrement dit : parmi toutes les valeurs possibles de a et b, lesquelles auraient le plus de chances de produire exactement les données qu'on a observées ?</p>
+<div class="box box-note">
+  <p><strong>Nature de la méthode :</strong> probabiliste. Elle suppose un modèle de génération des données (ex. : les erreurs suivent une loi normale), puis cherche les paramètres qui maximisent la vraisemblance d'observer nos données.</p>
+</div>
+
+<h2>4. Résultat identique, logiques différentes</h2>
+<div class="grid2">
+  <div class="method-card">
+    <div class="method-tag tag-blue">Moindres carrés (OLS)</div>
+    <h3>Minimiser les erreurs</h3>
+    <p style="font-size:.87rem;color:var(--text-secondary);line-height:1.6;">Cherche la droite la plus proche des données. Géométrique, direct, aucune hypothèse probabiliste requise.</p>
+  </div>
+  <div class="method-card">
+    <div class="method-tag tag-green">Maximum de vraisemblance (MLE)</div>
+    <h3>Maximiser la probabilité des données</h3>
+    <p style="font-size:.87rem;color:var(--text-secondary);line-height:1.6;">Cherche les paramètres qui rendent les données observées les plus probables. Suppose un modèle probabiliste.</p>
+  </div>
+</div>
+<div class="box box-green" style="margin-top:14px;">
+  <p><strong>Pour une régression linéaire classique avec erreurs normales, les deux méthodes donnent exactement le même résultat.</strong> OLS et MLE convergent vers les mêmes valeurs de a et b.</p>
+</div>
+
+<h2>5. Pourquoi connaître le MLE si le résultat est le même ?</h2>
+<p>Deux raisons :</p>
+<ul class="compact-list">
+  <li><strong>Généralité :</strong> le MLE fonctionne pour des modèles bien plus complexes où OLS ne s'applique plus directement — régression logistique, modèles mixtes, etc.</li>
+  <li><strong>Pont vers le bayésien :</strong> l'inférence bayésienne (ch.&nbsp;28) est une extension du MLE. Elle ajoute un <em>prior</em> — une croyance initiale sur les paramètres — et le combine avec la vraisemblance des données pour obtenir une distribution complète des valeurs plausibles.</li>
+</ul>
+<div class="box box-orange">
+  <p><strong>En résumé :</strong> OLS est suffisant pour la régression linéaire classique. Mais comprendre la vraisemblance ouvre la porte à une façon plus riche de modéliser l'incertitude — ce que fait l'approche bayésienne du chapitre suivant.</p>
+</div>
+
+<h2>À retenir</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Concept</th><th>En bref</th></tr></thead>
+<tbody>
+<tr><td><strong>OLS (moindres carrés)</strong></td><td>Droite qui minimise la somme des résidus au carré. Géométrique.</td></tr>
+<tr><td><strong>MLE (max. vraisemblance)</strong></td><td>Paramètres qui rendent les données observées les plus probables. Probabiliste.</td></tr>
+<tr><td><strong>Résultat</strong></td><td>Identique pour une régression linéaire classique.</td></tr>
+<tr><td><strong>Avantage du MLE</strong></td><td>Plus général, et fondement de l'approche bayésienne.</td></tr>
+</tbody>
+</table></div>
+
+<div class="page-nav">
+  <a href="ch26.html">← Chapitre 26</a>
+  <a href="ch28.html">Chapitre 28 →</a>
+</div>
+</div></main></div>
+<script src="../assets/nav-content.js"></script>
+</body>
+</html>

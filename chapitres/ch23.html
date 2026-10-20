@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 23 — Test z : comparer une proportion</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+.compact-list{margin:.75rem 0 1rem 1.2rem;color:var(--text-sec);}
+.compact-list li{margin:.35rem 0;}
+.step-list{counter-reset:step;list-style:none;margin:1rem 0;padding:0;}
+.step-list li{counter-increment:step;display:flex;gap:12px;margin:.7rem 0;align-items:flex-start;}
+.step-list li::before{content:counter(step);min-width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-size:.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.r-block{background:var(--surface-1);border:.5px solid var(--border);border-radius:10px;padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--text-secondary);margin:1rem 0;line-height:1.8;}
+.r-block .comment{color:var(--text-muted);font-style:italic;}
+.r-block .fn{color:var(--accent);}
+.chart-box{background:var(--surface-1);border:.5px solid var(--border);border-radius:12px;padding:16px;margin:12px 0;}
+.chart-title{font-size:12px;font-weight:500;color:var(--text-primary);margin-bottom:4px;}
+.chart-sub{font-size:11px;color:var(--text-secondary);margin-bottom:10px;line-height:1.5;}
+</style>
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">☰</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content"><div class="content-inner">
+
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 23 · Inférence statistique</div>
+  <h1 class="ch-title">Test z : comparer une proportion</h1>
+  <p class="ch-desc">Tester si une proportion observée dans un échantillon est différente d'une valeur de référence.</p>
+</div>
+
+<h2>1. À quoi sert le test z pour une proportion ?</h2>
+<p>Parfois, la variable qu'on mesure n'est pas une moyenne, mais une <strong>proportion</strong> — une fraction de la population qui a une certaine caractéristique.</p>
+<blockquote><p>Est-ce que la vraie proportion dans la population est différente d'une valeur de référence donnée ?</p></blockquote>
+<p><strong>Exemples :</strong></p>
+<ul class="compact-list">
+  <li>Le taux de satisfaction dans une entreprise est-il différent des 75 % de l'an dernier ?</li>
+  <li>La proportion de fumeurs a-t-elle changé depuis les 30 % observés il y a 10 ans ?</li>
+  <li>Le taux de réussite à un examen est-il supérieur à 50 % ?</li>
+</ul>
+
+<h2>2. La logique du test</h2>
+<p>On note p̂ (p-chapeau) la proportion observée dans l'échantillon et p₀ la valeur de référence (H₀). La statistique z mesure l'écart entre les deux :</p>
+<div class="formula">z = (p̂ − p₀) / √(p₀(1−p₀) / n)</div>
+<ul class="compact-list">
+  <li><strong>p̂</strong> : proportion observée dans l'échantillon</li>
+  <li><strong>p₀</strong> : proportion de référence (valeur de H₀)</li>
+  <li><strong>n</strong> : taille de l'échantillon</li>
+  <li>Le dénominateur est l'<strong>erreur standard</strong> de la proportion sous H₀</li>
+</ul>
+<p>La statistique z suit une loi normale standard (contrairement au test t). On peut donc utiliser les valeurs critiques de la loi normale : ±1,96 pour α = 0,05 bilatéral.</p>
+
+<h2>3. Condition d'application : le critère des 10</h2>
+<div class="box box-orange">
+  <p><strong>Avant d'utiliser ce test, vérifier :</strong><br>
+  n × p₀ ≥ 10 <strong>et</strong> n × (1 − p₀) ≥ 10<br><br>
+  Ces conditions garantissent que l'approximation normale est valide. Si elles ne sont pas remplies (petit échantillon ou proportion très extrême), il faut utiliser un test exact de Fisher.</p>
+</div>
+
+<h2>4. Exemple complet : taux de satisfaction</h2>
+<p>Situation : l'an dernier, 75 % des clients étaient satisfaits. On interroge 120 clients et 78 sont satisfaits, soit p̂ = 78/120 = 0,65 (65 %).</p>
+
+<ol class="step-list">
+  <li><strong>H₀ :</strong> p = 0,75 (le taux n'a pas changé)<br>
+    <strong>H₁ :</strong> p ≠ 0,75 (test bilatéral)</li>
+  <li><strong>Seuil :</strong> α = 0,05</li>
+  <li><strong>Vérifier les conditions :</strong><br>
+    n × p₀ = 120 × 0,75 = 90 ≥ 10 ✓<br>
+    n × (1−p₀) = 120 × 0,25 = 30 ≥ 10 ✓</li>
+  <li><strong>Calculer z :</strong><br>
+    Erreur standard = √(0,75 × 0,25 / 120) = √(0,001563) ≈ 0,03952<br>
+    z = (0,65 − 0,75) / 0,03952 ≈ <strong>−2,53</strong></li>
+  <li><strong>P-value :</strong> Pour z = −2,53 (bilatéral) → <strong>p ≈ 0,011</strong></li>
+  <li><strong>Conclusion :</strong> p = 0,011 &lt; α = 0,05 → on <strong>rejette H₀</strong>. Le taux de satisfaction a significativement diminué.</li>
+</ol>
+
+<div class="chart-box">
+  <div class="chart-title">Distribution normale standard — z = −2,53</div>
+  <div class="chart-sub">La statistique z = −2,53 se situe dans la queue gauche. Les zones orangées représentent les deux queues (test bilatéral).</div>
+  <div style="position:relative;height:190px;"><canvas id="z-dist" role="img" aria-label="Distribution normale avec z=-2.53 dans la queue gauche"></canvas></div>
+</div>
+
+<h2>5. En R : prop.test()</h2>
+<div class="r-block">
+<span class="comment"># prop.test(nb de succès, taille de l'échantillon, proportion H0)</span><br>
+<span class="fn">prop.test</span>(78, 120, p = 0.75, alternative = <span style="color:#1baf7a">"two.sided"</span>)<br>
+<br>
+<span class="comment"># Résultat :</span><br>
+<span class="comment"># X-squared = 6.4, df = 1, p-value = 0.011</span><br>
+<span class="comment"># 95 percent confidence interval: [0.558, 0.735]</span><br>
+<span class="comment"># sample estimates: p = 0.65</span>
+</div>
+<div class="box box-note">
+  <p><strong>Note :</strong> R utilise en fait un χ² avec correction de continuité (X-squared) plutôt que z directement. Le résultat est équivalent et la logique est la même. prop.test() est la fonction standard pour ce type de test.</p>
+</div>
+
+<h2>6. Interpréter l'IC fourni par prop.test()</h2>
+<p>L'IC à 95 % est [0,558 ; 0,735]. La valeur H₀ = 0,75 est en dehors de cet intervalle — cohérent avec le rejet de H₀.</p>
+<p><strong>Lecture concrète :</strong> On est à 95 % confiant que le vrai taux de satisfaction est entre 55,8 % et 73,5 %. C'est bien en dessous des 75 % de l'an dernier.</p>
+
+<h2>7. Différence avec le test t</h2>
+<div class="table-wrap"><table><thead><tr><th></th><th>Test t (moyenne)</th><th>Test z (proportion)</th></tr></thead><tbody>
+<tr><td><strong>Variable mesurée</strong></td><td>Quantitative (heures, euros, kg…)</td><td>Catégorielle binaire (oui/non, succès/échec)</td></tr>
+<tr><td><strong>Paramètre testé</strong></td><td>Moyenne μ</td><td>Proportion p</td></tr>
+<tr><td><strong>Distribution</strong></td><td>Loi t de Student</td><td>Loi normale (approximation)</td></tr>
+<tr><td><strong>En R</strong></td><td>t.test()</td><td>prop.test()</td></tr>
+<tr><td><strong>Condition clé</strong></td><td>n ≥ 30 ou données normales</td><td>n × p₀ ≥ 10 et n × (1−p₀) ≥ 10</td></tr>
+</tbody></table></div>
+
+<h2>8. Ce que le résultat signifie vraiment</h2>
+<div class="box box-orange">
+  <p><strong>Attention à la direction de l'interprétation :</strong> "Le taux de satisfaction a significativement diminué" ne veut pas dire que la baisse est forcément grave. Passer de 75 % à 65 % est significatif statistiquement — mais l'important pratiquement est l'ampleur de la baisse et ce qu'elle implique pour l'entreprise. L'IC donne cette ampleur.</p>
+</div>
+
+<h2>À retenir</h2>
+<div class="table-wrap"><table><thead><tr><th>Élément</th><th>Valeur / signification</th></tr></thead><tbody>
+<tr><td>Formule z</td><td>(p̂ − p₀) / √(p₀(1−p₀)/n)</td></tr>
+<tr><td>Condition</td><td>n×p₀ ≥ 10 et n×(1−p₀) ≥ 10</td></tr>
+<tr><td>En R</td><td>prop.test(succès, n, p = valeur_H0)</td></tr>
+<tr><td>Significatif si</td><td>p-value &lt; α (souvent 0,05)</td></tr>
+<tr><td>Toujours reporter</td><td>z (ou χ²), p-value, IC à 95 %</td></tr>
+</tbody></table></div>
+
+<div class="page-nav">
+  <a href="ch22.html">← Chapitre 22</a>
+  <a href="ch24.html">Chapitre 24 →</a>
+</div>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const isDark=document.documentElement.dataset.mode==='dark'||(!document.documentElement.dataset.mode&&matchMedia('(prefers-color-scheme:dark)').matches);
+const gridC=isDark?'rgba(255,255,255,0.12)':'rgba(25,25,24,0.09)';
+const tick=isDark?'#A7A59D':'#6B6963';
+
+function normpdf(x){return Math.exp(-0.5*x*x)/Math.sqrt(2*Math.PI);}
+const labels2=[];const vals2=[];const colors2=[];
+for(let z=-4;z<=4;z+=0.05){
+  labels2.push(z.toFixed(2));
+  vals2.push(normpdf(z));
+  if(Math.abs(z)>=2.53){colors2.push('rgba(235,104,52,0.55)');}
+  else{colors2.push(isDark?'rgba(42,120,214,0.25)':'rgba(42,120,214,0.20)');}
+}
+new Chart(document.getElementById('z-dist'),{type:'bar',data:{labels:labels2,datasets:[{data:vals2,backgroundColor:colors2,borderWidth:0,barPercentage:1,categoryPercentage:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:t=>'z = '+t[0].label,label:()=>''}}},scales:{x:{ticks:{color:tick,font:{size:9},callback:(v,i)=>{const n=Number(labels2[i]);return Math.abs(n-Math.round(n))<0.001?n.toFixed(0):'';}},grid:{display:false}},y:{display:false}}}});
+</script>
+<script src="../assets/nav-content.js"></script>
+</body>
+</html>
