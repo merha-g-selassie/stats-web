@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 26 — Régression multiple</title>
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+.compact-list{margin:.75rem 0 1rem 1.2rem;color:var(--text-sec);}
+.compact-list li{margin:.35rem 0;}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+.formula-block{background:var(--surface-1);border:.5px solid var(--border);border-radius:10px;padding:14px 18px;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text-primary);margin:1rem 0;text-align:center;letter-spacing:.03em;}
+.person-card{background:var(--surface-1);border:.5px solid var(--border);border-radius:10px;padding:14px;min-width:0;}
+.person-card h3{margin-top:0;font-size:.92rem;color:var(--accent);}
+.person-card p{font-size:.85rem;color:var(--text-secondary);line-height:1.6;margin:0;}
+.diff-badge{display:inline-block;background:rgba(42,120,214,.12);border:1px solid rgba(42,120,214,.35);border-radius:6px;padding:3px 10px;font-size:.82rem;color:var(--accent);font-weight:500;margin:4px 0;}
+@media(max-width:600px){.grid2{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<button class="nav-toggle" aria-label="Menu">☰</button>
+<div class="layout">
+<nav class="nav"></nav>
+<main class="content"><div class="content-inner">
+
+<div class="ch-header">
+  <div class="ch-eyebrow">Chapitre 26 · Régression</div>
+  <h1 class="ch-title">Régression multiple et variables de contrôle</h1>
+  <p class="ch-desc">Inclure plusieurs variables dans un même modèle pour des comparaisons plus précises — et comprendre ce que « toutes choses égales par ailleurs » veut vraiment dire.</p>
+</div>
+
+<h2>1. Pourquoi ne pas se contenter d'une seule variable ?</h2>
+<p>Dans la régression simple (ch.&nbsp;18), on a une seule variable explicative X pour prédire Y. C'est un bon point de départ, mais dans la réalité, un phénomène est presque toujours influencé par plusieurs facteurs à la fois.</p>
+<p>Exemple : on veut comprendre la relation entre la taille d'une personne et ses revenus. Mais les hommes sont en moyenne plus grands <em>et</em> gagnent en moyenne plus. Si on ne tient pas compte du sexe, on risque d'attribuer à la taille ce qui est en réalité lié au sexe.</p>
+<p>La <strong>régression multiple</strong> résout ce problème en incluant plusieurs variables dans le même modèle.</p>
+
+<h2>2. L'équation de la régression multiple</h2>
+<p>On passe de :</p>
+<div class="formula-block">Y = a + b·X + ε</div>
+<p>à :</p>
+<div class="formula-block">Y = a + b₁·X + b₂·Z + ε</div>
+<p>Chaque variable a son propre coefficient :</p>
+<ul class="compact-list">
+  <li><strong>b₁</strong> : combien Y change quand X augmente d'une unité, <em>en maintenant Z constant</em>.</li>
+  <li><strong>b₂</strong> : combien Y change quand Z augmente d'une unité, <em>en maintenant X constant</em>.</li>
+</ul>
+<p>On peut ajouter autant de variables que nécessaire. Le modèle cherche toujours à minimiser les résidus (même principe des moindres carrés qu'en régression simple).</p>
+
+<h2>3. Les variables de contrôle</h2>
+<p>Une <strong>variable de contrôle</strong> est une variable qu'on ajoute au modèle non pas parce qu'elle nous intéresse en elle-même, mais pour neutraliser sa confusion avec les variables qui nous intéressent.</p>
+<div class="box box-note">
+  <p><strong>Exemple :</strong> On veut savoir si la taille prédit les revenus. On ajoute le sexe comme variable de contrôle, parce que le sexe est lié à la fois à la taille et aux revenus. En le contrôlant, le modèle compare des personnes <strong>du même sexe</strong> — et isole la part de variation des revenus qui est associée à la taille seule.</p>
+</div>
+<p>Contrôler une variable, c'est littéralement demander au modèle : « ignore la variation due à Z, et montre-moi la relation entre X et Y chez des individus comparables sur Z ».</p>
+
+<h2>4. L'interprétation des deux personnes fictives</h2>
+<p>C'est la façon la plus claire d'interpréter un coefficient en régression multiple (ROS, Ch.&nbsp;10).</p>
+<p>Pour comprendre le coefficient de X, on imagine <strong>deux personnes fictives identiques sur toutes les autres variables</strong> du modèle, qui diffèrent uniquement d'une unité sur X. Le coefficient b₁ est la différence moyenne de Y entre ces deux personnes.</p>
+
+<div class="grid2">
+  <div class="person-card">
+    <h3>Personne A</h3>
+    <p>Taille : 170 cm<br>Sexe : femme</p>
+  </div>
+  <div class="person-card">
+    <h3>Personne B</h3>
+    <p>Taille : <strong>171 cm</strong><br>Sexe : femme</p>
+  </div>
+</div>
+<p style="text-align:center;margin:.6rem 0;">Différence moyenne prédite de revenus :<br><span class="diff-badge">b₁ = +600 CHF</span></p>
+<p>Les deux personnes sont identiques sur tout — sauf la taille. On ne compare plus n'importe qui avec n'importe qui. C'est ça, « toutes choses égales par ailleurs ».</p>
+
+<h2>5. « Toutes choses égales par ailleurs » — ce que ça veut dire</h2>
+<p>Cette expression (<em>ceteris paribus</em> en latin) est omniprésente en sciences sociales. Elle signifie exactement ce que fait la régression multiple : on compare des individus qui se ressemblent sur toutes les variables du modèle, sauf celle qu'on étudie.</p>
+<div class="box box-orange">
+  <p><strong>Limite importante :</strong> « toutes choses égales par ailleurs » ne vaut que pour les variables <em>incluses dans le modèle</em>. Des variables non mesurées ou non incluses restent des sources potentielles de biais. On peut contrôler ce qu'on a mesuré — pas ce qu'on a oublié.</p>
+</div>
+
+<h2>6. Ce que le contrôle fait — et ne fait pas</h2>
+<div class="grid2">
+  <div class="box box-green">
+    <p><strong>Ce qu'il fait</strong><br>Réduit la confusion entre variables corrélées. Permet des comparaisons plus « propres ». Isole la relation entre X et Y des autres facteurs inclus.</p>
+  </div>
+  <div class="box box-orange">
+    <p><strong>Ce qu'il ne fait pas</strong><br>Il ne crée pas de causalité. Contrôler statistiquement ≠ assigner aléatoirement (voir ch.&nbsp;19). Les variables non mesurées restent un problème.</p>
+  </div>
+</div>
+
+<h2>7. Exemple complet</h2>
+<p>Modèle : <strong>Revenus ~ Taille + Sexe</strong></p>
+<div class="box box-note">
+  <ul class="compact-list">
+    <li><strong>Coefficient Taille = +600 CHF/cm</strong> → En comparant deux personnes du même sexe dont la taille diffère d'un cm, celle qui est plus grande gagne en moyenne 600 CHF de plus.</li>
+    <li><strong>Coefficient Sexe (homme) = +10 600 CHF</strong> → En comparant deux personnes de même taille mais de sexe différent, l'homme gagne en moyenne 10 600 CHF de plus.</li>
+  </ul>
+</div>
+<p>Les deux coefficients s'interprètent toujours avec la même logique : deux personnes fictives identiques sur le reste, qui diffèrent uniquement sur la variable en question.</p>
+
+<h2>À retenir</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Concept</th><th>En bref</th></tr></thead>
+<tbody>
+<tr><td><strong>Régression multiple</strong></td><td>Plusieurs variables explicatives dans le même modèle.</td></tr>
+<tr><td><strong>Variable de contrôle</strong></td><td>Variable ajoutée pour neutraliser sa confusion avec d'autres.</td></tr>
+<tr><td><strong>Coefficient b₁</strong></td><td>Variation moyenne de Y pour +1 unité de X, Z maintenu constant.</td></tr>
+<tr><td><strong>Deux personnes fictives</strong></td><td>Identiques sur tout sauf X — c'est comme ça qu'on lit b₁.</td></tr>
+<tr><td><strong>Ceteris paribus</strong></td><td>« Toutes choses égales par ailleurs » — pour les variables incluses seulement.</td></tr>
+<tr><td><strong>Limite</strong></td><td>On ne contrôle que ce qu'on a mesuré et inclus.</td></tr>
+</tbody>
+</table></div>
+
+<div class="page-nav">
+  <a href="ch25.html">← Chapitre 25</a>
+  <a href="ch27.html">Chapitre 27 →</a>
+</div>
+</div></main></div>
+<script src="../assets/nav-content.js"></script>
+</body>
+</html>

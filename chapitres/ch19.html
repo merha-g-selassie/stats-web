@@ -336,7 +336,25 @@
 <div class="step-row"><div class="step-num">5</div><div><strong>Design</strong><br>Qu'est-ce qui crée une comparaison crédible entre ce qui s'est produit et ce qui se serait produit autrement ?</div></div>
 <div class="step-row"><div class="step-num">6</div><div><strong>Hypothèses</strong><br>Quelles conditions doivent être vraies pour que l'interprétation causale soit valable ?</div></div>
 
-<h2>12. À retenir</h2>
+<h2>12. L'exemple des cigognes (Matthews, 2000)</h2>
+<p>Un exemple célèbre illustre parfaitement le piège de la corrélation : dans plusieurs pays européens, on observe une <strong>corrélation positive</strong> entre le nombre de cigognes nichant dans un pays et le taux de natalité humaine.</p>
+<div class="box box-orange">
+  <p>Plus un pays abrite de cigognes → plus il y naît de bébés. Faut-il en conclure que les cigognes apportent les bébés ?</p>
+</div>
+<p>Non. Les deux variables sont toutes les deux liées à une <strong>variable confondante</strong> : la superficie rurale du pays. Les pays plus ruraux ont plus d'espace naturel pour les cigognes <em>et</em> des taux de natalité plus élevés (démographie rurale traditionnelle). Les cigognes et les naissances ne se causent pas — elles sont toutes deux la conséquence d'un même facteur sous-jacent.</p>
+<p>Morale : une corrélation peut être parfaitement réelle statistiquement et pourtant ne refléter aucun lien direct entre les deux variables.</p>
+
+<h2>13. Comparaisons multiples et faux positifs</h2>
+<p>Un autre problème que Matthews soulève : les <strong>tests multiples</strong>. Quand on cherche des corrélations dans de grands jeux de données en testant de nombreuses paires de variables, on finit inévitablement par en trouver des « significatives » — même s'il n'y a aucun lien réel.</p>
+<div class="box box-note">
+  <p><strong>Exemple :</strong> si on teste 20 associations indépendantes au seuil α = 0,05, on s'attend statistiquement à trouver <strong>1 résultat significatif par hasard</strong>, même si aucune association n'est réelle (5 % × 20 = 1).</p>
+</div>
+<p>Une p-value significative ne prouve donc pas qu'un effet est réel ou causal. Elle dit uniquement que ce résultat serait rare <em>si H₀ était vraie</em>. Plus on multiplie les tests sans corriger le seuil, plus le risque de faux positifs augmente.</p>
+<div class="box box-orange">
+  <p><strong>Réflexe :</strong> demander toujours combien de tests ont été réalisés avant de voir le résultat présenté. Un résultat isolé après de nombreuses tentatives est bien moins convaincant.</p>
+</div>
+
+<h2>14. À retenir</h2>
 
 <div class="table-wrap"><table>
 <thead><tr><th>Idée</th><th>À retenir</th></tr></thead>

@@ -50,6 +50,9 @@ document.querySelector('.nav').innerHTML = `
   <a href="${chapBase}ch23.html"><span class="ch-num">23</span> Test z — une proportion</a>
   <a href="${chapBase}ch24.html"><span class="ch-num">24</span> Comparer deux groupes</a>
   <a href="${chapBase}ch25.html"><span class="ch-num">25</span> Test du khi-deux</a>
+  <a href="${chapBase}ch26.html"><span class="ch-num">26</span> Régression multiple</a>
+  <a href="${chapBase}ch27.html"><span class="ch-num">27</span> Moindres carrés et MLE</a>
+  <a href="${chapBase}ch28.html"><span class="ch-num">28</span> Inférence bayésienne</a>
 `;
 
 // Active link
@@ -57,6 +60,15 @@ const current = location.pathname.split('/').pop() || 'index.html';
 document.querySelectorAll('.nav a').forEach(a => {
   const href = a.getAttribute('href').split('/').pop();
   if (href === current) a.classList.add('active');
+});
+
+// Persist nav scroll position across page navigations
+const NAV_SCROLL_KEY = 'statsNavScroll';
+const navEl = document.querySelector('.nav');
+const savedNavScroll = sessionStorage.getItem(NAV_SCROLL_KEY);
+if (savedNavScroll !== null && navEl) navEl.scrollTop = parseInt(savedNavScroll, 10);
+document.querySelectorAll('.nav a').forEach(a => {
+  a.addEventListener('click', () => navEl && sessionStorage.setItem(NAV_SCROLL_KEY, navEl.scrollTop));
 });
 
 // Mobile toggle

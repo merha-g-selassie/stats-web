@@ -383,6 +383,31 @@
 
 <p>Dans chaque cas, la droite permet de résumer une tendance moyenne. Mais l'interprétation causale dépend du design de recherche, des variables incluses et des hypothèses utilisées.</p>
 
+<h2>16b. Prédiction vs comparaison : deux usages distincts</h2>
+<p>La régression sert à deux choses différentes, et il est important de ne pas les confondre :</p>
+<div class="grid2">
+  <div class="box box-note">
+    <p><strong>Prédiction</strong><br>On utilise X pour estimer Y sur de nouveaux individus. L'objectif est d'avoir la prédiction la plus précise possible. Exemple : à partir de l'âge d'une personne, on prédit son revenu.</p>
+  </div>
+  <div class="box box-note">
+    <p><strong>Comparaison</strong><br>On utilise la régression pour décrire comment Y diffère en moyenne selon X. Exemple : comment le revenu varie-t-il en moyenne d'une année d'âge à l'autre ?</p>
+  </div>
+</div>
+<p>Ces deux usages donnent mathématiquement le même modèle, mais l'interprétation est très différente.</p>
+
+<h2>16c. Le coefficient : une comparaison, pas un effet causal</h2>
+<div class="warn-box">
+<b>Attention à la formulation.</b> Il est tentant de dire que « l'âge a un effet de +838 CHF sur le revenu ». Cette formulation est trompeuse.
+</div>
+<p>La bonne façon de lire un coefficient de régression (ROS, Ch.6) :</p>
+<div class="box box-green">
+  <p><strong>✓ Bonne interprétation :</strong> « En comparant deux personnes dont l'âge diffère d'un an, celle qui est plus âgée a en moyenne un revenu prédit de 838 CHF de plus — selon ce modèle. »</p>
+</div>
+<div class="box box-orange">
+  <p><strong>✗ Formulation à éviter :</strong> « Vieillir d'un an cause une augmentation de 838 CHF de revenu. »</p>
+</div>
+<p>Un coefficient peut <strong>toujours</strong> être interprété comme une comparaison entre deux groupes. Il ne peut être interprété comme un effet causal que sous des conditions très particulières (design expérimental ou quasi-expérimental). La régression décrit une association — rien de plus par défaut.</p>
+
 <h2>17. Visualisations et prédiction interactive</h2>
 <div class="wrap">
 
